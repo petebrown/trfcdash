@@ -11,10 +11,13 @@ License: What license is it under?
 Imports: 
     attempt,
     config (>= 0.3.1),
+    dplyr,
     DT,
     glue,
     golem (>= 0.4.0),
     htmltools,
+    plotly,
+    readr,
     shinipsum,
     shiny (>= 1.7.4),
     shinydashboard,
