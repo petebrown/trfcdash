@@ -69,23 +69,18 @@ mod_SeasonTracker_ui <- function(id){
       shinydashboardPlus::box(
         width = 12,
         title = "Top Scorers",
+        footer = "Here is some footer text",
+        solidHeader = TRUE,
+        status = "danger",
+        uiOutput(ns("ssn_scorers"))
+      ),
+      shinydashboardPlus::box(
+        width = 12,
+        title = "Top Scorers",
+        footer = "Here is some footer text",
         solidHeader = TRUE,
         status = "warning",
-        shinydashboardPlus::box(
-          title = "2022/23",
-          headerBorder = FALSE,
-          plotly::plotlyOutput(ns("scorers_plot_1"))
-        ),
-        shinydashboardPlus::box(
-          title = "2021/22",
-          headerBorder = FALSE,
-          plotly::plotlyOutput(ns("scorers_plot_2"))
-        ),
-        shinydashboardPlus::box(
-          title = "2020/21",
-          headerBorder = FALSE,
-          plotly::plotlyOutput(ns("scorers_plot_3"))
-        )
+        uiOutput(ns("boxed_ssn_scorers"))
       )
     )
   )
@@ -106,13 +101,16 @@ mod_SeasonTracker_server <- function(id){
 
     # Season Records
     output$season_records <- DT::renderDT({
-      shinipsum::random_DT(nrow = 2, ncol = 15, "numeric")
-    })
+      output_ssn_records(input$selected_seasons)
+    }, rownames = FALSE,
+    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging = FALSE))
 
     # Season streaks
     output$streaks <- DT::renderDT({
       get_streaks(input$selected_seasons)
-    })
+    },
+    rownames = FALSE,
+    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging=FALSE))
 
     # Full results table
     output$ssn_results <- renderUI({
@@ -135,18 +133,49 @@ mod_SeasonTracker_server <- function(id){
       }
     })
 
-    # Scorers plots
-    output$scorers_plot_1 <- plotly::renderPlotly({
-      p <- shinipsum::random_ggplot(type = "bar") + ggplot2::coord_flip()
-      plotly::ggplotly(p)
+    # Full results table
+    output$ssn_scorers <- renderUI({
+      if (!is.null(input$selected_seasons)) {
+        # Get selected seasons
+        selected_seasons <- sort(input$selected_seasons, decreasing = TRUE)
+
+        # Create a tab panel for each selected season
+        ssn_scorer_tabs <- lapply(selected_seasons, function(season) {
+          tabPanel(
+            title = season,
+            plot_ssn_scorers(season)
+          )
+        })
+
+        # Return the tabsetPanel containing season results
+        do.call(tabsetPanel, ssn_scorer_tabs)
+      } else {
+        p("Please select one or more seasons from the dropdown menu.")
+      }
     })
-    output$scorers_plot_2 <- plotly::renderPlotly({
-      p <- shinipsum::random_ggplot(type = "bar") + ggplot2::coord_flip()
-      plotly::ggplotly(p)
-    })
-    output$scorers_plot_3 <- plotly::renderPlotly({
-      p <- shinipsum::random_ggplot(type = "bar") + ggplot2::coord_flip()
-      plotly::ggplotly(p)
+
+    # Full results table
+    output$boxed_ssn_scorers <- renderUI({
+      if (!is.null(input$selected_seasons)) {
+        # Get selected seasons
+        selected_seasons <- sort(input$selected_seasons, decreasing = TRUE)
+
+        # Create a tab panel for each selected season
+        ssn_scorer_boxes <- lapply(selected_seasons, function(season) {
+          shinydashboardPlus::box(
+            width = ifelse(length(selected_seasons) == 1, 12, 6),
+            title = season,
+            footer = ifelse(season == "2019/20", "Season ended early", "NULL"),
+            headerBorder = FALSE,
+            plot_ssn_scorers(season)
+          )
+        })
+
+        # Return a tagList containing all top scorer plots
+        do.call(tagList, ssn_scorer_boxes)
+      } else {
+        p("Please select one or more seasons from the dropdown menu.")
+      }
     })
 
   })

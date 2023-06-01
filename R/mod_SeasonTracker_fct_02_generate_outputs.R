@@ -1,34 +1,26 @@
-get_ssn_results <- function(selected_seasons) {
-  results_df <- import_results() %>%
-  dplyr::filter(season %in% selected_seasons) %>%
-  dplyr::rename(game_no = ssn_game_no)
+output_ssn_records <- function(selected_seasons) {
+  records_df <- get_ssn_results(selected_seasons) %>%
+  dplyr::filter(game_type == "League") %>%
+  dplyr::group_by(season) %>%
+  dplyr::summarize(
+    P = dplyr::n(),
+    W = sum(outcome == "W"),
+    D = sum(outcome == "D"),
+    L = sum(outcome == "L"),
+    GF = sum(goals_for),
+    GA = sum(goals_against),
+    GD = GF - GA,
+    Pts = (W * 3) + D
+  ) %>%
+  dplyr::rename(Season = season)
 
-  return (results_df)
-}
-
-output_ssn_results <- function(season) {
-  DT::renderDataTable(
-    get_ssn_results(season),
-    selection = 'single',
-    filter = 'bottom',
-    rownames = FALSE,
-    options = list(
-      paging = TRUE,
-      pageLength = 10,
-      info = TRUE,
-      scrollX = TRUE,
-      dom = 'frtip',
-      columnDefs = list(
-        list(targets = c(0, 2, 3, 6, 7, 8, 10, 11), className = 'dt-left'),
-        list(targets = c(1, 4, 5), className = 'dt-center'),
-        list(targets = c(9), className = 'dt-right'))
-    )
-  )
+  return (records_df)
 }
 
 get_streaks <- function(selected_seasons) {
-  streaks <- get_ssn_results(selected_seasons) %>%
-    dplyr::arrange(season, game_no) %>%
+  streaks <- imported_results %>%
+    dplyr::filter(season %in% selected_seasons) %>%
+    dplyr::arrange(season, ssn_game_no) %>%
     dplyr::group_by(season) %>%
     dplyr::mutate(
       wins = ifelse(outcome == "W", 1, 0),
@@ -56,3 +48,78 @@ get_streaks <- function(selected_seasons) {
 
   return (streaks)
 }
+
+get_ssn_results <- function(selected_seasons) {
+  results_df <- imported_results %>%
+    dplyr::filter(season %in% selected_seasons)
+
+  return (results_df)
+}
+
+get_formatted_results <- function(selected_seasons) {
+  results_df <-  get_ssn_results(selected_seasons) %>%
+    dplyr::select(
+      season,
+      ssn_game_no,
+      game_date,
+      opposition,
+      venue,
+      score,
+      competition,
+      manager,
+      attendance
+    ) %>%
+    dplyr::rename(
+      Season = season,
+      "Game \nNo" = ssn_game_no,
+      Date = game_date,
+      Opponent = opposition,
+      Venue = venue,
+      Score = score,
+      Division = competition,
+      Manager = manager,
+      Attendance = attendance
+    )
+
+  return (results_df)
+}
+
+output_ssn_results <- function(season) {
+  DT::renderDataTable(
+    get_formatted_results(season),
+    selection = 'single',
+    filter = 'bottom',
+    rownames = FALSE,
+    options = list(
+      paging = TRUE,
+      pageLength = 10,
+      info = TRUE,
+      scrollX = TRUE,
+      dom = 'frtip',
+      columnDefs = list(
+        list(targets = c(0, 1, 2, 3, 4, 6, 7), className = 'dt-left'),
+        list(targets = c(5), className = 'dt-center'),
+        list(targets = c(8), className = 'dt-right'))
+    )
+  )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
