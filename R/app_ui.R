@@ -52,13 +52,7 @@ app_ui <- function(request) {
           shinydashboard::tabItem("SeasonTracker", mod_SeasonTracker_ui("SeasonTracker_ui_1")),
           shinydashboard::tabItem("Head2HeadByOpponent", mod_Head2HeadByOpponent_ui("Head2HeadByOpponent_1")),
           shinydashboard::tabItem("Head2HeadAllOpponents", mod_Head2HeadAllOpponents_ui("Head2HeadAllOpponents_1")),
-
-
-
           shinydashboard::tabItem("ManagersByManager", mod_ManagersByManager_ui("ManagersByManager_1")),
-
-
-
           shinydashboard::tabItem("ManagersAllManagers", mod_ManagersAllManagers_ui("ManagersAllManagers_1")),
           shinydashboard::tabItem("PlayersByPlayer", mod_PlayersByPlayer_ui("PlayersByPlayer_1")),
           shinydashboard::tabItem("PlayersAllPlayers", mod_PlayersAllPlayers_ui("")),

@@ -21,11 +21,14 @@ mod_SeasonTracker_ui <- function(id){
         )
       ),
       fluidRow(
+        plotOutput(ns("plot"))
+      ),
+      fluidRow(
         radioButtons(
           inputId = "selected_chart_type",
           label = "Choose chart type:",
           choices = get_chart_options(),
-          selected = "League Position",
+          selected = "league_pos",
           inline = TRUE
         )
       )
@@ -39,6 +42,10 @@ mod_SeasonTracker_ui <- function(id){
 mod_SeasonTracker_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    output$plot <- renderPlot({
+      shinipsum::random_ggplot(type = "line")
+    })
 
   })
 }
