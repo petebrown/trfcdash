@@ -17,6 +17,7 @@ Imports:
     glue,
     golem (>= 0.4.0),
     htmltools,
+    magrittr,
     plotly,
     readr,
     shinipsum,
