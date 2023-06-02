@@ -14,6 +14,7 @@ mod_SeasonTracker_ui <- function(id){
       shinydashboardPlus::box(
         width = 12,
         title = "Season Progress",
+        footer = uiOutput(ns("footer_text")),
         solidHeader = TRUE,
         status = "primary",
         fluidRow(
@@ -96,6 +97,13 @@ mod_SeasonTracker_server <- function(id){
     output$seasons_plot <- plotly::renderPlotly({
       output_seasons_plot(input$selected_seasons, input$selected_chart_type)
     })
+    observeEvent(input$selected_seasons, {
+      if ("2019/20" %in% input$selected_seasons) {
+        output$footer_text <- renderText("2019/20 ended early due to COVID-19.")
+      } else {
+        output$footer_text <- NULL
+      }
+    })
 
     # Season Records
     output$season_records <- DT::renderDT({
@@ -163,7 +171,7 @@ mod_SeasonTracker_server <- function(id){
           shinydashboardPlus::box(
             width = ifelse(length(selected_seasons) == 1, 12, 6),
             title = season,
-            # footer = ifelse(season == "2019/20", "Season ended early", "NULL"),
+            footer = ifelse(season == "2019/20", "Season ended early", list(NULL)),
             headerBorder = FALSE,
             plot_ssn_scorers(season)
           )
