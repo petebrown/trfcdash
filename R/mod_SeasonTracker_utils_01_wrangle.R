@@ -1,20 +1,28 @@
 import_results_mini <- function() {
-  df <- vroom::vroom("https://raw.githubusercontent.com/petebrown/league-position-tool/main/docs/input/results_mini.csv")
+  df <- vroom::vroom("https://raw.githubusercontent.com/petebrown/league-position-tool/main/docs/input/results_mini.csv", show_col_types = FALSE)
   return (df)
 }
 
 import_results <- function() {
-  df <- vroom::vroom("https://raw.githubusercontent.com/petebrown/update-results/main/data/results_df.csv")
+  df <- vroom::vroom("https://raw.githubusercontent.com/petebrown/update-results/main/data/results_df.csv", show_col_types = FALSE)
   return (df)
 }
 
 import_goals_df <- function() {
-  df <- vroom::vroom("https://raw.githubusercontent.com/petebrown/scrape-goals/main/data/goals.csv")
+  df <- vroom::vroom("https://raw.githubusercontent.com/petebrown/scrape-goals/main/data/goals.csv", show_col_types = FALSE)
   return (df)
 }
 
 import_players_df <- function() {
-  df <- vroom::vroom("https://raw.githubusercontent.com/petebrown/update-player-stats/main/data/players_df.csv")
+  df <- vroom::vroom("https://raw.githubusercontent.com/petebrown/update-player-stats/main/data/players_df.csv", show_col_types = FALSE) %>%
+    dplyr::rename(
+      game_id = sb_game_id,
+      player_id = sb_player_id
+    ) %>%
+    dplyr::mutate(
+      game_id = stringr::str_replace(game_id, "tpg", ""),
+      game_id = as.numeric(game_id)
+    )
   return (df)
 }
 

@@ -14,12 +14,11 @@ mod_SeasonTracker_ui <- function(id){
       shinydashboardPlus::box(
         width = 12,
         title = "Season Progress",
-        footer = "This is the footer text",
         solidHeader = TRUE,
         status = "primary",
         fluidRow(
           column(
-            width = 2,
+            width = 3,
             selectInput(
               inputId = ns("selected_seasons"),
               label = "Select seasons:",
@@ -32,7 +31,7 @@ mod_SeasonTracker_ui <- function(id){
             width = 3,
             offset = 0,
             selectInput(
-              inputId = "ns(selected_chart_type)",
+              inputId = ns("selected_chart_type"),
               label = "Choose chart type:",
               choices = get_chart_options(),
               selected = "league_pos"
@@ -44,7 +43,7 @@ mod_SeasonTracker_ui <- function(id){
       shinydashboardPlus::box(
         width = 12,
         title = "Season Record",
-        footer = "Here is some footer text",
+        footer = NULL,
         solidHeader = TRUE,
         status = "success",
         scrollX = TRUE,
@@ -53,33 +52,33 @@ mod_SeasonTracker_ui <- function(id){
       shinydashboardPlus::box(
         width = 12,
         title = "Streaks",
-        footer = "Here is some footer text",
+        footer = NULL,
         solidHeader = TRUE,
-        status = "info",
+        status = "primary",
         DT::dataTableOutput(ns("streaks"))
       ),
       shinydashboardPlus::box(
         width = 12,
         title = "Results",
-        footer = "Here is some footer text",
+        footer = NULL,
         solidHeader = TRUE,
-        status = "danger",
+        status = "success",
         uiOutput(ns("ssn_results"))
       ),
       shinydashboardPlus::box(
         width = 12,
         title = "Top Scorers",
-        footer = "Here is some footer text",
+        # footer = "Here is some footer text",
         solidHeader = TRUE,
-        status = "danger",
+        status = "primary",
         uiOutput(ns("ssn_scorers"))
       ),
       shinydashboardPlus::box(
         width = 12,
         title = "Top Scorers",
-        footer = "Here is some footer text",
+        # footer = "Here is some footer text",
         solidHeader = TRUE,
-        status = "warning",
+        status = "primary",
         uiOutput(ns("boxed_ssn_scorers"))
       )
     )
@@ -95,8 +94,7 @@ mod_SeasonTracker_server <- function(id){
 
     # Season plot
     output$seasons_plot <- plotly::renderPlotly({
-      p <- shinipsum::random_ggplot(type = "line")
-      plotly::ggplotly(p)
+      output_seasons_plot(input$selected_seasons, input$selected_chart_type)
     })
 
     # Season Records
@@ -165,7 +163,7 @@ mod_SeasonTracker_server <- function(id){
           shinydashboardPlus::box(
             width = ifelse(length(selected_seasons) == 1, 12, 6),
             title = season,
-            footer = ifelse(season == "2019/20", "Season ended early", "NULL"),
+            # footer = ifelse(season == "2019/20", "Season ended early", "NULL"),
             headerBorder = FALSE,
             plot_ssn_scorers(season)
           )
