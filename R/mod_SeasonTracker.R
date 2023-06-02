@@ -38,7 +38,7 @@ mod_SeasonTracker_ui <- function(id){
             )
           )
         ),
-        plotly::plotlyOutput(ns("seasons_plot"))
+        plotly::plotlyOutput(ns("seasons_plot"), height = 500)
       ),
       shinydashboardPlus::box(
         width = 12,
@@ -65,14 +65,14 @@ mod_SeasonTracker_ui <- function(id){
         status = "success",
         uiOutput(ns("ssn_results"))
       ),
-      shinydashboardPlus::box(
-        width = 12,
-        title = "Top Scorers",
-        # footer = "Here is some footer text",
-        solidHeader = TRUE,
-        status = "primary",
-        uiOutput(ns("ssn_scorers"))
-      ),
+      # shinydashboardPlus::box(
+      #   width = 12,
+      #   title = "Top Scorers",
+      #   # footer = "Here is some footer text",
+      #   solidHeader = TRUE,
+      #   status = "primary",
+      #   uiOutput(ns("ssn_scorers"))
+      # ),
       shinydashboardPlus::box(
         width = 12,
         title = "Top Scorers",
