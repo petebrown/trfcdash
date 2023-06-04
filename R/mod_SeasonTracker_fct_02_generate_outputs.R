@@ -10,7 +10,8 @@ output_ssn_records <- function(selected_seasons) {
     GF = sum(goals_for),
     GA = sum(goals_against),
     GD = GF - GA,
-    Pts = (W * 3) + D
+    Pts = (W * 3) + D,
+    PPG = round(Pts / P, 2)
   ) %>%
   dplyr::rename(Season = season)
 

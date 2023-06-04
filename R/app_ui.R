@@ -10,6 +10,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
 
     shinydashboardPlus::dashboardPage(
+      skin = "blue-light",
       header = shinydashboardPlus::dashboardHeader(
         title = "Tranmere Rovers F.C."
       ),

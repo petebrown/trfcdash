@@ -27,9 +27,19 @@ import_players_df <- function() {
 }
 
 imported_results_mini <- import_results_mini()
-imported_results <- import_results()
+imported_results <- import_results() %>%
+  dplyr::full_join(
+    imported_results_mini %>% dplyr::select(game_date, pts, ranking), by = "game_date") %>%
+  dplyr::rename(
+    ssn_pts = pts,
+    league_pos = ranking,
+    game_no = ssn_comp_game_no
+  )
 imported_goals_df <- import_goals_df()
 imported_players_df <- import_players_df()
+
+min_year <- lubridate::year(min(imported_results$game_date))
+max_year <- lubridate::year(max(imported_results$game_date))
 
 get_season_list <- function() {
   df <- imported_results
