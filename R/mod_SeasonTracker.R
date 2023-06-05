@@ -171,7 +171,7 @@ mod_SeasonTracker_server <- function(id){
           shinydashboardPlus::box(
             width = ifelse(length(selected_seasons) == 1, 12, 6),
             title = season,
-            footer = ifelse(season == "2019/20", "Season ended early", list(NULL)),
+            footer = ifelse(season == "2019/20", "Season ended early due to COVID-19.", list(NULL)),
             headerBorder = FALSE,
             plot_ssn_scorers(season)
           )
