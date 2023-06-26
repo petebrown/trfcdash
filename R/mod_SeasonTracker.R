@@ -10,14 +10,7 @@
 mod_SeasonTracker_ui <- function(id){
   ns <- NS(id)
   tagList(
-    fluidPage(
-      tags$style(HTML(
-        "
-        .html-fill-container > .html-fill-item.datatables {
-          flex-basis: content;
-        }
-        "
-      )),
+    bslib::page_fluid(
       bslib::card(
         full_screen = TRUE,
         bslib::card_header(
@@ -48,9 +41,19 @@ mod_SeasonTracker_ui <- function(id){
               )
             )
           ),
-          plotly::plotlyOutput(ns("seasons_plot"), height = 500)
+          # plotly::plotlyOutput(ns("seasons_plot"), height = 500),
+          # uiOutput(ns("footer_text"))
+        )
+      ),
+
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Season Progress"
         ),
-        bslib::card_footer(
+        bslib::card_body(
+          min_height = "600px",
+          plotly::plotlyOutput(ns("seasons_plot")),
           uiOutput(ns("footer_text"))
         )
       ),
@@ -63,25 +66,33 @@ mod_SeasonTracker_ui <- function(id){
           class = "bg-dark",
           "Season Record"
         ),
-        bslib::card_body(
-          DT::dataTableOutput(ns("season_records"))
-        ),
         bslib::layout_column_wrap(
-          width = 1/2,
-          bslib::card(
-            bslib::card_header(
-              "Home Record"
+          heights_equal = "row",
+          width = 1,
+          DT::dataTableOutput(ns("season_records")),
+
+          hr(style = "width:30%; margin: 1.5rem auto;"),
+
+          # Two equal columns for Home and Away records
+          bslib::layout_column_wrap(
+            width = 1/2,
+            # Card containing Home Record for selected seasons
+            bslib::card(
+              bslib::card_header(
+                "Home Record"
+              ),
+              bslib::card_body(
+                DT::dataTableOutput(ns("season_records_home"))
+              )
             ),
-            bslib::card_body(
-              DT::dataTableOutput(ns("season_records_home"))
-            )
-          ),
-          bslib::card(
-            bslib::card_header(
-              "Away Record"
-            ),
-            bslib::card_body(
-              DT::dataTableOutput(ns("season_records_away"))
+            # Card containing Home Record for selected seasons
+            bslib::card(
+              bslib::card_header(
+                "Away Record"
+              ),
+              bslib::card_body(
+                DT::dataTableOutput(ns("season_records_away"))
+              )
             )
           )
         )
@@ -120,13 +131,15 @@ mod_SeasonTracker_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    callModule(mod_SeasonTracker_sidebar, 'mymod')
+
     # Season plot
     output$seasons_plot <- plotly::renderPlotly({
       output_seasons_plot(input$selected_seasons, input$selected_chart_type)
     })
     observeEvent(input$selected_seasons, {
       if ("2019/20" %in% input$selected_seasons) {
-        output$footer_text <- renderText("2019/20 ended early due to COVID-19.")
+        output$footer_text <- renderText("N.B. 2019/20 season ended after 34 games due to COVID-19.")
       } else {
         output$footer_text <- renderText("")
       }
@@ -229,26 +242,5 @@ mod_SeasonTracker_server <- function(id){
         p("Please select one or more seasons from the dropdown menu.")
       }
     })
-
-    # TabPanel containing top scorer cbarts
-    # output$ssn_scorers <- renderUI({
-    #   if (!is.null(input$selected_seasons)) {
-    #     # Get selected seasons
-    #     selected_seasons <- sort(input$selected_seasons, decreasing = TRUE)
-    #
-    #     # Create a tab panel for each selected season
-    #     ssn_scorer_tabs <- lapply(selected_seasons, function(season) {
-    #       tabPanel(
-    #         title = season,
-    #         plot_ssn_scorers(season, max_goals)
-    #       )
-    #     })
-    #
-    #     # Return the tabsetPanel containing season results
-    #     do.call(tabsetPanel, ssn_scorer_tabs)
-    #   } else {
-    #     p("Please select one or more seasons from the dropdown menu.")
-    #   }
-    # })
   })
 }

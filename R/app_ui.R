@@ -15,14 +15,14 @@ app_ui <- function(request) {
       id = "nav",
       sidebar = bslib::sidebar(
         # Season Tracker sidebar
-        shiny::conditionalPanel(
+        conditionalPanel(
           "input.nav === 'Season Tracker'",
-          "Season tracker sidebar"
+          "Season Tracker sidebar"
         ),
         # Main head-to-head sidebar
         shiny::conditionalPanel(
           "input.nav === 'Compare all head-to-head records'",
-          "All head-to-head records"
+          "All head-to-head records sidebar"
         ),
         # Individual head-to-head sidebar
         shiny::conditionalPanel(
