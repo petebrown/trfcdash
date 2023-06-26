@@ -11,76 +11,84 @@ mod_SeasonTracker_ui <- function(id){
   ns <- NS(id)
   tagList(
     fluidPage(
-      shinydashboardPlus::box(
-        width = 12,
-        title = "Season Progress",
-        footer = uiOutput(ns("footer_text")),
-        solidHeader = TRUE,
-        status = "primary",
-        fluidRow(
-          column(
-            width = 3,
-            selectInput(
-              inputId = ns("selected_seasons"),
-              label = "Select seasons:",
-              choices = get_season_list(),
-              selected = "2022/23",
-              multiple = TRUE
+      tags$style(HTML(
+        "
+        .html-fill-container > .html-fill-item.datatables {
+          flex-basis: content;
+        }
+        "
+      )),
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "Season Progress"
+        ),
+
+        bslib::card_body(
+          fluidRow(
+            column(
+              width = 3,
+              selectInput(
+                inputId = ns("selected_seasons"),
+                label = "Select seasons:",
+                choices = get_season_list(),
+                selected = "2022/23",
+                multiple = TRUE
+              )
+            ),
+            column(
+              width = 3,
+              offset = 0,
+              selectInput(
+                inputId = ns("selected_chart_type"),
+                label = "Choose chart type:",
+                choices = get_chart_options(),
+                selected = "league_pos"
+              )
             )
           ),
-          column(
-            width = 3,
-            offset = 0,
-            selectInput(
-              inputId = ns("selected_chart_type"),
-              label = "Choose chart type:",
-              choices = get_chart_options(),
-              selected = "league_pos"
-            )
-          )
+          plotly::plotlyOutput(ns("seasons_plot"), height = 500)
         ),
-        plotly::plotlyOutput(ns("seasons_plot"), height = 500)
+        bslib::card_footer(
+          uiOutput(ns("footer_text"))
+        )
       ),
-      shinydashboardPlus::box(
-        width = 12,
-        title = "Season Record",
-        footer = NULL,
-        solidHeader = TRUE,
-        status = "success",
-        scrollX = TRUE,
-        DT::dataTableOutput(ns("season_records"))
+
+
+
+      # Card containing each season's league record
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Season Record"
+        ),
+        bslib::card_body(
+          DT::dataTableOutput(ns("season_records"))
+        )
       ),
-      shinydashboardPlus::box(
-        width = 12,
-        title = "Streaks",
-        footer = NULL,
-        solidHeader = TRUE,
-        status = "primary",
+      # Card containing longest streaks
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Longest Streaks"
+        ),
         DT::dataTableOutput(ns("streaks"))
       ),
-      shinydashboardPlus::box(
-        width = 12,
-        title = "Results",
-        footer = NULL,
-        solidHeader = TRUE,
-        status = "success",
+      # Card containing each season's results
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Results"
+        ),
         uiOutput(ns("ssn_results"))
       ),
-      # shinydashboardPlus::box(
-      #   width = 12,
-      #   title = "Top Scorers",
-      #   # footer = "Here is some footer text",
-      #   solidHeader = TRUE,
-      #   status = "primary",
-      #   uiOutput(ns("ssn_scorers"))
-      # ),
-      shinydashboardPlus::box(
-        width = 12,
-        title = "Top Scorers",
-        # footer = "Here is some footer text",
-        solidHeader = TRUE,
-        status = "primary",
-        uiOutput(ns("boxed_ssn_scorers"))
+      # Card containing top scorer charts
+      bslib::card(
+        bslib::card_header("Top Scorers"),
+        bslib::card_body(
+          uiOutput(ns("boxed_ssn_scorers"))
+        )
       )
     )
   )
@@ -101,11 +109,28 @@ mod_SeasonTracker_server <- function(id){
       if ("2019/20" %in% input$selected_seasons) {
         output$footer_text <- renderText("2019/20 ended early due to COVID-19.")
       } else {
-        output$footer_text <- NULL
+        output$footer_text <- renderText("")
       }
     })
 
-    # Season Records
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     output$season_records <- DT::renderDT({
       output_ssn_records(input$selected_seasons)
     }, rownames = FALSE,
@@ -139,50 +164,56 @@ mod_SeasonTracker_server <- function(id){
       }
     })
 
-    # Full results table
-    output$ssn_scorers <- renderUI({
-      if (!is.null(input$selected_seasons)) {
-        # Get selected seasons
-        selected_seasons <- sort(input$selected_seasons, decreasing = TRUE)
-
-        # Create a tab panel for each selected season
-        ssn_scorer_tabs <- lapply(selected_seasons, function(season) {
-          tabPanel(
-            title = season,
-            plot_ssn_scorers(season)
-          )
-        })
-
-        # Return the tabsetPanel containing season results
-        do.call(tabsetPanel, ssn_scorer_tabs)
-      } else {
-        p("Please select one or more seasons from the dropdown menu.")
-      }
-    })
-
-    # Full results table
+    # Individual top scorer charts
     output$boxed_ssn_scorers <- renderUI({
       if (!is.null(input$selected_seasons)) {
         # Get selected seasons
         selected_seasons <- sort(input$selected_seasons, decreasing = TRUE)
 
-        # Create a tab panel for each selected season
+        max_goals <- get_max_goals(input$selected_seasons)
+
+        # Create a list of scorer charts
         ssn_scorer_boxes <- lapply(selected_seasons, function(season) {
-          shinydashboardPlus::box(
-            width = ifelse(length(selected_seasons) == 1, 12, 6),
-            title = season,
-            footer = ifelse(season == "2019/20", "Season ended early due to COVID-19.", list(NULL)),
-            headerBorder = FALSE,
-            plot_ssn_scorers(season)
+          bslib::card(
+            bslib::card_header(
+              season
+            ),
+            bslib::card_body(
+              plot_ssn_scorers(season, max_goals)
+            )
           )
         })
-
         # Return a tagList containing all top scorer plots
-        do.call(tagList, ssn_scorer_boxes)
+        bslib::layout_column_wrap(
+          width = ifelse(length(selected_seasons) == 1, 1,
+                         ifelse(length(selected_seasons)%%2 == 0, 1/2, 1/3)),
+          !!!ssn_scorer_boxes,
+          heights_equal = "all", fixed_width = TRUE, fill = TRUE
+        )
       } else {
         p("Please select one or more seasons from the dropdown menu.")
       }
     })
 
+    # TabPanel containing top scorer cbarts
+    # output$ssn_scorers <- renderUI({
+    #   if (!is.null(input$selected_seasons)) {
+    #     # Get selected seasons
+    #     selected_seasons <- sort(input$selected_seasons, decreasing = TRUE)
+    #
+    #     # Create a tab panel for each selected season
+    #     ssn_scorer_tabs <- lapply(selected_seasons, function(season) {
+    #       tabPanel(
+    #         title = season,
+    #         plot_ssn_scorers(season, max_goals)
+    #       )
+    #     })
+    #
+    #     # Return the tabsetPanel containing season results
+    #     do.call(tabsetPanel, ssn_scorer_tabs)
+    #   } else {
+    #     p("Please select one or more seasons from the dropdown menu.")
+    #   }
+    # })
   })
 }

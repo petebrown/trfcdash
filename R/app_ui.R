@@ -9,59 +9,68 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
 
-    shinydashboardPlus::dashboardPage(
-      skin = "blue-light",
-      header = shinydashboardPlus::dashboardHeader(
-        title = "Tranmere Rovers F.C."
-      ),
-
-      sidebar = shinydashboard::dashboardSidebar(
-        shinydashboard::sidebarMenu(
-          id = "tabs",
-          shinydashboard::menuItem(
-            "Season Tracker", tabName = "SeasonTracker", icon = icon("chart-line"),
-            selected = TRUE
-          ),
-          shinydashboard::menuItem(
-            "Head-to-Head Records", icon = icon("futbol"),
-            shinydashboard::menuSubItem("By Opponent", tabName = "Head2HeadByOpponent"),
-            shinydashboard::menuSubItem("All Opponents", tabName = "Head2HeadAllOpponents")
-          ),
-          shinydashboard::menuItem(
-            "Managers", icon = icon("user-tie"),
-            shinydashboard::menuSubItem("By Manager", tabName = "ManagersByManager"),
-            shinydashboard::menuSubItem("All Managers", tabName = "ManagersAllManagers")
-          ),
-          shinydashboard::menuItem(
-            "Players (1996-)", icon = icon("person-running"),
-            shinydashboard::menuSubItem("By Player", tabName = "PlayersByPlayer"),
-            shinydashboard::menuSubItem("All Players", tabName = "PlayersAllPlayers")
-          ),
-          shinydashboard::menuItem(
-            "Attendances", icon = icon("users-line"),
-            shinydashboard::menuSubItem("Overview", tabName = "AttendancesOverview"),
-            shinydashboard::menuSubItem("By Season", tabName = "AttendancesBySeason")
-          ),
-          shinydashboard::menuItem(
-            "On This Day", tabName = "OnThisDay", icon = icon("calendar-days")
-          )
+    bslib::page_navbar(
+      title = "Tranmere Rovers: A Complete Record",
+      bslib::nav_spacer(),
+      id = "nav",
+      sidebar = bslib::sidebar(
+        # Season Tracker sidebar
+        shiny::conditionalPanel(
+          "input.nav === 'Season Tracker'",
+          "Season tracker sidebar"
+        ),
+        # Main head-to-head sidebar
+        shiny::conditionalPanel(
+          "input.nav === 'Compare all head-to-head records'",
+          "All head-to-head records"
+        ),
+        # Individual head-to-head sidebar
+        shiny::conditionalPanel(
+          "input.nav === 'Record vs. specific team'",
+          "Head-to-head vs. team sidebar"
+        ),
+        # Main manager comparison sidebar
+        shiny::conditionalPanel(
+          "input.nav === 'Compare manager records'",
+          "Manager comparison sidebar"
+        ),
+        # Individual manager stats
+        shiny::conditionalPanel(
+          "input.nav === 'Individual manager stats'",
+          "Individual manager sidebar"
+        ),
+        # Main player comparison tool
+        shiny::conditionalPanel(
+          "input.nav === 'Compare all players'",
+          "Player comparison sidebar"
+        ),
+        # Individual player stats
+        shiny::conditionalPanel(
+          "input.nav === 'Individual player stats'",
+          "Player stat sidebar"
+        ),
+        shiny::conditionalPanel(
+          "input.nav === 'On this day'",
+          "On this day sidebar"
         )
       ),
-
-      body = shinydashboard::dashboardBody(
-        shinydashboard::tabItems(
-          shinydashboard::tabItem("SeasonTracker", mod_SeasonTracker_ui("SeasonTracker_ui_1")),
-          shinydashboard::tabItem("Head2HeadByOpponent", mod_Head2HeadByOpponent_ui("Head2HeadByOpponent_1")),
-          shinydashboard::tabItem("Head2HeadAllOpponents", mod_Head2HeadAllOpponents_ui("Head2HeadAllOpponents_1")),
-          shinydashboard::tabItem("ManagersByManager", mod_ManagersByManager_ui("ManagersByManager_1")),
-          shinydashboard::tabItem("ManagersAllManagers", mod_ManagersAllManagers_ui("ManagersAllManagers_1")),
-          shinydashboard::tabItem("PlayersByPlayer", mod_PlayersByPlayer_ui("PlayersByPlayer_1")),
-          shinydashboard::tabItem("PlayersAllPlayers", mod_PlayersAllPlayers_ui("")),
-          shinydashboard::tabItem("AttendancesOverview", mod_AttendancesOverview_ui("AttendancesOverview_1")),
-          shinydashboard::tabItem("AttendancesBySeason", mod_AttendancesBySeason_ui("AttendancesBySeason_1")),
-          shinydashboard::tabItem("OnThisDay", mod_OnThisDay_ui("OnThisDay_ui_1"))
-        )
-      )
+      bslib::nav_panel("Season Tracker", mod_SeasonTracker_ui("SeasonTracker_ui_1")),
+      bslib::nav_menu(
+        title = "Head-to-Head Records",
+        bslib::nav_panel("Compare all head-to-head records", mod_Head2HeadAllOpponents_ui("Head2HeadAllOpponents_1")),
+        bslib::nav_panel("Record vs. specific team", mod_Head2HeadByOpponent_ui("Head2HeadByOpponent_1"))
+      ),
+      bslib::nav_menu(
+        title = "Managers",
+        bslib::nav_panel("Compare manager records", mod_ManagersAllManagers_ui("ManagersAllManagers_1")),
+        bslib::nav_panel("Individual manager stats", mod_ManagersByManager_ui("ManagersByManager_1"))
+      ),
+      bslib::nav_menu(
+        title = "Players",
+        bslib::nav_panel("Compare all players", mod_PlayersAllPlayers_ui("")),
+        bslib::nav_panel("Individual player stats", mod_PlayersByPlayer_ui("PlayersByPlayer_1"))
+      ),
+      bslib::nav_panel("On this day", mod_OnThisDay_ui("OnThisDay_ui_1"))
     )
   )
 }

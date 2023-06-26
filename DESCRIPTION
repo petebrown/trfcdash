@@ -1,12 +1,8 @@
 Package: trfcdash
-Title: An Amazing Shiny App
+Title: Tranmere Rovers: An Incomplete Record Dashboard
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "firstname",
-           family = "lastname",
-           role = c("aut", "cre"),
-           email = "your@email.com")
-Description: What the package does (one paragraph).
+Authors@R: person('Pete', 'Brown', email = 'pete@petebrown.codes', role = c('cre', 'aut'))
+Description: An interactive dashboard for viewing Tranmere Rovers stats.
 License: What license is it under?
 Imports: 
     attempt,
