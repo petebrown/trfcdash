@@ -1,6 +1,9 @@
-output_ssn_records <- function(selected_seasons) {
+output_ssn_records <- function(selected_seasons, selected_venue) {
   df <- filter_ssn_results(selected_seasons) %>%
-    dplyr::filter(game_type == "League") %>%
+    dplyr::filter(
+      game_type == "League",
+      venue %in% selected_venue
+    ) %>%
     dplyr::group_by(season) %>%
     dplyr::summarize(
       P = dplyr::n(),

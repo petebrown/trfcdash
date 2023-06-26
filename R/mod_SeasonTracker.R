@@ -65,6 +65,25 @@ mod_SeasonTracker_ui <- function(id){
         ),
         bslib::card_body(
           DT::dataTableOutput(ns("season_records"))
+        ),
+        bslib::layout_column_wrap(
+          width = 1/2,
+          bslib::card(
+            bslib::card_header(
+              "Home Record"
+            ),
+            bslib::card_body(
+              DT::dataTableOutput(ns("season_records_home"))
+            )
+          ),
+          bslib::card(
+            bslib::card_header(
+              "Away Record"
+            ),
+            bslib::card_body(
+              DT::dataTableOutput(ns("season_records_away"))
+            )
+          )
         )
       ),
       # Card containing longest streaks
@@ -131,17 +150,33 @@ mod_SeasonTracker_server <- function(id){
 
 
 
+    # Season Records
     output$season_records <- DT::renderDT({
-      output_ssn_records(input$selected_seasons)
+      output_ssn_records(input$selected_seasons, selected_venue = c("H", "A"))
     }, rownames = FALSE,
-    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging = FALSE))
+    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging = FALSE, fillContainer = TRUE))
+
+    # Season Records - HOME
+    output$season_records_home <- DT::renderDT({
+      output_ssn_records(input$selected_seasons, selected_venue = "H")
+    }, rownames = FALSE,
+    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging = FALSE, fillContainer = TRUE))
+
+    # Season Records - AWAY
+    output$season_records_away <- DT::renderDT({
+      output_ssn_records(input$selected_seasons, selected_venue = "A")
+    }, rownames = FALSE,
+    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging = FALSE, fillContainer = TRUE))
+
+
+
 
     # Season streaks
     output$streaks <- DT::renderDT({
       get_streaks(input$selected_seasons)
     },
     rownames = FALSE,
-    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging=FALSE))
+    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging=FALSE, fillContainer = TRUE))
 
     # Full results table
     output$ssn_results <- renderUI({

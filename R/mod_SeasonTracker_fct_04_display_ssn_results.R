@@ -6,10 +6,15 @@ get_formatted_results <- function(selected_seasons) {
       game_date,
       opposition,
       venue,
+      outcome,
       score,
       competition,
-      manager,
-      attendance
+      attendance,
+      manager
+    ) %>%
+    dplyr::mutate(
+      game_date = glue::glue("{lubridate::day(game_date)} {lubridate::month(game_date, label = TRUE, abbr = FALSE)} {lubridate::year(game_date)}"),
+      attendance = format(attendance, nsmall = 0, big.mark = ",")
     ) %>%
     dplyr::rename(
       Season = season,
@@ -17,10 +22,11 @@ get_formatted_results <- function(selected_seasons) {
       Date = game_date,
       Opponent = opposition,
       Venue = venue,
+      Outcome = outcome,
       Score = score,
       Division = competition,
-      Manager = manager,
-      Attendance = attendance
+      Attendance = attendance,
+      Manager = manager
     )
 
   return (results_df)
@@ -33,6 +39,7 @@ output_ssn_results <- function(season) {
     filter = 'bottom',
     rownames = FALSE,
     options = list(
+      fillContainer = TRUE,
       paging = TRUE,
       pageLength = 10,
       info = TRUE,
