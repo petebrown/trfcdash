@@ -232,7 +232,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
       req(n_fixtures(), selected_seasons())
       if (!is.null(selected_seasons())) {
         # Sort selected seasons
-        selected_seasons <- sort(selected_seasons(), decreasing = TRUE)
+        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
 
         # Create a tab panel of results for each  season
         ssn_tabs <- lapply(selected_seasons, function(season) {
@@ -253,7 +253,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
     output$boxed_ssn_scorers <- renderUI({
       if (!is.null(selected_seasons())) {
         # Get selected seasons
-        selected_seasons <- sort(selected_seasons(), decreasing = TRUE)
+        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
 
         n_plots <- length(selected_seasons())
         max_goals <- get_max_goals(selected_seasons())
