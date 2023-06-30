@@ -1,3 +1,7 @@
-body > div.wrapper > div > section {
-  background-color: white;
+.no_padding {
+  padding: 0;
+}
+
+.borderless {
+  border: 0;
 }

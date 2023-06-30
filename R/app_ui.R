@@ -8,8 +8,13 @@ app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
-
     bslib::page_navbar(
+      theme = bslib::bs_theme_update(
+        bslib::bs_theme(),
+        fg = "rgb(30, 35, 85)",
+        bg = "white",
+        primary = "#385580"
+      ),
       title = "Tranmere Rovers: A Complete Record",
       bslib::nav_spacer(),
       id = "nav",
@@ -17,7 +22,7 @@ app_ui <- function(request) {
         # Season Tracker sidebar
         conditionalPanel(
           "input.nav === 'Season Tracker'",
-          "Season Tracker sidebar"
+          SeasonTracker_sidebar()
         ),
         # Main head-to-head sidebar
         shiny::conditionalPanel(
@@ -49,9 +54,20 @@ app_ui <- function(request) {
           "input.nav === 'Individual player stats'",
           "Player stat sidebar"
         ),
+        # Overall attendance stats
+        shiny::conditionalPanel(
+          "input.nav === 'Overall attendance stats'",
+          "AttendancesOverview_sidebar"
+        ),
+        # Individual player stats
+        shiny::conditionalPanel(
+          "input.nav === 'Attendance stats by season'",
+          "AttendanceBySeason_sidebar"
+        ),
+        # On This Day
         shiny::conditionalPanel(
           "input.nav === 'On this day'",
-          "On this day sidebar"
+          "OnThisDay_sidebar"
         )
       ),
       bslib::nav_panel("Season Tracker", mod_SeasonTracker_ui("SeasonTracker_ui_1")),
@@ -67,8 +83,13 @@ app_ui <- function(request) {
       ),
       bslib::nav_menu(
         title = "Players",
-        bslib::nav_panel("Compare all players", mod_PlayersAllPlayers_ui("")),
+        bslib::nav_panel("Compare all players", mod_PlayersAllPlayers_ui("mod_PlayersAllPlayers_1")),
         bslib::nav_panel("Individual player stats", mod_PlayersByPlayer_ui("PlayersByPlayer_1"))
+      ),
+      bslib::nav_menu(
+        title = "Attendances",
+        bslib::nav_panel("Overall attendance stats", mod_AttendancesOverview_ui("mod_AttendancesOverview_1")),
+        bslib::nav_panel("Attendance stats by season", mod_AttendancesBySeason_ui("AttendancesBySeason_1"))
       ),
       bslib::nav_panel("On this day", mod_OnThisDay_ui("OnThisDay_ui_1"))
     )

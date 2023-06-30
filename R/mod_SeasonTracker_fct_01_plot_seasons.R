@@ -25,6 +25,7 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       attendance
     ) %>%
     dplyr::mutate(
+      attendance = format(attendance, nsmall = 0, big.mark = ","),
       game_date = as.Date(game_date, format = '%d/%m/%Y'),
       game_date = format(game_date, "%e %B %Y"),
       ppg = pts / game_no
@@ -80,7 +81,7 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       axis.text = ggplot2::element_text(size = 7)
     )
 
-  output_p <- plotly::ggplotly(p, tooltip="text")
+  output_p <- plotly::ggplotly(p, tooltip="text")  |> plotly::layout(plot_bgcolor = "rgba(0,0,0,0)", paper_bgcolor = "rgba(0,0,0,0)", legend = list(bgcolor = "rgba(0,0,0,0)"))
 
   return (output_p)
 }

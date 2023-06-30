@@ -24,7 +24,7 @@ get_formatted_results <- function(selected_seasons) {
       Venue = venue,
       Outcome = outcome,
       Score = score,
-      Division = competition,
+      Competition = competition,
       Attendance = attendance,
       Manager = manager
     )
@@ -32,7 +32,7 @@ get_formatted_results <- function(selected_seasons) {
   return (results_df)
 }
 
-output_ssn_results <- function(season) {
+output_ssn_results <- function(season, n_fixtures) {
   DT::renderDataTable(
     get_formatted_results(season),
     selection = 'single',
@@ -41,7 +41,7 @@ output_ssn_results <- function(season) {
     options = list(
       fillContainer = TRUE,
       paging = TRUE,
-      pageLength = 10,
+      pageLength = n_fixtures,
       info = TRUE,
       scrollX = TRUE,
       dom = 'frtip',

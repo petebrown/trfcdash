@@ -1,27 +1,15 @@
 get_max_goals <- function(selected_seasons) {
   results <- filter_ssn_results(selected_seasons)
 
-  players <- get_player_apps_df() %>%
-    dplyr::rename(
-      game_id = sb_game_id,
-      player_id = sb_player_id
-    ) %>%
-    dplyr::mutate(
-      game_id = stringr::str_replace(game_id, "tpg", ""),
-      game_id = as.numeric(game_id)
-    )
-
-  game_dates <- players %>%
-    dplyr::select(game_id, game_date) %>%
-    unique()
+  players <- get_player_apps_df()
 
   goals_for <- get_goals_df() %>%
     dplyr::filter(
-      goal_type == "for",
-      own_goal == 0
+      player_name != "OG"
     ) %>%
-    dplyr::left_join(game_dates, by = "game_id") %>%
-    dplyr::inner_join(results, by = "game_date") %>%
+    dplyr::inner_join(
+      results,
+      by = c("season" = "season", "game_no" = "ssn_game_no")) %>%
     dplyr::mutate(
       generic_comp = dplyr::case_when(
         .default = generic_comp,
@@ -37,7 +25,7 @@ get_max_goals <- function(selected_seasons) {
       generic_comp
     ) %>%
     dplyr::summarise(
-      n_goals = dplyr::n()
+      n_goals = sum(goals_scored)
     )
 
   summaries <- goals_for %>%
@@ -47,7 +35,7 @@ get_max_goals <- function(selected_seasons) {
       generic_comp
     ) %>%
     dplyr::summarise(
-      n_goals = dplyr::n()
+      n_goals = sum(goals_scored)
     ) %>%
     tidyr::pivot_wider(
       id_cols = c(season, player_name),
@@ -75,30 +63,19 @@ get_max_goals <- function(selected_seasons) {
   max(ssn_top$Total)
 }
 
-plot_ssn_scorers <- function(selected_season, max_goals) {
+plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
   results <- filter_ssn_results(selected_season)
 
-  players <- get_player_apps_df() %>%
-    dplyr::rename(
-      game_id = sb_game_id,
-      player_id = sb_player_id
-    ) %>%
-    dplyr::mutate(
-      game_id = stringr::str_replace(game_id, "tpg", ""),
-      game_id = as.numeric(game_id)
-    )
-
-  game_dates <- players %>%
-    dplyr::select(game_id, game_date) %>%
-    unique()
+  players <- get_player_apps_df()
 
   goals_for <- get_goals_df() %>%
     dplyr::filter(
-      goal_type == "for",
-      own_goal == 0
+      player_name != "OG"
     ) %>%
-    dplyr::left_join(game_dates, by = "game_id") %>%
-    dplyr::inner_join(results, by = "game_date") %>%
+    dplyr::inner_join(
+      results,
+      by = c("season" = "season", "game_no" = "ssn_game_no")
+    ) %>%
     dplyr::mutate(
       generic_comp = dplyr::case_when(
         .default = generic_comp,
@@ -114,7 +91,7 @@ plot_ssn_scorers <- function(selected_season, max_goals) {
       generic_comp
     ) %>%
     dplyr::summarise(
-      n_goals = dplyr::n()
+      n_goals = sum(goals_scored)
     )
 
   summaries <- goals_for %>%
@@ -124,7 +101,7 @@ plot_ssn_scorers <- function(selected_season, max_goals) {
       generic_comp
     ) %>%
     dplyr::summarise(
-      n_goals = dplyr::n()
+      n_goals = sum(goals_scored)
     ) %>%
     tidyr::pivot_wider(
       id_cols = c(season, player_name),
@@ -159,9 +136,13 @@ plot_ssn_scorers <- function(selected_season, max_goals) {
       Total,
       League,
       player_name
+    ) %>%
+    dplyr::mutate(
+      player_name = stringr::str_replace(player_name, "\\s", "\n")
     )
 
-  df$generic_comp <- factor(df$generic_comp, levels = c("Associate Members' Cup", "FA Cup", "League Cup", "League"))
+  df$generic_comp <- factor(df$generic_comp, levels = c("Anglo-Italian Cup", "Associate Members' Cup", "FA Cup", "Full Members' Cup", "League Cup", "League"))
+
 
   p <- ggplot2::ggplot(
     data = df,
@@ -173,21 +154,52 @@ plot_ssn_scorers <- function(selected_season, max_goals) {
     ),
   ) +
     ggplot2::geom_bar(position = "stack", stat = "identity") +
-    ggplot2::scale_x_discrete(labels = setNames(df$player_name, df$ordered)) +
+    ggplot2::scale_x_discrete(
+      labels = setNames(df$player_name, df$ordered),
+      expand = c(0, 0)
+    ) +
     ggplot2::coord_flip() +
     ggplot2::labs(
       x = NULL,
       y = NULL
     ) +
     ggplot2::scale_y_continuous(
-      expand = ggplot2::expansion(mult = c(0, 0), add = c(0.15, 0))
+      expand = ggplot2::expansion(mult = c(0, 0), add = c(0.0, dplyr::case_when(
+        max_goals >= 20 & (n_plots %% 3 == 0) ~ (max_goals / 20) * 3,
+        max_goals >= 20 & (n_plots %% 2 == 0) ~ (max_goals / 20) * 2.6,
+        max_goals >= 20 ~ max_goals / 20,
+        max_goals < 20 ~ 0.5,
+
+
+        TRUE ~ 0))
+      ),
+      breaks = seq(0, max_goals, ifelse(max_goals < 20, 5, 10)),
+      limits = c(0,  max_goals)
     ) +
-    ggplot2::expand_limits(y = c(0, max_goals)) +
     ggplot2::theme_classic() +
     ggplot2::theme(
       legend.position = "none",
-      text = ggplot2::element_text(
-        family = "Helvetica Neue"
+      text = ggtext::element_markdown(
+        family = "Helvetica Neue",
+        face = "plain",
+        size = 16,
+        colour = NULL,
+        fill = NA,
+        box.colour = NA,
+        linetype = NA,
+        linewidth = NA,
+        hjust = NULL,
+        vjust = NULL,
+        halign = "right",
+        valign = NA,
+        angle = NULL,
+        lineheight = NULL,
+        margin = NULL,
+        padding = NA,
+        r = NA,
+        align_widths = NA,
+        align_heights = NA,
+        rotate_margins = NA,
       ),
       strip.text.x = ggplot2::element_text(
         hjust = 0.5,
@@ -198,10 +210,16 @@ plot_ssn_scorers <- function(selected_season, max_goals) {
         color="white"
       ),
       panel.border = ggplot2::element_blank(),
-      line = ggplot2::element_blank()
-      # axis.text.x = ggplot2::element_blank(),
-      # axis.line.x = ggplot2::element_blank(),
-      # axis.ticks = ggplot2::element_blank()
+      line = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_blank(),
+      axis.ticks = ggplot2::element_blank(),
+      panel.grid = ggplot2:: element_blank(),
+      panel.grid.major.x = ggplot2::element_line(color = "lightgrey",
+                                                 size = 0.1),
+      panel.background = ggplot2::element_rect(fill = "transparent"), #transparent panel bg
+      plot.background = ggplot2::element_rect(fill = "transparent", color=NA), #transparent plot bg
+      legend.background = ggplot2::element_rect(fill = "transparent"), #transparent legend bg
+      legend.box.background = ggplot2::element_rect(fill = "transparent") #transparent legend panel
     ) +
     ggplot2::scale_fill_manual(
       values = c(
@@ -210,11 +228,39 @@ plot_ssn_scorers <- function(selected_season, max_goals) {
         "League" = "#414C6B",
         "League Cup" = "#B8CFEC"
       )
+    ) +
+    ggtext::geom_textbox(ggplot2::aes(
+      x = factor(ordered, levels = ssn_top$ordered),
+      y = Total,
+      label = Total,
+      fontface = dplyr::case_when(
+        Total == max(Total) ~ "plain",
+        TRUE ~ "plain"
+      )
+    ),
+    size = dplyr::case_when(
+      n_plots %% 3 == 0 ~ 4.5,
+      n_plots %% 2 == 0 ~ 4.75,
+      TRUE ~ 5
+    ),
+    halign = 0,
+    hjust = 0,
+    fill = NA,
+    box.colour = NA,
+    family = "Helvetica Neue"
     )
+  # ggplot2::annotate(
+  #   "text",
+  #   x = factor(df$ordered, levels = ssn_top$ordered),
+  #   y = df$Total + 0.2,
+  #   label = df$Total
+  # )
 
-  output_p <- plotly::ggplotly(p, tooltip="text")
+  shiny::renderPlot(p, height = 200, bg = "transparent")
 
-  plotly::renderPlotly({
-    output_p
-  })
+  # output_p <- plotly::ggplotly(p, tooltip="text") |> plotly::layout(plot_bgcolor = "rgba(0,0,0,0)", paper_bgcolor = "rgba(0,0,0,0)")
+  #
+  # plotly::renderPlotly({
+  #   output_p
+  # })
 }
