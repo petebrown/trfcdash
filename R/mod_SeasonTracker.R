@@ -195,9 +195,9 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
     # Season Records
     # Function to produce season records
     #
-    render_ssn_records <- function(seasons, venues) {
+    render_ssn_records <- function(venues) {
       DT::renderDT(
-        output_ssn_records(seasons, venues),
+        output_ssn_records(selected_seasons(), venues),
         rownames = FALSE,
         options = list(
           pageLength = 5,
@@ -209,43 +209,21 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
       )
     }
 
-
-    output$season_records <- DT::renderDT({
-      output_ssn_records(selected_seasons(), selected_venue = c("H", "A"))
-    }, rownames = FALSE,
-    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging = FALSE, fillContainer = TRUE))
-
-
-    # Season Records - HOME
-    output$season_records_home <- DT::renderDT({
-      output_ssn_records(selected_seasons(), selected_venue = "H")
-    }, rownames = FALSE,
-    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging = FALSE, fillContainer = TRUE))
-
-    # Season Records - AWAY
-    output$season_records_away <- DT::renderDT({
-      output_ssn_records(selected_seasons(), selected_venue = "A")
-    }, rownames = FALSE,
-    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging = FALSE, fillContainer = TRUE))
-
-
-    #
     # Output seasons records HOME AND AWAY
-    #
-    # output$season_records <- render_ssn_records(selected_seasons(), venues = c("H", "A"))
-    # # Output season records HOME
-    # output$season_records_home <- render_ssn_records(selected_seasons(), venues = "H")
-    # # Output season records AWAY
-    # output$season_records_away <- render_ssn_records(selected_seasons(), venues = "A")
+    output$season_records <- render_ssn_records(venues = c("H", "A"))
+    # Output season records HOME
+    output$season_records_home <- render_ssn_records(venues = "H")
+    # Output season records AWAY
+    output$season_records_away <- render_ssn_records(venues = "A")
 
     #
     # Output longest streaks in selected seasons
     #
-    output$streaks <- DT::renderDT({
-      get_streaks(selected_seasons())
-    },
-    rownames = FALSE,
-    options = list(pageLength = 5, dom = 'tip', info = FALSE, paging=FALSE, fillContainer = TRUE))
+    output$streaks <- DT::renderDT(
+      get_streaks(selected_seasons()),
+      rownames = FALSE,
+      options = list(pageLength = 5, dom = 'tip', info = FALSE, paging=FALSE, fillContainer = TRUE)
+    )
 
     #
     # Full results table
@@ -295,7 +273,8 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
         # Return all charts - 100% width for one, 50% width for multiples of two, otherwise 33% width
         bslib::layout_column_wrap(
           width = ifelse(length(selected_seasons) == 1, 1,
-                         ifelse(length(selected_seasons)%%2 == 0, 1/2, 1/3)),
+                         ifelse(length(selected_seasons) %% 3 == 0, 1/3,
+                                ifelse(length(selected_seasons) %% 2 == 0, 1/2, 1/3))),
           !!!ssn_scorer_boxes,
           heights_equal = "all", fixed_width = TRUE, fill = TRUE
         )

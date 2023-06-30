@@ -55,14 +55,10 @@ import_managers <- vroom::vroom(
   show_col_types = FALSE
 )
 
-import_squad_nos <- function() {
-  import_squad_nos_1 <- vroom::vroom("https://raw.githubusercontent.com/petebrown/complete-record/main/squad_nos/squad_nos-1999-2008.csv", show_col_types = FALSE)
-  import_squad_nos_2 <- vroom::vroom("https://raw.githubusercontent.com/petebrown/complete-record/main/squad_nos/squad_nos-2009-2022.csv", show_col_types = FALSE)
-
-  df <- rbind(import_squad_nos_1, import_squad_nos_2)
-
-  return(df)
-}
+import_squad_nos <- vroom::vroom(
+  "https://raw.githubusercontent.com/petebrown/complete-record/main/squad_nos/squad_nos.csv",
+  show_col_types = FALSE
+)
 
 fix_sb_player_names <- function(df) {
   df <- df %>%
@@ -156,7 +152,7 @@ get_managers_df <- function() {
 }
 
 get_squad_nos <- function() {
-  df <- import_squad_nos()
+  df <- import_squad_nos
 
   return(df)
 }

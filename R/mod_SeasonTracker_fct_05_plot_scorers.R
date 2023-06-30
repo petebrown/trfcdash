@@ -164,7 +164,7 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
       y = NULL
     ) +
     ggplot2::scale_y_continuous(
-      expand = ggplot2::expansion(mult = c(0, 0), add = c(0.0, dplyr::case_when(
+      expand = ggplot2::expansion(mult = c(0, 0), add = c(0.1, dplyr::case_when(
         max_goals >= 20 & (n_plots %% 3 == 0) ~ (max_goals / 20) * 3,
         max_goals >= 20 & (n_plots %% 2 == 0) ~ (max_goals / 20) * 2.6,
         max_goals >= 20 ~ max_goals / 20,
