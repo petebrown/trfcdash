@@ -1,18 +1,67 @@
+#' 05_plot_scorers_circles
+#'
+#' @description A fct function
+#'
+#' @return The return value, if any, from executing the function.
+#'
+#' @noRd
 get_max_goals <- function(selected_seasons) {
+  results <- filter_ssn_results(selected_seasons)
+
+  players <- get_player_apps_df()
 
   goals_for <- get_goals_df() %>%
-    dplyr::filter(season %in% selected_seasons) %>%
     dplyr::filter(
       player_name != "OG"
     ) %>%
-    dplyr::group_by(
-      player_name
+    dplyr::inner_join(
+      results,
+      by = c("season" = "season", "game_no" = "ssn_game_no")) %>%
+    dplyr::mutate(
+      generic_comp = dplyr::case_when(
+        .default = generic_comp,
+        generic_comp %in% c("Football League", "Non-League") ~ "League"
+      )
     ) %>%
-    dplyr::summarise(
-      total_goals = sum(goals_scored)
+    dplyr::arrange(desc(game_date))
+
+  print(goals_for)
+
+  df <- goals_for %>%
+    dplyr::mutate(generic_comp = factor(generic_comp, levels = rev(c("Anglo-Italian Cup", "Associate Members' Cup", "FA Cup", "Full Members' Cup", "League Cup", "League")))) %>%
+    dplyr::group_by(player_name, game_date) %>%
+    dplyr::slice(rep(1:dplyr::n(), each = goals_scored)) %>%
+    dplyr::ungroup() %>%
+    dplyr::add_count(
+      player_name, name = "ssn_gls"
+    ) %>%
+    dplyr::add_count(
+      player_name, generic_comp, name = "ssn_comp_gls"
+    ) %>%
+    dplyr::filter(dplyr::dense_rank(dplyr::desc(ssn_gls)) %in% 1:3) %>%
+    dplyr::arrange(
+      player_name,
+      generic_comp,
+      game_date
+    ) %>%
+    dplyr::group_by(player_name) %>%
+    dplyr::mutate(
+      ssn_goal_no = dplyr::row_number()
+    ) %>%
+    ungroup() %>%
+    dplyr::select(
+      game_date,
+      game_no,
+      opposition,
+      generic_comp,
+      player_name,
+      ssn_goal_no,
+      goals_scored,
+      ssn_comp_gls,
+      ssn_gls
     )
 
-  max(goals_for$total_goals)
+  max(df$ssn_gls)
 }
 
 plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {

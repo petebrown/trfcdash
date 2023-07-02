@@ -167,10 +167,6 @@ filter_ssn_results <- function(selected_seasons) {
 }
 
 
-
-
-
-
 get_player_apps_df <- function() {
   results_df <- get_results_df() %>%
     dplyr::select(
