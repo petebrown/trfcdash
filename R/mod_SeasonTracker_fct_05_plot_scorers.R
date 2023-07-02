@@ -6,13 +6,16 @@ get_max_goals <- function(selected_seasons) {
       player_name != "OG"
     ) %>%
     dplyr::group_by(
+      season,
       player_name
     ) %>%
     dplyr::summarise(
       total_goals = sum(goals_scored)
     )
 
-  max(goals_for$total_goals)
+  max_goals <- max(goals_for$total_goals)
+
+  return(max_goals)
 }
 
 plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
@@ -121,8 +124,6 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
         max_goals >= 20 & (n_plots %% 2 == 0) ~ (max_goals / 20) * 2.6,
         max_goals >= 20 ~ max_goals / 20,
         max_goals < 20 ~ 0.5,
-
-
         TRUE ~ 0))
       ),
       breaks = seq(0, max_goals, ifelse(max_goals < 20, 5, 10)),

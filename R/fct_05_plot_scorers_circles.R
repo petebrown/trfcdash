@@ -5,66 +5,7 @@
 #' @return The return value, if any, from executing the function.
 #'
 #' @noRd
-get_max_goals <- function(selected_seasons) {
-  results <- filter_ssn_results(selected_seasons)
-
-  players <- get_player_apps_df()
-
-  goals_for <- get_goals_df() %>%
-    dplyr::filter(
-      player_name != "OG"
-    ) %>%
-    dplyr::inner_join(
-      results,
-      by = c("season" = "season", "game_no" = "ssn_game_no")) %>%
-    dplyr::mutate(
-      generic_comp = dplyr::case_when(
-        .default = generic_comp,
-        generic_comp %in% c("Football League", "Non-League") ~ "League"
-      )
-    ) %>%
-    dplyr::arrange(desc(game_date))
-
-  print(goals_for)
-
-  df <- goals_for %>%
-    dplyr::mutate(generic_comp = factor(generic_comp, levels = rev(c("Anglo-Italian Cup", "Associate Members' Cup", "FA Cup", "Full Members' Cup", "League Cup", "League")))) %>%
-    dplyr::group_by(player_name, game_date) %>%
-    dplyr::slice(rep(1:dplyr::n(), each = goals_scored)) %>%
-    dplyr::ungroup() %>%
-    dplyr::add_count(
-      player_name, name = "ssn_gls"
-    ) %>%
-    dplyr::add_count(
-      player_name, generic_comp, name = "ssn_comp_gls"
-    ) %>%
-    dplyr::filter(dplyr::dense_rank(dplyr::desc(ssn_gls)) %in% 1:3) %>%
-    dplyr::arrange(
-      player_name,
-      generic_comp,
-      game_date
-    ) %>%
-    dplyr::group_by(player_name) %>%
-    dplyr::mutate(
-      ssn_goal_no = dplyr::row_number()
-    ) %>%
-    ungroup() %>%
-    dplyr::select(
-      game_date,
-      game_no,
-      opposition,
-      generic_comp,
-      player_name,
-      ssn_goal_no,
-      goals_scored,
-      ssn_comp_gls,
-      ssn_gls
-    )
-
-  max(df$ssn_gls)
-}
-
-plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
+plot_ssn_scorers_circles <- function(selected_season, max_goals, n_plots) {
   results <- filter_ssn_results(selected_season)
 
   players <- get_player_apps_df()
@@ -83,100 +24,101 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
         generic_comp %in% c("Football League", "Non-League") ~ "League"
       )
     ) %>%
-    dplyr::arrange(desc(game_date))
-
-  summaries_long <- goals_for %>%
-    dplyr::group_by(
-      season,
-      player_name,
-      generic_comp
-    ) %>%
-    dplyr::summarise(
-      n_goals = sum(goals_scored)
-    )
-
-  summaries <- goals_for %>%
-    dplyr::group_by(
-      season,
-      player_name,
-      generic_comp
-    ) %>%
-    dplyr::summarise(
-      n_goals = sum(goals_scored)
-    ) %>%
-    tidyr::pivot_wider(
-      id_cols = c(season, player_name),
-      names_from = generic_comp,
-      values_from = n_goals,
-      values_fill = 0
-    ) %>%
-    dplyr::mutate(
-      Total = rowSums(dplyr::across(where(is.numeric), sum))
-    )
-
-  ssn_top <- summaries %>%
-    dplyr::group_by(season) %>%
-    dplyr::slice_max(order_by = Total, n = 3) %>%
-    dplyr::mutate(
-      ordered = paste0(season, Total, League, player_name) %>% forcats::fct_inorder()
-    ) %>%
     dplyr::arrange(
-      season,
-      Total,
-      League,
-      desc(player_name)
+      desc(game_date)
     )
 
-  df <- summaries_long %>%
-    dplyr::inner_join(ssn_top, by = c("season", "player_name")) %>%
+  df <- goals_for %>%
     dplyr::mutate(
-      ordered = paste0(season, Total, League, player_name) %>% forcats::fct_inorder()
+      generic_comp = factor(
+        generic_comp,
+        levels = rev(c("Anglo-Italian Cup", "Associate Members' Cup", "Full Members' Cup", "League Cup", "FA Cup", "League")))
     ) %>%
+    dplyr::group_by(
+      player_name,
+      game_date
+    ) %>%
+    dplyr::slice(rep(1:dplyr::n(), each = goals_scored)) %>%
+    dplyr::ungroup() %>%
+    dplyr::add_count(
+      player_name,
+      name = "ssn_gls"
+    ) %>%
+    dplyr::add_count(
+      player_name, generic_comp,
+      name = "ssn_comp_gls"
+    ) %>%
+    dplyr::filter(
+      dplyr::dense_rank(dplyr::desc(ssn_gls)) %in% 1:3
+    ) %>%
+    dplyr::group_by(player_name) %>%
     dplyr::arrange(
-      season,
-      Total,
-      League,
-      player_name
+      player_name,
+      generic_comp,
+      game_date
     ) %>%
     dplyr::mutate(
-      player_name = stringr::str_replace(player_name, "\\s", "\n")
+      ssn_goal_no = dplyr::row_number()
+    ) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(
+      game_date,
+      game_no,
+      opposition,
+      score,
+      generic_comp,
+      player_name,
+      ssn_goal_no,
+      goals_scored,
+      ssn_comp_gls,
+      ssn_gls
     )
 
-  df$generic_comp <- factor(df$generic_comp, levels = c("Anglo-Italian Cup", "Associate Members' Cup", "FA Cup", "Full Members' Cup", "League Cup", "League"))
+  pl_order <- df %>%
+    dplyr::select(player_name, ssn_gls) %>%
+    unique() %>%
+    dplyr::arrange(ssn_gls)
+
+  pl_levels = pl_order$player_name
+
+  df <- df %>%
+    dplyr::arrange(
+      factor(player_name, levels = pl_levels),
+      ssn_goal_no
+    )
 
 
   p <- ggplot2::ggplot(
     data = df,
     ggplot2::aes(
-      x = factor(ordered, levels = ssn_top$ordered),
-      y = n_goals,
+      x = factor(player_name, levels = pl_levels),
+      y = ssn_goal_no - 0.5,
       fill = generic_comp,
-      text = sprintf("Player: %s\nCompetition: %s\nGoals: %.0f", player_name, generic_comp, n_goals)
+      text = sprintf("Player: %s\nCompetition: %s\nGoals: %.0f", player_name, generic_comp, ssn_gls)
     ),
   ) +
-    ggplot2::geom_bar(position = "stack", stat = "identity") +
-    ggplot2::scale_x_discrete(
-      labels = setNames(df$player_name, df$ordered),
-      expand = c(0, 0)
+    ggplot2::geom_dotplot(
+      binaxis = "y",
+      binwidth = 1,
+      stackdir = "center"
     ) +
     ggplot2::coord_flip() +
+    ggplot2::scale_y_continuous(breaks=seq(0, max_goals + 1, 5)) +
     ggplot2::labs(
       x = NULL,
       y = NULL
     ) +
-    ggplot2::scale_y_continuous(
-      expand = ggplot2::expansion(mult = c(0, 0), add = c(0.1, dplyr::case_when(
-        max_goals >= 20 & (n_plots %% 3 == 0) ~ (max_goals / 20) * 3,
-        max_goals >= 20 & (n_plots %% 2 == 0) ~ (max_goals / 20) * 2.6,
-        max_goals >= 20 ~ max_goals / 20,
-        max_goals < 20 ~ 0.5,
-
-
-        TRUE ~ 0))
-      ),
-      breaks = seq(0, max_goals, ifelse(max_goals < 20, 5, 10)),
-      limits = c(0,  max_goals)
-    ) +
+    # ggplot2::scale_y_continuous(
+    #   expand = ggplot2::expansion(mult = c(0, 0), add = c(0.1, dplyr::case_when(
+    #     max_goals >= 20 & (n_plots %% 3 == 0) ~ (max_goals / 20) * 3,
+    #     max_goals >= 20 & (n_plots %% 2 == 0) ~ (max_goals / 20) * 2.6,
+    #     max_goals >= 20 ~ max_goals / 20,
+    #     max_goals < 20 ~ 0.5,
+    #     TRUE ~ 0))
+    #   ),
+    #   breaks = seq(0, max_goals + 1, ifelse(max_goals < 20, 5, 10)),
+    #   limits = c(0,  max_goals)
+    # ) +
     ggplot2::theme_classic() +
     ggplot2::theme(
       legend.position = "none",
@@ -229,33 +171,24 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
         "League" = "#414C6B",
         "League Cup" = "#B8CFEC"
       )
-    ) +
-    ggtext::geom_textbox(ggplot2::aes(
-      x = factor(ordered, levels = ssn_top$ordered),
-      y = Total,
-      label = Total,
-      fontface = dplyr::case_when(
-        Total == max(Total) ~ "plain",
-        TRUE ~ "plain"
-      )
-    ),
-    size = dplyr::case_when(
-      n_plots %% 3 == 0 ~ 4.5,
-      n_plots %% 2 == 0 ~ 4.75,
-      TRUE ~ 5
-    ),
-    halign = 0,
-    hjust = 0,
-    fill = NA,
-    box.colour = NA,
-    family = "Helvetica Neue"
     )
-  # ggplot2::annotate(
-  #   "text",
-  #   x = factor(df$ordered, levels = ssn_top$ordered),
-  #   y = df$Total + 0.2,
-  #   label = df$Total
-  # )
+  # +
+  #   ggtext::geom_textbox(ggplot2::aes(
+  #     x = player_name,
+  #     y = ssn_gls,
+  #     label = ssn_gls
+  #   ),
+  #   size = dplyr::case_when(
+  #     n_plots %% 3 == 0 ~ 4.5,
+  #     n_plots %% 2 == 0 ~ 4.75,
+  #     TRUE ~ 5
+  #   ),
+  #   halign = 0,
+  #   hjust = 0,
+  #   fill = NA,
+  #   box.colour = NA,
+  #   family = "Helvetica Neue"
+  #   )
 
   shiny::renderPlot(p, height = 200, bg = "transparent")
 
