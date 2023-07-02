@@ -1,38 +1,3 @@
-# User inputs to be displayed in Season Tracker sidebar
-SeasonTracker_sidebar_ui <- function(id) {
-  ns <- NS(id)
-  tagList(
-    selectInput(
-      inputId = ns("selected_seasons"),
-      label = "Select seasons:",
-      choices = get_season_list(),
-      selected = "2022/23",
-      multiple = TRUE
-    ),
-    hr(),
-    sliderInput(ns("n_fixtures"), "No. of results/page:", min = 1, max = 60, value = 10, ticks = FALSE, step = NULL)
-  )
-}
-
-# Create Season Tracker sidebar using inputs from SeasonTracker_sidebar_ui
-SeasonTracker_sidebar <- function() {
-  bslib::page_fluid(
-    SeasonTracker_sidebar_ui("SeasonTracker_sidebar_ui_1")
-  )
-}
-
-# Season Tracker sidebar for sending user inputs to main app_server
-SeasonTracker_sidebar_server <- function(id) {
-  moduleServer( id, function(input, output, session) {
-
-    ssn_tracker_inputs <- list(
-      reactive({input$selected_seasons}),
-      reactive({input$n_fixtures})
-    )
-    return(ssn_tracker_inputs)
-  })
-}
-
 #' SeasonTracker UI Function
 #'
 #' @description A shiny Module.

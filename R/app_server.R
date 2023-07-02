@@ -23,7 +23,7 @@ app_server <- function(input, output, session) {
   mod_OnThisDay_server("OnThisDay_ui_1")
 
   # Receive user inputs from Season Tracker sidebar
-  SeasonTracker_inputs <- SeasonTracker_sidebar_server("SeasonTracker_sidebar_ui_1")
+  SeasonTracker_inputs <- mod_SeasonTracker_sidebar_server("SeasonTracker_sidebar_ui_1")
   # Send user inputs from Season Tracker sidebar to Season Tracker server
   mod_SeasonTracker_server(
     "SeasonTracker_ui_1",

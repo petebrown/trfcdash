@@ -11,7 +11,8 @@ app_ui <- function(request) {
     bslib::page_navbar(
       theme = bslib::bs_theme_update(
         bslib::bs_theme(),
-        fg = "rgb(30, 35, 85)",
+        fg = "#385580",
+        # fg = "rgb(30, 35, 85)",
         bg = "white",
         primary = "#385580"
       ),
@@ -27,32 +28,32 @@ app_ui <- function(request) {
         # Main head-to-head sidebar
         shiny::conditionalPanel(
           "input.nav === 'Compare all head-to-head records'",
-          "All head-to-head records sidebar"
+          "Head2HeadAllOpponents_sidebar()"
         ),
         # Individual head-to-head sidebar
         shiny::conditionalPanel(
           "input.nav === 'Record vs. specific team'",
-          "Head-to-head vs. team sidebar"
+          "Head2HeadByOpponent_sidebar()"
         ),
         # Main manager comparison sidebar
         shiny::conditionalPanel(
           "input.nav === 'Compare manager records'",
-          "Manager comparison sidebar"
+          "ManagersAllManagers_sidebar()"
         ),
         # Individual manager stats
         shiny::conditionalPanel(
           "input.nav === 'Individual manager stats'",
-          "Individual manager sidebar"
+          "ManagersByManager_sidebar()"
         ),
         # Main player comparison tool
         shiny::conditionalPanel(
           "input.nav === 'Compare all players'",
-          "Player comparison sidebar"
+          "PlayersAllPlayers_sidebar()"
         ),
         # Individual player stats
         shiny::conditionalPanel(
           "input.nav === 'Individual player stats'",
-          "Player stat sidebar"
+          "PlayersByPlayer_sidebar()"
         ),
         # Overall attendance stats
         shiny::conditionalPanel(
