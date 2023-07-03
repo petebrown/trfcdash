@@ -134,17 +134,22 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    #
+    ###########################
+    # CARD 1: SEASON PROGRESS #
+    ###########################
+
     # Function to produce main charts
-    #
     render_plot <- function(chart_type) {
       plotly::renderPlotly({
         output_seasons_plot(c(selected_seasons()), chart_type)
       })
     }
 
+    # CARD 1A: League Positions plot
     output$seasons_plot <- render_plot("league_pos")
+    # CARD 1B: Point Accumulation plot
     output$pts_plot <- render_plot("pts")
+    # CARD 1C: PPG plot
     output$ppg_plot <- render_plot("ppg")
 
     # Add note about COVID season if 2019/20 in selected seasons
@@ -156,10 +161,11 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
       }
     })
 
-    #
-    # Season Records
-    # Function to produce season records
-    #
+    #########################
+    # CARD 2: SEASON RECORD #
+    #########################
+
+    # Function to produce season record data tables
     render_ssn_records <- function(venues) {
       DT::renderDT(
         output_ssn_records(selected_seasons(), venues),
@@ -174,25 +180,29 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
       )
     }
 
-    # Output seasons records HOME AND AWAY
+    # CARD 2A: Overall league records for selected seasons
     output$season_records <- render_ssn_records(venues = c("H", "A"))
-    # Output season records HOME
+    # CARD 2B: Home league records for selected seasons
     output$season_records_home <- render_ssn_records(venues = "H")
-    # Output season records AWAY
+    # CARD 2C: Away league records for selected seasons
     output$season_records_away <- render_ssn_records(venues = "A")
 
-    #
-    # Output longest streaks in selected seasons
-    #
+    ###########################
+    # CARD 3: LONGEST STREAKS #
+    ###########################
+
+    # CARD 3: Longest streaks in selected seasons
     output$streaks <- DT::renderDT(
       get_streaks(selected_seasons()),
       rownames = FALSE,
       options = list(pageLength = 5, dom = 'tip', info = FALSE, paging=FALSE, fillContainer = TRUE)
     )
 
-    #
-    # Full results table
-    #
+    ###################
+    # CARD 4: RESULTS #
+    ###################
+
+    # CARD 4: Output tabbed results for selected seasions
     output$ssn_results <- renderUI({
       req(n_fixtures(), selected_seasons())
       if (!is.null(selected_seasons())) {
@@ -214,7 +224,11 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
       }
     })
 
-    # Individual top scorer charts
+    #######################
+    # CARD 5: Top Scorers #
+    #######################
+
+    # CARD 5: Output nested cards containing top scorers plots for selected seasons
     output$boxed_ssn_scorers <- renderUI({
       if (!is.null(selected_seasons())) {
         # Get selected seasons
@@ -235,7 +249,8 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
             )
           )
         })
-        # Return all charts - 100% width for one, 50% width for multiples of two, otherwise 33% width
+        # Return all charts - 100% width for one, 33% width for multiples of
+        # three, otherwise 50% width
         bslib::layout_column_wrap(
           width = ifelse(length(selected_seasons) == 1, 1,
                          ifelse(length(selected_seasons) %% 3 == 0, 1/3,
