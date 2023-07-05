@@ -7,7 +7,6 @@
 #' @noRd
 import_cr_apps <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/apps_long.csv",
-  col_select = c("sb_game_id", "sb_player_id", "game_date", "season", "player_name",  "pl_goals", "yellow_cards", "red_cards"),
   show_col_types = FALSE)
 
 import_cr_goals <- vroom::vroom(
