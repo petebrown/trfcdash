@@ -37,7 +37,8 @@ fix_sb_game_ids <- function(df) {
     )
 }
 
-comp_rec_plr_ssns <- vroom::vroom(
+
+comp_rec_plr_seasons <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/player_ssns.csv",
   show_col_types = FALSE
 )
@@ -47,6 +48,16 @@ comp_rec_plr_apps <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/apps_long.csv",
   show_col_types = FALSE)
 
+
+squad_nos <- vroom::vroom(
+  "https://raw.githubusercontent.com/petebrown/complete-record/main/squad_nos/squad_nos.csv",
+  show_col_types = FALSE
+)
+
+sb_subs_and_reds <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/scrape-events/main/data/subs-and-reds.csv",
+  show_col_types = FALSE
+)
 
 sb_player_apps <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/update-player-stats/main/data/players_df.csv",
@@ -65,14 +76,40 @@ sb_player_apps <- vroom::vroom(
     pl_goals,
     yellow_cards,
     red_cards
+  ) %>%
+  dplyr::left_join(
+    squad_nos,
+    by = c("season", "player_name"),
+    relationship = "many-to-many"
+  ) %>%
+  dplyr::mutate(
+    squad_no = dplyr::case_when(
+      season == "2014/15" & player_name == "Janoi Donacien" & game_date < "2015-03-07" ~ 19,
+      season == "2014/15" & player_name == "Janoi Donacien" & game_date >= "2015-03-07" ~ 12,
+      .default = squad_no
+    )
+  ) %>%
+  unique() %>%
+  dplyr::rename(shirt_no = squad_no) %>%
+  dplyr::left_join(
+    x = sb_player_apps,
+    y = sb_subs_and_reds,
+    by = c("game_id", "player_id")
+  ) %>%
+  dplyr::mutate(
+    role = dplyr::case_when(
+      is.na(min_on) ~ "starter",
+      !is.na(min_on) ~ "sub"
+    ),
+    mins_played = dplyr::case_when(
+      role == "starter" & is.na(min_off) & is.na(min_so) ~ 90,
+      role == "starter" & !is.na(min_off) ~ min_off,
+      role == "starter" & !is.na(min_so) ~ min_so,
+      role == "sub" & is.na(min_off) & is.na(min_so) ~ 90 - min_on,
+      role == "sub" & is.na(min_off) ~ min_off - min_on,
+      role == "sub" & is.na(min_so) ~ min_so - min_on
+    )
   )
-
-
-sb_subs_and_reds <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/scrape-events/main/data/subs-and-reds.csv",
-  show_col_types = FALSE
-)
-
 
 comp_rec_goals <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/cr-scorers.csv",
@@ -90,5 +127,17 @@ goals <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/scorers-long.csv",
   show_col_types = FALSE
 )
+
+goals_2 <- goals %>%
+  dplyr::group_by(
+    season,
+    game_no,
+    player_name
+  ) %>%
+  dplyr::summarise(
+    goals_scored = sum(goals_scored),
+    .groups = "drop"
+  )
+
 
 usethis::use_data(players_dataset, overwrite = TRUE)
