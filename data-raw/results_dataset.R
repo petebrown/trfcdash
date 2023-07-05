@@ -57,7 +57,7 @@ results_mini <- vroom::vroom(
 #  N.B. Cup games ONLY                                    #
 ###########################################################
 
-extra_details <- vroom::vroom(
+extra_details <- readr::read_csv(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/11v11-extra-details/cup_details.csv",
   show_col_types = FALSE
 )
@@ -70,15 +70,12 @@ extra_details <- vroom::vroom(
 
 results_dataset <- results_df %>%
   dplyr::left_join(
-    x = results_df,
-    y = results_mini,
+    results_mini,
     by = "game_date"
   ) %>%
   dplyr::left_join(
     extra_details,
     by = "game_date"
   )
-
-results_dataset
 
 usethis::use_data(results_dataset, overwrite = TRUE)
