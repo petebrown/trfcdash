@@ -76,6 +76,10 @@ results_dataset <- results_df %>%
   dplyr::left_join(
     extra_details,
     by = "game_date"
+  ) %>%
+  dplyr::left_join(
+    goalscorers_by_game,
+    by = "game_date"
   )
 
 usethis::use_data(results_dataset, overwrite = TRUE)

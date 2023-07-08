@@ -1,10 +1,3 @@
-#' 05_plot_scorers_circles
-#'
-#' @description A fct function
-#'
-#' @return The return value, if any, from executing the function.
-#'
-#' @noRd
 plot_ssn_scorers_circles <- function(selected_season, max_goals, n_plots) {
   results <- filter_ssn_results(selected_season)
 

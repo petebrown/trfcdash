@@ -1,8 +1,9 @@
 get_max_goals <- function(selected_seasons) {
 
-  goals_for <- get_goals_df() %>%
+  goals_for <- player_apps %>%
     dplyr::filter(season %in% selected_seasons) %>%
     dplyr::filter(
+      !is.na(goals_scored),
       player_name != "OG"
     ) %>%
     dplyr::group_by(
@@ -20,8 +21,6 @@ get_max_goals <- function(selected_seasons) {
 
 plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
   results <- filter_ssn_results(selected_season)
-
-  players <- get_player_apps_df()
 
   goals_for <- get_goals_df() %>%
     dplyr::filter(
@@ -99,10 +98,6 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
 
   df$generic_comp <- factor(df$generic_comp, levels = c("Anglo-Italian Cup", "Associate Members' Cup", "FA Cup", "Full Members' Cup", "League Cup", "League"))
 
-  print(ssn_top)
-  print(df)
-
-
   p <- ggplot2::ggplot(
     data = df,
     ggplot2::aes(
@@ -130,8 +125,12 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
         max_goals < 20 ~ 0.5,
         TRUE ~ (max_goals / 20) * 3))
       ),
-      breaks = seq(0, max_goals, ifelse(max_goals < 20, 5, 10)),
-      limits = c(0,  max_goals)
+      breaks = seq(
+        from = 0,
+        to = max_goals,
+        by = ifelse(max_goals < 20, 5, 10)
+      ),
+      limits = c(0, max_goals)
     ) +
     ggplot2::theme_classic() +
     ggplot2::theme(
@@ -190,10 +189,7 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
       x = factor(ordered, levels = ssn_top$ordered),
       y = Total,
       label = Total,
-      fontface = dplyr::case_when(
-        Total == max(Total) ~ "plain",
-        TRUE ~ "plain"
-      )
+      fontface = "plain"
     ),
     size = dplyr::case_when(
       n_plots %% 2 == 0 ~ 4.75,
@@ -206,14 +202,8 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
     box.colour = NA,
     family = "Helvetica Neue"
     )
-  # ggplot2::annotate(
-  #   "text",
-  #   x = factor(df$ordered, levels = ssn_top$ordered),
-  #   y = df$Total + 0.2,
-  #   label = df$Total
-  # )
 
-  shiny::renderPlot(p, height = 200, bg = "transparent")
+  shiny::renderPlot(p, height = 150, bg = "transparent")
 
   # output_p <- plotly::ggplotly(p, tooltip="text") |> plotly::layout(plot_bgcolor = "rgba(0,0,0,0)", paper_bgcolor = "rgba(0,0,0,0)")
   #

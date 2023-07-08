@@ -15,6 +15,7 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       venue,
       outcome,
       score,
+      scorers,
       goals_for,
       goals_against,
       competition,
@@ -57,6 +58,15 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
 
   plot_types <- get_chart_options()
 
+  df <- df %>%
+    dplyr::mutate(
+      tooltip_text = dplyr::case_when(
+        goals_for == 1 ~ sprintf("Season: %s\nGame No: %.0f\nDate: %s\nOpposition: %s\nVenue: %s\nScore: %s\nScorer: %s\nLeague Tier: %.0f (%s)\nLeague Pos: %.0f\nTotal Points: %.0f\nPPG: %.2f\nManager: %s\nAttendance: %s", season, game_no, game_date, opposition, venue, score, scorers, league_tier, competition, league_pos, pts, ppg, manager, attendance),
+        goals_for > 1 ~ sprintf("Season: %s\nGame No: %.0f\nDate: %s\nOpposition: %s\nVenue: %s\nScore: %s\nScorers: %s\nLeague Tier: %.0f (%s)\nLeague Pos: %.0f\nTotal Points: %.0f\nPPG: %.2f\nManager: %s\nAttendance: %s", season, game_no, game_date, opposition, venue, score, scorers, league_tier, competition, league_pos, pts, ppg, manager, attendance),
+        goals_for == 0 ~ sprintf("Season: %s\nGame No: %.0f\nDate: %s\nOpposition: %s\nVenue: %s\nScore: %s\nLeague Tier: %.0f (%s)\nLeague Pos: %.0f\nTotal Points: %.0f\nPPG: %.2f\nManager: %s\nAttendance: %s", season, game_no, game_date, opposition, venue, score, league_tier, competition, league_pos, pts, ppg, manager, attendance)
+      )
+    )
+
   # Create the plot
   p = ggplot2::ggplot(
     df,
@@ -64,8 +74,7 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       x = game_no,
       y = get(chosen_plot),
       group = 1,
-      text = sprintf("Season: %s\nGame No: %.0f\nDate: %s\nOpposition: %s\nVenue: %s\nScore: %s\nLeague Tier: %.0f (%s)\nLeague Pos: %.0f\nTotal Points: %.0f\nPPG: %.2f\nManager: %s\nAttendance: %s", season, game_no, game_date, opposition, venue, score, league_tier, competition, league_pos, pts, ppg, manager, attendance)
-    ),
+      text = tooltip_text)
     ) +
     ggplot2::geom_line(ggplot2::aes(color = season)) +
     ggplot2::geom_point(ggplot2::aes(color = season)) +
