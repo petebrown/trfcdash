@@ -9,6 +9,7 @@ fix_sb_player_names <- function(df) {
         player_name == "Dylan Mottley Henry" ~ "Dylan Mottley-Henry",
         player_name == "Ian Thomas-Moore" ~ "Ian Moore",
         player_name == "John-Louis Akpa Akpro" ~ "Jean-Louis Akpa Akpro",
+        player_name == "John Morrissey" ~ "Johnny Morrissey",
         player_name == "Jonathon Margetts" ~ "Johnny Margetts",
         player_name == "Joseph Maguire" ~ "Joe Maguire",
         player_name == "Kaylden Brown" ~ "Kayleden Brown",
@@ -51,12 +52,91 @@ sb_goals <- vroom::vroom(
 goals <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/scorers-long.csv",
   show_col_types = FALSE
-)
+) %>%
+  fix_sb_player_names()
+
+
+game_ids_and_dates <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/update-player-stats/main/data/players_df.csv",
+  col_select = c("sb_game_id", "game_date", "season"),
+  show_col_types = FALSE
+) %>%
+  fix_sb_game_ids() %>%
+  unique()
+
+goals %>%
+  dplyr::left_join(
+    game_dates_and_nos,
+    by = c("season" = "season", "game_no" = "ssn_game_no")
+  )
+
+
+goalscorers_by_game <- sb_goals %>%
+  fix_sb_player_names() %>%
+  dplyr::filter(
+    goal_type == "for"
+  ) %>%
+  dplyr::mutate(
+    player_name = dplyr::case_when(
+      own_goal == 1 ~ "OG",
+      .default = player_name
+    )
+  ) %>%
+  dplyr::left_join(
+    game_ids_and_dates,
+    by = "game_id"
+  ) %>%
+  dplyr::select(
+    season,
+    game_date,
+    player_name,
+    minute,
+    penalty
+  ) %>%
+  dplyr::arrange(
+    game_date,
+    minute
+  ) %>%
+  dplyr::group_by(
+    game_date,
+    player_name
+  ) %>%
+  dplyr::summarise(
+    goals_scored = dplyr::n(),
+    pens = sum(penalty),
+    .groups = "drop"
+  ) %>%
+  dplyr::bind_rows(
+    comp_rec_goals
+  ) %>%
+  dplyr::select(
+    game_date,
+    player_name,
+    goals_scored,
+    pens
+  ) %>%
+  dplyr::group_by(game_date) %>%
+  dplyr::mutate(
+    player_names = paste(paste0(player_name, " ", goals_scored, ""), collapse = ", "),
+    player_names = stringr::str_remove_all(player_names, "\\s1")
+  ) %>%
+  dplyr::select(game_date, player_names) %>%
+  unique() %>%
+  dplyr::arrange(
+    game_date
+  )
+
+
+
+
+
+
 
 comp_rec_plr_seasons <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/player_ssns.csv",
   show_col_types = FALSE
 )
+
 
 game_dates_and_nos <- results_dataset %>%
   dplyr::select(
