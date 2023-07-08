@@ -93,10 +93,14 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
       player_name
     ) %>%
     dplyr::mutate(
+      surname = stringr::str_split_i(player_name, " ", 2),
       player_name = stringr::str_replace(player_name, "\\s", "\n")
     )
 
   df$generic_comp <- factor(df$generic_comp, levels = c("Anglo-Italian Cup", "Associate Members' Cup", "FA Cup", "Full Members' Cup", "League Cup", "League"))
+
+  print(ssn_top)
+  print(df)
 
 
   p <- ggplot2::ggplot(
@@ -110,7 +114,7 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
   ) +
     ggplot2::geom_bar(position = "stack", stat = "identity") +
     ggplot2::scale_x_discrete(
-      labels = setNames(df$player_name, df$ordered),
+      labels = setNames(df$surname, df$ordered),
       expand = c(0, 0)
     ) +
     ggplot2::coord_flip() +
@@ -122,9 +126,9 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
       expand = ggplot2::expansion(mult = c(0, 0), add = c(0.1, dplyr::case_when(
         max_goals >= 20 & (n_plots %% 3 == 0) ~ (max_goals / 20) * 3,
         max_goals >= 20 & (n_plots %% 2 == 0) ~ (max_goals / 20) * 2.6,
-        max_goals >= 20 ~ max_goals / 20,
+        max_goals >= 20 & n_plots == 1 ~ max_goals / 20,
         max_goals < 20 ~ 0.5,
-        TRUE ~ 0))
+        TRUE ~ (max_goals / 20) * 3))
       ),
       breaks = seq(0, max_goals, ifelse(max_goals < 20, 5, 10)),
       limits = c(0,  max_goals)
@@ -192,9 +196,9 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
       )
     ),
     size = dplyr::case_when(
-      n_plots %% 3 == 0 ~ 4.5,
       n_plots %% 2 == 0 ~ 4.75,
-      TRUE ~ 5
+      n_plots == 1 ~ 5,
+      TRUE ~ 4.5
     ),
     halign = 0,
     hjust = 0,
