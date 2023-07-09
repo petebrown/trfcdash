@@ -27,7 +27,7 @@ app_ui <- function(request) {
         ),
         # Main head-to-head sidebar
         shiny::conditionalPanel(
-          "input.nav === 'Compare all head-to-head records'",
+          "input.nav === 'All head-to-head records'",
           Head2HeadAllOpponents_sidebar()
         ),
         # Individual head-to-head sidebar
@@ -74,7 +74,7 @@ app_ui <- function(request) {
       bslib::nav_panel("Season Tracker", mod_SeasonTracker_ui("SeasonTracker_ui_1")),
       bslib::nav_menu(
         title = "Head-to-Head Records",
-        bslib::nav_panel("Compare all head-to-head records", mod_Head2HeadAllOpponents_ui("Head2HeadAllOpponents_1")),
+        bslib::nav_panel("All head-to-head records", mod_Head2HeadAllOpponents_ui("Head2HeadAllOpponents_1")),
         bslib::nav_panel("Record vs. specific team", mod_Head2HeadByOpponent_ui("Head2HeadByOpponent_1"))
       ),
       bslib::nav_menu(

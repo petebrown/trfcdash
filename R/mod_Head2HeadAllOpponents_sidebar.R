@@ -105,7 +105,7 @@ mod_Head2HeadAllOpponents_sidebar_ui <- function(id){
 #' Head2HeadAllOpponents_sidebar Server Functions
 #'
 #' @noRd
-mod_Head2HeadAllOpponents_sidebar_server <- function(id, year_range){
+mod_Head2HeadAllOpponents_sidebar_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

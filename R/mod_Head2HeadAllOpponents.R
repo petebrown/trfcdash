@@ -45,7 +45,7 @@ mod_Head2HeadAllOpponents_server <- function(id, year_range){
     ################################
 
     output$h2h_records <- DT::renderDT(
-      results_dataset,
+      output_h2h_records(year_range()),
       rownames = FALSE,
       options = list(
         pageLength = 5,
