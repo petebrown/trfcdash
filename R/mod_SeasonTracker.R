@@ -195,7 +195,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
     output$streaks <- DT::renderDT(
       get_streaks(selected_seasons()),
       rownames = FALSE,
-      options = list(pageLength = 5, dom = 'tip', info = FALSE, paging=FALSE, fillContainer = TRUE)
+      options = list(pageLength = 5, dom = 'tip', info = FALSE, paging = FALSE, fillContainer = TRUE)
     )
 
     ###################

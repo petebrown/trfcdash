@@ -9,7 +9,7 @@ get_month_list <- function() {
 }
 
 get_year_list <- function() {
-  df <- get_results_df()
+  df <- results_dataset %>%
   min_year <- min(lubridate::year(df$game_date))
   max_year <- max(lubridate::year(df$game_date))
   year_list <- c(min_year:max_year)
@@ -17,7 +17,7 @@ get_year_list <- function() {
 }
 
 otd_results_df <- function(selected_day, selected_month) {
-  df <- get_results_df() %>%
+  df <- results_dataset %>%
     dplyr::mutate(
       day = lubridate::day(game_date),
       month = lubridate::month(game_date, label = FALSE)

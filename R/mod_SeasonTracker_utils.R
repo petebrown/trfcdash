@@ -1,5 +1,5 @@
 get_season_list <- function() {
-  df <- get_results_df()
+  df <- results_dataset
   return (unique(df$season))
 }
 

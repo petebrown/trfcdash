@@ -22,13 +22,17 @@ get_max_goals <- function(selected_seasons) {
 plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
   results <- filter_ssn_results(selected_season)
 
-  goals_for <- get_goals_df() %>%
-    dplyr::filter(
-      player_name != "OG"
-    ) %>%
+
+  goals_for <- goals %>%
+    # dplyr::filter(
+    #   !is.na(goals_scored)
+    # ) %>%
     dplyr::inner_join(
       results,
-      by = c("season" = "season", "game_no" = "ssn_game_no")
+      by = c(
+        "season" = "season",
+        "game_no" = "ssn_game_no"
+      )
     ) %>%
     dplyr::mutate(
       generic_comp = dplyr::case_when(

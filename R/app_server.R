@@ -30,4 +30,12 @@ app_server <- function(input, output, session) {
     selected_seasons = SeasonTracker_inputs[[1]],
     n_fixtures = SeasonTracker_inputs[[2]]
   )
+
+  # Receive user inputs from Head-to-Head (all opponents) sidebar
+  Head2HeadAll_inputs <- mod_Head2HeadAllOpponents_sidebar_server("Head2HeadAllOpponents_sidebar_ui_1")
+  # Send user inputs from Head-to-Head (all opponents) sidebar to Head-to-Head (all opponents) server
+  mod_Head2HeadAllOpponents_server(
+    "Head2HeadAllOpponents_ui_1",
+    year_range = Head2HeadAll_inputs[[1]]
+  )
 }

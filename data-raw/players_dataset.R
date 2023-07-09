@@ -298,4 +298,4 @@ player_apps <- dplyr::bind_rows(
     off_for,
   )
 
-usethis::use_data(player_apps, goalscorers_by_game, overwrite = TRUE)
+usethis::use_data(player_apps, goals, goalscorers_by_game, overwrite = TRUE)

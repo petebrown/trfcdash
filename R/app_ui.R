@@ -28,7 +28,7 @@ app_ui <- function(request) {
         # Main head-to-head sidebar
         shiny::conditionalPanel(
           "input.nav === 'Compare all head-to-head records'",
-          "Head2HeadAllOpponents_sidebar()"
+          Head2HeadAllOpponents_sidebar()
         ),
         # Individual head-to-head sidebar
         shiny::conditionalPanel(
