@@ -15,3 +15,6 @@ button[id^="Head2HeadAllOpponents_sidebar_ui_1-"] {
   font-size: smaller;
 }
 
+div.sidebar-content div[class^="selectize-"] {
+  font-size: small;
+}

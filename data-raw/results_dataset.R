@@ -80,6 +80,12 @@ results_dataset <- results_df %>%
   dplyr::left_join(
     goalscorers_by_game,
     by = "game_date"
+  ) %>%
+  dplyr::mutate(
+    ssn_year = as.numeric(stringr::str_sub(season, end = 4)),
+    game_year = lubridate::year(game_date),
+    game_month = lubridate::month(game_date),
+    game_day = lubridate::day(game_date),
   )
 
 usethis::use_data(results_dataset, overwrite = TRUE)

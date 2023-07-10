@@ -13,7 +13,7 @@ mod_SeasonTracker_sidebar_ui <- function(id){
   tagList(
     selectInput(
       inputId = ns("selected_seasons"),
-      label = "Select seasons:",
+      label = h6("Select seasons:"),
       choices = get_season_list(),
       selected = "2022/23",
       multiple = TRUE
@@ -22,7 +22,7 @@ mod_SeasonTracker_sidebar_ui <- function(id){
     # Input for specifying number of fixtures to be listed in results panel
     sliderInput(
       inputId = ns("n_fixtures"),
-      label = "No. of results/page:",
+      label = h6("No. of results/page:"),
       min = 1,
       max = 60,
       value = 10,

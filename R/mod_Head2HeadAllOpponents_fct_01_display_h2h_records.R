@@ -1,8 +1,5 @@
 output_h2h_records <- function(year_range, league_tiers, cup_comps, venue_options, min_games) {
   df <- results_dataset %>%
-    dplyr::mutate(
-      ssn_year = as.numeric(stringr::str_sub(season, end = 4))
-    ) %>%
       dplyr::filter(
         ssn_year >= year_range[1],
         ssn_year <= year_range[2]

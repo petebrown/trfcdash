@@ -13,12 +13,15 @@ mod_Head2HeadAllOpponents_sidebar_ui <- function(id){
     sliderInput(
       inputId = ns("year_range"),
       label = h6("Select season range:"),
-      min = 1921, # min(results_dataset$season),
-      max = 2022, # max(results_dataset$season),
+      min = min(results_dataset$ssn_year),
+      max = max(results_dataset$ssn_year),
       sep = "",
       ticks = FALSE,
       step = 1,
-      value = c(1921, 2022) # c(min(results_dataset$season), max(results_dataset$season))
+      value = c(
+        min(results_dataset$ssn_year),
+        max(results_dataset$ssn_year)
+      )
     ),
 
     hr(),
@@ -156,7 +159,10 @@ mod_Head2HeadAllOpponents_sidebar_server <- function(id){
     observeEvent(input$reset_input, {
       updateNumericInput(
         inputId = "year_range",
-        value = c(1921, 2022)
+        value = c(
+          min(results_dataset$ssn_year),
+          max(results_dataset$ssn_year)
+        )
       )
       updateNumericInput(
         inputId = "league_tiers",

@@ -6,6 +6,8 @@
 #' @noRd
 app_server <- function(input, output, session) {
 
+  # bslib::bs_themer()
+
   mod_SeasonTracker_server("SeasonTracker_ui_1")
 
   mod_Head2HeadByOpponent_server("Head2HeadByOpponent_ui_1")
