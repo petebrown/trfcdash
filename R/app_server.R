@@ -36,6 +36,10 @@ app_server <- function(input, output, session) {
   # Send user inputs from Head-to-Head (all opponents) sidebar to Head-to-Head (all opponents) server
   mod_Head2HeadAllOpponents_server(
     "Head2HeadAllOpponents_ui_1",
-    year_range = Head2HeadAll_inputs[[1]]
+    year_range = Head2HeadAll_inputs[[1]],
+    league_tiers = Head2HeadAll_inputs[[2]],
+    cup_comps = Head2HeadAll_inputs[[3]],
+    venue_options = Head2HeadAll_inputs[[4]],
+    min_games = Head2HeadAll_inputs[[5]]
   )
 }

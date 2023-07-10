@@ -17,7 +17,7 @@ mod_Head2HeadAllOpponents_ui <- function(id){
           "Overall Records"
         ),
         bslib::card_body(
-          DT::dataTableOutput(ns("h2h_records"))
+          DT::dataTableOutput(ns("h2h_records"), height = "100%", fill = FALSE)
         )
       ),
       bslib::card(
@@ -25,9 +25,7 @@ mod_Head2HeadAllOpponents_ui <- function(id){
           class = "bg-dark",
           "Longest Streaks"
         ),
-        bslib::card_body(
-          DT::dataTableOutput(ns("streaks"))
-        )
+        DT::dataTableOutput(ns("streaks"), height = "100%", fill = FALSE)
       )
     )
   )
@@ -36,7 +34,7 @@ mod_Head2HeadAllOpponents_ui <- function(id){
 #' Head2HeadAllOpponents Server Functions
 #'
 #' @noRd
-mod_Head2HeadAllOpponents_server <- function(id, year_range){
+mod_Head2HeadAllOpponents_server <- function(id, year_range, league_tiers, cup_comps, venue_options, min_games){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -45,14 +43,16 @@ mod_Head2HeadAllOpponents_server <- function(id, year_range){
     ################################
 
     output$h2h_records <- DT::renderDT(
-      output_h2h_records(year_range()),
+      output_h2h_records(year_range(), league_tiers(), cup_comps(), venue_options(), min_games()),
+      selection = 'single',
+      filter = 'bottom',
       rownames = FALSE,
+      fillContainer = FALSE,
       options = list(
-        pageLength = 5,
-        dom = 'tip',
-        info = FALSE,
-        paging = FALSE,
-        fillContainer = TRUE
+        fillContainer = TRUE,
+        paging = TRUE,
+        info = TRUE,
+        scrollX = TRUE
       )
     )
 
@@ -61,17 +61,18 @@ mod_Head2HeadAllOpponents_server <- function(id, year_range){
     ################################
 
     output$streaks <- DT::renderDT(
-      results_dataset,
+      output_h2h_streaks(year_range(), league_tiers(), cup_comps(), venue_options(), min_games()),
+      selection = 'single',
+      filter = 'bottom',
       rownames = FALSE,
+      fillContainer = FALSE,
       options = list(
-        pageLength = 5,
-        dom = 'tip',
-        info = FALSE,
-        paging = FALSE,
-        fillContainer = TRUE
+        fillContainer = TRUE,
+        paging = TRUE,
+        info = TRUE,
+        scrollX = TRUE
       )
     )
-
 
   })
 }

@@ -5,3 +5,13 @@
 .borderless {
   border: 0;
 }
+
+
+div[id^="Head2HeadAllOpponents_sidebar_ui_1-"] label {
+  font-size: smaller;
+}
+
+button[id^="Head2HeadAllOpponents_sidebar_ui_1-"] {
+  font-size: smaller;
+}
+

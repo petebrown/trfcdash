@@ -28,7 +28,7 @@ app_ui <- function(request) {
         # Main head-to-head sidebar
         shiny::conditionalPanel(
           "input.nav === 'All head-to-head records'",
-          Head2HeadAllOpponents_sidebar()
+          Head2HeadAllOpponents_sidebar(),
         ),
         # Individual head-to-head sidebar
         shiny::conditionalPanel(
@@ -74,23 +74,23 @@ app_ui <- function(request) {
       bslib::nav_panel("Season Tracker", mod_SeasonTracker_ui("SeasonTracker_ui_1")),
       bslib::nav_menu(
         title = "Head-to-Head Records",
-        bslib::nav_panel("All head-to-head records", mod_Head2HeadAllOpponents_ui("Head2HeadAllOpponents_1")),
-        bslib::nav_panel("Record vs. specific team", mod_Head2HeadByOpponent_ui("Head2HeadByOpponent_1"))
+        bslib::nav_panel("All head-to-head records", mod_Head2HeadAllOpponents_ui("Head2HeadAllOpponents_ui_1")),
+        bslib::nav_panel("Record vs. specific team", mod_Head2HeadByOpponent_ui("Head2HeadByOpponent_ui_1"))
       ),
       bslib::nav_menu(
         title = "Managers",
-        bslib::nav_panel("Compare manager records", mod_ManagersAllManagers_ui("ManagersAllManagers_1")),
-        bslib::nav_panel("Individual manager stats", mod_ManagersByManager_ui("ManagersByManager_1"))
+        bslib::nav_panel("Compare manager records", mod_ManagersAllManagers_ui("ManagersAllManagers_ui_1")),
+        bslib::nav_panel("Individual manager stats", mod_ManagersByManager_ui("ManagersByManager_ui_1"))
       ),
       bslib::nav_menu(
         title = "Players",
-        bslib::nav_panel("Compare all players", mod_PlayersAllPlayers_ui("mod_PlayersAllPlayers_1")),
-        bslib::nav_panel("Individual player stats", mod_PlayersByPlayer_ui("PlayersByPlayer_1"))
+        bslib::nav_panel("Compare all players", mod_PlayersAllPlayers_ui("mod_PlayersAllPlayers_ui_1")),
+        bslib::nav_panel("Individual player stats", mod_PlayersByPlayer_ui("PlayersByPlayer_ui_1"))
       ),
       bslib::nav_menu(
         title = "Attendances",
-        bslib::nav_panel("Overall attendance stats", mod_AttendancesOverview_ui("mod_AttendancesOverview_1")),
-        bslib::nav_panel("Attendance stats by season", mod_AttendancesBySeason_ui("AttendancesBySeason_1"))
+        bslib::nav_panel("Overall attendance stats", mod_AttendancesOverview_ui("mod_AttendancesOverview_ui_1")),
+        bslib::nav_panel("Attendance stats by season", mod_AttendancesBySeason_ui("AttendancesBySeason_ui_1"))
       ),
       bslib::nav_panel("On this day", mod_OnThisDay_ui("OnThisDay_ui_1"))
     )

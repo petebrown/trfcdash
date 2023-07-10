@@ -88,8 +88,6 @@ mod_SeasonTracker_ui <- function(id){
         )
       ),
 
-
-
       # Card containing longest streaks
       bslib::card(
         bslib::card_header(
