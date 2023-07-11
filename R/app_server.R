@@ -44,4 +44,12 @@ app_server <- function(input, output, session) {
     venue_options = Head2HeadAll_inputs[[4]],
     min_games = Head2HeadAll_inputs[[5]]
   )
+
+  # Receive user inputs from Players (all players) sidebar
+  PlayersAllPlayers_inputs <- mod_PlayersAllPlayers_sidebar_server("PlayersAllPlayers_sidebar_ui_1")
+  # Send user inputs from Players (all players) sidebar to Players (all players) server
+  mod_PlayersAllPlayers_server(
+    "PlayersAllPlayers_ui_1",
+    year_range = PlayersAllPlayers_inputs[[1]]
+  )
 }

@@ -28,7 +28,7 @@ app_ui <- function(request) {
         # Main head-to-head sidebar
         shiny::conditionalPanel(
           "input.nav === 'All head-to-head records'",
-          Head2HeadAllOpponents_sidebar(),
+          Head2HeadAllOpponents_sidebar()
         ),
         # Individual head-to-head sidebar
         shiny::conditionalPanel(
@@ -48,7 +48,7 @@ app_ui <- function(request) {
         # Main player comparison tool
         shiny::conditionalPanel(
           "input.nav === 'Compare all players'",
-          "PlayersAllPlayers_sidebar()"
+          PlayersAllPlayers_sidebar()
         ),
         # Individual player stats
         shiny::conditionalPanel(
@@ -84,7 +84,7 @@ app_ui <- function(request) {
       ),
       bslib::nav_menu(
         title = "Players",
-        bslib::nav_panel("Compare all players", mod_PlayersAllPlayers_ui("mod_PlayersAllPlayers_ui_1")),
+        bslib::nav_panel("Compare all players", mod_PlayersAllPlayers_ui("PlayersAllPlayers_ui_1")),
         bslib::nav_panel("Individual player stats", mod_PlayersByPlayer_ui("PlayersByPlayer_ui_1"))
       ),
       bslib::nav_menu(
