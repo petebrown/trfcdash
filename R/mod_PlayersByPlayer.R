@@ -10,6 +10,8 @@
 mod_PlayersByPlayer_ui <- function(id){
   ns <- NS(id)
   tagList(
+    uiOutput(ns("pl_quick_facts")),
+
     bslib::page_fluid(
       bslib::card(
         full_screen = TRUE,
@@ -79,6 +81,10 @@ mod_PlayersByPlayer_ui <- function(id){
 mod_PlayersByPlayer_server <- function(id, player_name){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    output$pl_quick_facts <- renderUI({
+      pl_value_boxes(player_name())
+    })
 
     output$pl_summary <- {
       DT::renderDT(
