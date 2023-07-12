@@ -1,12 +1,7 @@
-output_player_records <- function(year_range) {
+output_player_summary <- function(inp_player_name) {
   player_apps %>%
-    dplyr::mutate(
-      ssn_year = as.numeric(stringr::str_sub(season, end = 4)),
-      game_year = lubridate::year(game_date)
-    ) %>%
     dplyr::filter(
-      ssn_year >= year_range[1],
-      ssn_year <= year_range[2]
+      player_name == inp_player_name
     ) %>%
     tidyr::replace_na(
       list(
@@ -16,9 +11,6 @@ output_player_records <- function(year_range) {
         red_cards = 0,
         mins_played = 0
       )
-    ) %>%
-    dplyr::group_by(
-      player_name
     ) %>%
     dplyr::summarise(
       starts = sum(role == "starter"),
@@ -30,34 +22,23 @@ output_player_records <- function(year_range) {
       mins_played = sum(mins_played)
     ) %>%
     dplyr::mutate(
-      surname = stringr::str_split_i(player_name, " ", -1),
-      forename = stringr::str_remove(player_name, surname),
-      forename = stringr::str_trim(forename),
       total_apps = starts + sub_apps,
       debut = as.Date(debut, format = '%d-%m-%Y'),
       debut = format(debut, "%d/%m/%Y"),
       mins_played = format(mins_played, nsmall = 0, big.mark = ",")
     ) %>%
-    dplyr::arrange(
-      surname,
-      forename
-    ) %>%
     dplyr::select(
-      surname,
-      forename,
       total_apps,
       starts,
       sub_apps,
       goals,
-      mins_played,
       yellow_cards,
       red_cards,
+      mins_played,
       debut
     ) %>%
     dplyr::rename(
-      Surname = surname,
-      Forename = forename,
-      "Total Apps" = total_apps,
+      Apps = total_apps,
       Starts = starts,
       "Sub Apps" = sub_apps,
       Goals = goals,

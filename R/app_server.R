@@ -52,4 +52,12 @@ app_server <- function(input, output, session) {
     "PlayersAllPlayers_ui_1",
     year_range = PlayersAllPlayers_inputs[[1]]
   )
+
+  # Receive user inputs from Players (all players) sidebar
+  PlayersByPlayer_inputs <- mod_PlayersByPlayer_sidebar_server("PlayersByPlayer_sidebar_ui_1")
+  # Send user inputs from Players sidebar to Players server
+  mod_PlayersByPlayer_server(
+    "PlayersByPlayer_ui_1",
+    player_name = PlayersByPlayer_inputs[[1]]
+  )
 }

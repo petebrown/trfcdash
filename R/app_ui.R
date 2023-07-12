@@ -53,7 +53,7 @@ app_ui <- function(request) {
         # Individual player stats
         shiny::conditionalPanel(
           "input.nav === 'Individual player stats'",
-          "PlayersByPlayer_sidebar()"
+          PlayersByPlayer_sidebar()
         ),
         # Overall attendance stats
         shiny::conditionalPanel(

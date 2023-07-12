@@ -10,16 +10,178 @@
 mod_PlayersByPlayer_ui <- function(id){
   ns <- NS(id)
   tagList(
-    h1("Players By Player shit goes HERE!")
+    bslib::page_fluid(
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "Summary"
+        ),
+        DT::dataTableOutput(ns("pl_summary"), height = "100%", fill = FALSE)
+      )
+    ),
+    bslib::page_fluid(
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "By Season"
+        ),
+        DT::dataTableOutput(ns("pl_summary_by_ssn"), height = "100%", fill = FALSE)
+      )
+    ),
+    bslib::page_fluid(
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "By League Tier"
+        ),
+        DT::dataTableOutput(ns("pl_summary_by_tier"), height = "100%", fill = FALSE)
+      )
+    ),
+    bslib::page_fluid(
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "By Opponent"
+        ),
+        DT::dataTableOutput(ns("pl_summary_by_oppo"), height = "100%", fill = FALSE)
+      )
+    ),
+    bslib::page_fluid(
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "Appearances"
+        ),
+        DT::dataTableOutput(ns("player_apps"), height = "100%", fill = FALSE)
+      )
+    ),
+    bslib::page_fluid(
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "By Manager"
+        ),
+        DT::dataTableOutput(ns("pl_summary_by_mgr"), height = "100%", fill = FALSE)
+      )
+    )
   )
 }
 
 #' PlayersByPlayer Server Functions
 #'
 #' @noRd
-mod_PlayersByPlayer_server <- function(id){
+mod_PlayersByPlayer_server <- function(id, player_name){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    output$pl_summary <- {
+      DT::renderDT(
+        output_player_summary(player_name()[[1]]),
+        rownames = FALSE,
+        options = list(
+          dom = 'tip',
+          info = FALSE,
+          paging = FALSE,
+          fillContainer = TRUE,
+          columnDefs = list(
+            list(targets = c(6, 7), className = 'dt-right')
+          )
+        )
+      )
+    }
+
+    output$pl_summary_by_ssn <- {
+      DT::renderDT(
+        output_pl_summary_by_ssn(player_name()[[1]]),
+        rownames = FALSE,
+        options = list(
+          dom = 'tip',
+          info = FALSE,
+          paging = FALSE,
+          fillContainer = TRUE,
+          columnDefs = list(
+            list(targets = c(4), className = 'dt-right')
+          )
+        )
+      )
+    }
+
+    output$pl_summary_by_tier <- {
+      DT::renderDT(
+        output_pl_summary_by_tier(player_name()[[1]]),
+        rownames = FALSE,
+        options = list(
+          dom = 'tip',
+          info = FALSE,
+          paging = FALSE,
+          fillContainer = TRUE,
+          columnDefs = list(
+            list(
+              targets = c(1, 2, 3, 4, 5), className = 'dt-center'
+            )
+          )
+        )
+      )
+    }
+
+    output$pl_summary_by_oppo <- {
+      DT::renderDT(
+        output_pl_summary_by_opp(player_name()[[1]]),
+        rownames = FALSE,
+        options = list(
+          dom = 'tip',
+          info = TRUE,
+          paging = TRUE,
+          pageLength = 10,
+          fillContainer = TRUE,
+          columnDefs = list(
+            list(
+              targets = c(1, 2, 3, 4, 5), className = 'dt-center'
+            )
+          )
+        )
+      )
+    }
+
+    output$player_apps <- {
+      DT::renderDT(
+        output_player_apps(player_name()[[1]]),
+        selection = 'single',
+        filter = 'bottom',
+        rownames = FALSE,
+        fillContainer = FALSE,
+        options = list(
+          fillContainer = TRUE,
+          paging = TRUE,
+          info = TRUE,
+          scrollX = TRUE
+        )
+      )
+    }
+
+    output$pl_summary_by_mgr <- {
+      DT::renderDT(
+        output_pl_summary_by_mgr(player_name()[[1]]),
+        rownames = FALSE,
+        options = list(
+          dom = 'tip',
+          info = FALSE,
+          paging = FALSE,
+          fillContainer = TRUE,
+          columnDefs = list(
+            list(
+              targets = c(1, 2, 3, 4, 5), className = 'dt-center'
+            )
+          )
+        )
+      )
+    }
 
   })
 }

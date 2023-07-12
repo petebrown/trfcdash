@@ -41,7 +41,10 @@ mod_PlayersAllPlayers_server <- function(id, year_range){
           fillContainer = TRUE,
           paging = TRUE,
           info = TRUE,
-          scrollX = TRUE
+          scrollX = TRUE,
+          columnDefs = list(
+            list(targets = c(6, 9), className = 'dt-right')
+          )
         )
       )
     }

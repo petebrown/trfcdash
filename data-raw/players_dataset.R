@@ -140,7 +140,18 @@ goalscorers_by_game <- sb_goals %>%
   )
 
 
-
+game_lengths <- results_dataset %>%
+  dplyr::mutate(
+    game_length = dplyr::case_when(
+      !is.na(gg_outcome) ~ 116,
+      is.na(gg_outcome) & extra_time == 1 ~ 120,
+      .default = 90
+    )
+  ) %>%
+  dplyr::select(
+    game_date,
+    game_length
+  )
 
 
 
@@ -184,7 +195,21 @@ comp_rec_plr_apps <- vroom::vroom(
     shirt_no,
     on_for,
     off_for
-  )
+  )# %>%
+  # dplyr::left_join(
+  #   game_lengths,
+  #   by = "game_date"
+  # ) %>%
+  # dplyr::mutate(
+  #   mins_played = dplyr::case_when(
+  #     role == "starter" & is.na(off_for) ~ game_length,
+  #     .default = NA
+  #   )
+  # ) %>%
+  # dplyr::select(
+  #   -game_length
+  # )
+
 
 
 squad_nos <- vroom::vroom(
@@ -197,18 +222,7 @@ sb_subs_and_reds <- vroom::vroom(
   show_col_types = FALSE
 )
 
-game_lengths <- results_dataset %>%
-  dplyr::mutate(
-    game_length = dplyr::case_when(
-      !is.na(gg_outcome) ~ 116,
-      is.na(gg_outcome) & extra_time == 1 ~ 120,
-      .default = 90
-    )
-  ) %>%
-  dplyr::select(
-    game_date,
-    game_length
-  )
+
 
 sb_player_apps <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/update-player-stats/main/data/players_df.csv",
