@@ -151,7 +151,7 @@ pl_value_boxes <- function(player_name) {
         bslib::value_box(
           title = "Debut",
           value = as.character(pl_debut_date(player_name)),
-          showcase = bsicons::bs_icon("calendar-check"),
+          # showcase = bsicons::bs_icon("calendar-check"),
           p(pl_debut_match(player_name)),
           p(pl_debut_competition(player_name))
         ),
@@ -164,7 +164,7 @@ pl_value_boxes <- function(player_name) {
         bslib::value_box(
           title = "Goals",
           value = pl_total_gls(player_name),
-          showcase = bsicons::bs_icon("bar-chart"),
+          # showcase = bsicons::bs_icon("bar-chart"),
           p(pl_gls_totals(player_name)[1]),
           p(pl_gls_totals(player_name)[2])
         ),
@@ -175,18 +175,18 @@ pl_value_boxes <- function(player_name) {
             "0",
             pl_max_gls_ssn(player_name)$goals
           ),
-          showcase = bsicons::bs_icon("bar-chart"),
+          # showcase = bsicons::bs_icon("bar-chart"),
           p(ifelse(
             pl_total_gls(player_name) == 0,
             "",
             pl_max_gls_ssn(player_name)$season
-            )
+          )
           )
         ),
         bslib::value_box(
           title = "Win rate",
           value = as.character(pl_win_pc(player_name)$win_pc),
-          showcase = fontawesome::fa("r-project", fill = "steelblue"),
+          # showcase = fontawesome::fa("r-project", fill = "steelblue"),
           p(pl_win_pc_desc(player_name))
         )
       )

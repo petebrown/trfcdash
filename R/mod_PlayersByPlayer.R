@@ -92,7 +92,7 @@ mod_PlayersByPlayer_server <- function(id, player_name){
 
     output$pl_summary <- {
       DT::renderDT(
-        output_player_summary(player_name()[[1]]),
+        output_player_summary(player_name()),
         rownames = FALSE,
         options = list(
           dom = 'tip',
@@ -108,7 +108,7 @@ mod_PlayersByPlayer_server <- function(id, player_name){
 
     output$pl_summary_by_ssn <- {
       DT::renderDT(
-        output_pl_summary_by_ssn(player_name()[[1]]),
+        output_pl_summary_by_ssn(player_name()),
         rownames = FALSE,
         options = list(
           dom = 'tip',
@@ -124,7 +124,7 @@ mod_PlayersByPlayer_server <- function(id, player_name){
 
     output$pl_summary_by_tier <- {
       DT::renderDT(
-        output_pl_summary_by_tier(player_name()[[1]]),
+        output_pl_summary_by_tier(player_name()),
         rownames = FALSE,
         options = list(
           dom = 'tip',
@@ -142,7 +142,7 @@ mod_PlayersByPlayer_server <- function(id, player_name){
 
     output$pl_summary_by_oppo <- {
       DT::renderDT(
-        output_pl_summary_by_opp(player_name()[[1]]),
+        output_pl_summary_by_opp(player_name()),
         rownames = FALSE,
         options = list(
           dom = 'tip',
@@ -161,23 +161,26 @@ mod_PlayersByPlayer_server <- function(id, player_name){
 
     output$player_apps <- {
       DT::renderDT(
-        output_player_apps(player_name()[[1]]),
+        output_player_apps(player_name()),
         selection = 'single',
         filter = 'bottom',
-        rownames = FALSE,
         fillContainer = FALSE,
         options = list(
           fillContainer = TRUE,
           paging = TRUE,
           info = TRUE,
-          scrollX = TRUE
+          scrollX = TRUE,
+          columnDefs = list(
+            list(orderData = 1, targets = 3),
+            list(visible = FALSE, targets = c(0))
+          )
         )
       )
     }
 
     output$pl_summary_by_mgr <- {
       DT::renderDT(
-        output_pl_summary_by_mgr(player_name()[[1]]),
+        output_pl_summary_by_mgr(player_name()),
         rownames = FALSE,
         options = list(
           dom = 'tip',

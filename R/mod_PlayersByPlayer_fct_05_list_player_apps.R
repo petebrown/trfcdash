@@ -19,12 +19,17 @@ output_player_apps <- function(inp_player_name) {
       get_match_basics(),
       by = "game_date"
     ) %>%
+    dplyr::arrange(
+      game_date
+    ) %>%
     dplyr::mutate(
+      app_no = dplyr::row_number(),
       game_date = as.Date(game_date, format = '%d-%m-%Y'),
       game_date = format(game_date, "%d/%m/%Y"),
       role = stringr::str_to_title(role)
     ) %>%
     dplyr::select(
+      app_no,
       season,
       game_date,
       opposition,
@@ -38,8 +43,9 @@ output_player_apps <- function(inp_player_name) {
       goals_scored,
       yellow_cards,
       red_cards
-    ) %>%
+      ) %>%
     dplyr::rename(
+      "App No" = app_no,
       Season = season,
       Date = game_date,
       Shirt = shirt_no,

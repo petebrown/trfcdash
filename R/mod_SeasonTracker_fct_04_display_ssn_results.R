@@ -37,7 +37,6 @@ output_ssn_results <- function(season, n_fixtures) {
     get_formatted_results(season),
     selection = 'single',
     filter = 'bottom',
-    rownames = FALSE,
     options = list(
       fillContainer = TRUE,
       paging = TRUE,
@@ -46,6 +45,8 @@ output_ssn_results <- function(season, n_fixtures) {
       scrollX = TRUE,
       dom = 'frtip',
       columnDefs = list(
+        list(orderData = 2, targets = 3),
+        list(visible = FALSE, targets = 0),
         list(targets = c(0, 1, 2, 3, 4, 6, 7), className = 'dt-left'),
         list(targets = c(5), className = 'dt-center'),
         list(targets = c(8), className = 'dt-right'))
