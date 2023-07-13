@@ -412,7 +412,7 @@ sb_pl_dobs <- sb_player_apps %>%
     player_dob
   )
 
-player_dobs <- dplyr::bind_rows(
+player_info <- dplyr::bind_rows(
   cr_pl_dobs, sb_pl_dobs
 ) %>%
   dplyr::group_by(
@@ -434,4 +434,4 @@ player_dobs <- dplyr::bind_rows(
     -nxt_season
   )
 
-usethis::use_data(player_apps, goals, goalscorers_by_game, overwrite = TRUE)
+usethis::use_data(player_apps, goals, goalscorers_by_game, player_info, overwrite = TRUE)
