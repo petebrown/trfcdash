@@ -36,7 +36,6 @@ fix_sb_game_ids <- function(df) {
     )
 }
 
-
 comp_rec_goals <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/cr-scorers.csv",
   show_col_types = FALSE
@@ -222,7 +221,14 @@ sb_subs_and_reds <- vroom::vroom(
   show_col_types = FALSE
 )
 
-
+sb_player_dob <- vroom::vroom(
+  "https://raw.githubusercontent.com/petebrown/scrape-player-info/main/data/player-info.csv",
+  show_col_types = FALSE
+) %>%
+  dplyr::select(
+    player_id,
+    player_dob
+  )
 
 sb_player_apps <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/update-player-stats/main/data/players_df.csv",
@@ -232,9 +238,14 @@ sb_player_apps <- vroom::vroom(
   fix_sb_player_names() %>%
   fix_sb_game_ids() %>%
   dplyr::rename(player_id = sb_player_id) %>%
+  dplyr::left_join(
+    sb_player_dob,
+    by = "player_id"
+  ) %>%
   dplyr::select(
     player_id,
     player_name,
+    player_dob,
     game_id,
     game_date,
     season,
@@ -281,6 +292,7 @@ sb_player_apps <- vroom::vroom(
     season,
     game_date,
     player_name,
+    player_dob,
     role,
     pl_goals,
     squad_no,
@@ -292,6 +304,8 @@ sb_player_apps <- vroom::vroom(
     goals_scored = pl_goals,
     shirt_no = squad_no
   )
+
+
 
 player_apps <- dplyr::bind_rows(
   comp_rec_plr_apps,
