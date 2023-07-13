@@ -326,4 +326,112 @@ player_apps <- dplyr::bind_rows(
     off_for,
   )
 
+cr_pl_dobs <- vroom::vroom(
+  "https://raw.githubusercontent.com/petebrown/complete-record/main/output/player_stats.csv",
+  show_col_types = FALSE
+) %>%
+  dplyr::mutate(
+    player_name = paste(forename, surname),
+    pl_name_index = paste(surname, forename, sep = ", ")
+  ) %>%
+  dplyr::rename(
+    player_dob = dob
+  ) %>%
+  dplyr::group_by(
+    player_name,
+    date_of_birth
+  ) %>%
+  dplyr::mutate(
+    min_season = min(ssn_join),
+    max_season = max(ssn_lve)
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    dob_display = dplyr::case_when(
+      !is.na(player_dob) ~ NA,
+      is.na(player_dob) & !is.na(dob_qtr) & !is.na(dob_yr) ~ stringr::str_glue("Q{dob_qtr} {dob_yr}"),
+      is.na(player_dob) & is.na(dob_qtr) & !is.na(dob_yr) & dob_yr_is_est == 0 ~ as.character(dob_yr),
+      is.na(player_dob) & is.na(dob_qtr) & !is.na(dob_yr) & dob_yr_is_est == 1 ~ paste0("~", dob_yr),
+      is.na(player_dob) & is.na(dob_qtr) & is.na(dob_yr) & dob_yr_is_est == 0 ~ "Unknown"
+    )
+  ) %>%
+  dplyr::select(
+    surname,
+    forename,
+    player_name,
+    pl_name_index,
+    player_dob,
+    dob_display,
+    min_season,
+    max_season
+  ) %>%
+  dplyr::distinct()
+
+sb_pl_dobs <- sb_player_apps %>%
+  dplyr::group_by(
+    player_name,
+    player_dob
+  ) %>%
+  dplyr::summarise(
+    min_season = min(season),
+    max_season = max(season),
+    min_season = stringr::str_split_i(min_season, "/", 1),
+    max_season = stringr::str_split_i(max_season, "/", 1),
+    min_season = as.numeric(min_season),
+    max_season = as.numeric(max_season)
+  ) %>%
+  dplyr::mutate(
+    forename = dplyr::case_match(
+      player_name,
+      "Pedro Miguel Matias" ~ "Pedro Miguel",
+      .default = stringr::str_split_i(player_name, " ", 1)
+    ),
+    surname = dplyr::case_match(
+      player_name,
+      "Jean-Louis Akpa Akpro" ~ "Akpa Akpro",
+      "Owain Fon Williams" ~ "Fon Williams",
+      "Craig Le Cornu" ~ "Le Cornu",
+      "Ian St John" ~ "St John",
+      .default = stringr::str_split_i(player_name, " ", 2)
+    ),
+    pl_name_index = paste(surname, forename, sep = ", ")
+  ) %>%
+  dplyr::select(
+    surname,
+    forename,
+    player_name,
+    pl_name_index,
+    player_dob,
+    min_season,
+    max_season
+  ) %>%
+  dplyr::arrange(
+    surname,
+    forename,
+    player_name,
+    player_dob
+  )
+
+player_dobs <- dplyr::bind_rows(
+  cr_pl_dobs, sb_pl_dobs
+) %>%
+  dplyr::group_by(
+    player_name,
+    player_dob
+  ) %>%
+  dplyr::slice(
+    rep(1:dplyr::n(), each = max_season - min_season + 1)
+  ) %>%
+  dplyr::mutate(
+    season = min_season + dplyr::row_number() - 1,
+    nxt_season = as.character(season + 1),
+    nxt_season = stringr::str_sub(nxt_season, start = 3, end = 4),
+    season = stringr::str_glue("{season}/{nxt_season}")
+  ) %>%
+  dplyr::select(
+    -min_season,
+    -max_season,
+    -nxt_season
+  )
+
 usethis::use_data(player_apps, goals, goalscorers_by_game, overwrite = TRUE)
