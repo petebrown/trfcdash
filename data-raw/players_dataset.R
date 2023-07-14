@@ -339,7 +339,7 @@ cr_pl_dobs <- vroom::vroom(
   ) %>%
   dplyr::group_by(
     player_name,
-    date_of_birth
+    player_dob
   ) %>%
   dplyr::mutate(
     min_season = min(ssn_join),
@@ -432,6 +432,53 @@ player_info <- dplyr::bind_rows(
     -min_season,
     -max_season,
     -nxt_season
+  )
+
+dupe_names <- player_info %>%
+  dplyr::arrange(
+    surname,
+    forename,
+    season
+  ) %>%
+  dplyr::select(
+    pl_name_index,
+    player_dob
+  ) %>%
+  unique() %>%
+  dplyr::group_by(
+    pl_name_index
+  ) %>%
+  dplyr::summarise(
+    count = dplyr::n()
+  ) %>%
+  dplyr::filter(
+    count > 1
+  )
+
+menu_names <- player_info %>%
+  dplyr::mutate(
+    disam_text = dplyr::case_when(
+      !is.na(player_dob) ~ as.character(lubridate::year(player_dob)),
+      dob_display != "Unknown" ~ stringr::str_sub(dob_display, -4),
+      dob_display != "Unknown" ~ "?"
+    ),
+    menu_name = dplyr::case_when(
+      pl_name_index %in% dupe_names$pl_name_index ~ stringr::str_glue("{pl_name_index} (b.{disam_text})"),
+      .default = pl_name_index
+    )
+  ) %>%
+  dplyr::select(
+    player_name,
+    season,
+    player_dob,
+    dob_display,
+    menu_name
+  )
+
+player_apps <- player_apps %>%
+  dplyr::left_join(
+    menu_names,
+    by = c("player_name", "season")
   )
 
 usethis::use_data(player_apps, goals, goalscorers_by_game, player_info, overwrite = TRUE)

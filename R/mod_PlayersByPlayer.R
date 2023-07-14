@@ -10,7 +10,8 @@
 mod_PlayersByPlayer_ui <- function(id){
   ns <- NS(id)
   tagList(
-    h1(textOutput(ns("name"))),
+    h1(textOutput(ns("pl_name"))),
+    p(textOutput(ns("pl_dob"))),
 
     uiOutput(ns("pl_quick_facts")),
 
@@ -84,7 +85,13 @@ mod_PlayersByPlayer_server <- function(id, player_name){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    output$name <- renderText(player_name())
+
+    output$pl_name <- renderText({
+      get_player_name(player_name())
+    })
+    output$pl_dob <- renderText({
+      get_player_dob(player_name())
+    })
 
     output$pl_quick_facts <- renderUI({
       pl_value_boxes(player_name())

@@ -13,7 +13,7 @@ get_match_basics <- function() {
 output_player_apps <- function(inp_player_name) {
   player_apps %>%
     dplyr::filter(
-      player_name == inp_player_name
+      menu_name == inp_player_name
     ) %>%
     dplyr::left_join(
       get_match_basics(),

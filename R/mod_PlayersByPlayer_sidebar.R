@@ -13,7 +13,7 @@ mod_PlayersByPlayer_sidebar_ui <- function(id){
     selectInput(
       inputId = ns("player_name"),
       label = h6("Select player:"),
-      choices = sort(unique(player_apps$player_name)),
+      choices = sort(unique(player_apps$menu_name)),
       selected = NULL,
       # selected = sort(unique(player_apps$player_name))[[1]],
       multiple = FALSE,

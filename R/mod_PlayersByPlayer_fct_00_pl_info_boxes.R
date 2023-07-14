@@ -1,7 +1,7 @@
 get_pl_debut <- function(pl_name) {
   player_apps %>%
     dplyr::filter(
-      player_name == pl_name
+      menu_name == pl_name
     ) %>%
     dplyr::select(
       -season
@@ -39,7 +39,7 @@ pl_debut_match <- function(pl_name) {
 get_pl_summary <- function(pl_name) {
   player_apps %>%
     dplyr::filter(
-      player_name == pl_name
+      menu_name == pl_name
     ) %>%
     dplyr::left_join(
       results_dataset %>% dplyr::select(game_date, game_type),
@@ -117,7 +117,7 @@ pl_ssns <- function(pl_name) {
 pl_win_pc <- function(pl_name) {
   df <- player_apps %>%
     dplyr::filter(
-      player_name == pl_name,
+      menu_name == pl_name,
     ) %>%
     dplyr::left_join(
       results_dataset %>% dplyr::select(game_date, game_type, outcome),
@@ -144,12 +144,12 @@ pl_value_boxes <- function(player_name) {
   bslib::card(
     class = c("borderless", "no_padding"),
     bslib::card_body(
-      class = "no_padding",
       bslib::layout_column_wrap(
-        width = 1/5,
+        width = 1/4,
 
         bslib::value_box(
           title = "Debut",
+          theme_color = "primary",
           value = as.character(pl_debut_date(player_name)),
           # showcase = bsicons::bs_icon("calendar-check"),
           p(pl_debut_match(player_name)),
@@ -157,34 +157,38 @@ pl_value_boxes <- function(player_name) {
         ),
         bslib::value_box(
           title = "Appearances",
+          theme_color = "success",
           value = as.character(pl_apps(player_name)),
-          showcase = bsicons::bs_icon("list-ol"),
+          # showcase = bsicons::bs_icon("list-ol"),
           p(pl_ssns(player_name))
         ),
         bslib::value_box(
           title = "Goals",
+          theme_color = "warning",
           value = pl_total_gls(player_name),
-          # showcase = bsicons::bs_icon("bar-chart"),
+          # showcase = fontawesome::fa("futbol"),
           p(pl_gls_totals(player_name)[1]),
           p(pl_gls_totals(player_name)[2])
         ),
-        bslib::value_box(
-          title = "Most goals in a season",
-          value = ifelse(
-            pl_total_gls(player_name) == 0,
-            "0",
-            pl_max_gls_ssn(player_name)$goals
-          ),
-          # showcase = bsicons::bs_icon("bar-chart"),
-          p(ifelse(
-            pl_total_gls(player_name) == 0,
-            "",
-            pl_max_gls_ssn(player_name)$season
-          )
-          )
-        ),
+        # bslib::value_box(
+        #   title = "Most goals in a season",
+        #   theme_color = "default",
+        #   value = ifelse(
+        #     pl_total_gls(player_name) == 0,
+        #     "0",
+        #     pl_max_gls_ssn(player_name)$goals
+        #   ),
+        #   # showcase = bsicons::bs_icon("bar-chart"),
+        #   p(ifelse(
+        #     pl_total_gls(player_name) == 0,
+        #     "",
+        #     pl_max_gls_ssn(player_name)$season
+        #   )
+        #   )
+        # ),
         bslib::value_box(
           title = "Win rate",
+          theme_color = "dark",
           value = as.character(pl_win_pc(player_name)$win_pc),
           # showcase = fontawesome::fa("r-project", fill = "steelblue"),
           p(pl_win_pc_desc(player_name))

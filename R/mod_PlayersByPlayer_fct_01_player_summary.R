@@ -1,7 +1,32 @@
+get_player_info <- function(pl_name) {
+  player_apps %>%
+    dplyr::select(
+      menu_name,
+      player_name,
+      player_dob
+    ) %>%
+    dplyr::mutate(
+      player_dob = as.Date(player_dob, format = '%d-%m-%Y'),
+      player_dob = format(player_dob, "%d/%m/%Y")
+    ) %>%
+    dplyr::filter(
+      menu_name == pl_name
+    ) %>%
+    unique()
+}
+
+get_player_name <- function(pl_name) {
+  get_player_info(pl_name)$player_name
+}
+
+get_player_dob <- function(pl_name) {
+  get_player_info(pl_name)$player_dob
+}
+
 output_player_summary <- function(inp_player_name) {
   player_apps %>%
     dplyr::filter(
-      player_name == inp_player_name
+      menu_name == inp_player_name
     ) %>%
     tidyr::replace_na(
       list(

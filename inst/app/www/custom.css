@@ -6,7 +6,6 @@
   border: 0;
 }
 
-
 div[id^="Head2HeadAllOpponents_sidebar_ui_1-"] label {
   font-size: smaller;
 }
@@ -17,4 +16,12 @@ button[id^="Head2HeadAllOpponents_sidebar_ui_1-"] {
 
 div.sidebar-content div[class^="selectize-"] {
   font-size: small;
+}
+
+div#PlayersByPlayer_ui_1-pl_quick_facts div.value-box-area.html-fill-item.html-fill-container {
+  justify-content: start;
+}
+
+div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
+  font-size: 1.75rem;
 }
