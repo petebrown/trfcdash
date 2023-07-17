@@ -326,10 +326,12 @@ player_apps <- dplyr::bind_rows(
     off_for,
   )
 
-cr_pl_dobs <- vroom::vroom(
+cr_plr_info <- vroom::vroom(
   "https://raw.githubusercontent.com/petebrown/complete-record/main/output/player_stats.csv",
   show_col_types = FALSE
-) %>%
+)
+
+cr_plr_dobs <- cr_plr_info %>%
   dplyr::mutate(
     player_name = paste(forename, surname),
     pl_name_index = paste(surname, forename, sep = ", ")
@@ -367,7 +369,7 @@ cr_pl_dobs <- vroom::vroom(
   ) %>%
   dplyr::distinct()
 
-sb_pl_dobs <- sb_player_apps %>%
+sb_plr_dobs <- sb_player_apps %>%
   dplyr::group_by(
     player_name,
     player_dob
@@ -413,7 +415,7 @@ sb_pl_dobs <- sb_player_apps %>%
   )
 
 player_info <- dplyr::bind_rows(
-  cr_pl_dobs, sb_pl_dobs
+  cr_plr_dobs, sb_plr_dobs
 ) %>%
   dplyr::group_by(
     player_name,
