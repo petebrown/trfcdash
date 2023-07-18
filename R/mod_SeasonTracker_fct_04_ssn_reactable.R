@@ -81,7 +81,10 @@ output_ssn_reactable <- function(selected_seasons) {
         ),
         rowStyle = function(index) {
           if (sec_lvl[index, "role"] == "sub") {
-            list(fontWeight = "bold")
+            list(
+              # fontWeight = "bold",
+              background = "rgba(0, 0, 0, 0.03)"
+            )
           }
         }
       )
