@@ -11,6 +11,15 @@ mod_SeasonTracker_ui <- function(id){
   ns <- NS(id)
   tagList(
     bslib::page_fluid(
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Season Reactable"
+        ),
+        bslib::card_body(
+          reactable::reactableOutput(ns("ssn_reactable"))
+        )
+      ),
       # Card containing main season progress chart
       bslib::card(
         full_screen = TRUE,
@@ -131,6 +140,10 @@ mod_SeasonTracker_ui <- function(id){
 mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    output$ssn_reactable <- reactable::renderReactable(
+      output_ssn_reactable(c(selected_seasons()))
+    )
 
     ###########################
     # CARD 1: SEASON PROGRESS #

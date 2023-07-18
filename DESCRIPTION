@@ -19,6 +19,7 @@ Imports:
     lubridate,
     magrittr,
     plotly,
+    reactable,
     readr,
     shinipsum,
     shiny (>= 1.7.4),

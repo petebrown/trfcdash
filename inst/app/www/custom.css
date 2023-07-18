@@ -25,3 +25,10 @@ div#PlayersByPlayer_ui_1-pl_quick_facts div.value-box-area.html-fill-item.html-f
 div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
   font-size: 1.75rem;
 }
+
+.line_up_details {
+  padding: 1rem;
+  width: fit-content;
+  border-style: none;
+  font-size: smaller;
+}

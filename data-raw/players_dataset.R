@@ -20,8 +20,6 @@ fix_sb_player_names <- function(df) {
         player_name == "Robert Taylor" ~ "Rob Taylor",
         player_name == "Samuel Taylor" ~ "Sam Taylor",
         player_name == "Steven O'Leary" ~ "Stephen O'Leary",
-        # player_name == "Oliver Norburn" ~ "Ollie Norburn",
-        # player_name == "Steven Jennings" ~ "Steven Jennings",
         .default = player_name
       )
     )
@@ -69,8 +67,6 @@ game_dates_and_nos <- results_dataset %>%
     ssn_game_no,
     game_date
   )
-
-
 
 
 goalscorers_by_game <- sb_goals %>%
@@ -152,13 +148,22 @@ game_lengths <- results_dataset %>%
     game_length
   )
 
-
-
-
+comp_rec_pl_seasons_9899 <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/player_ssns_9899.csv",
+  show_col_types = FALSE
+)
 comp_rec_plr_seasons <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/player_ssns.csv",
   show_col_types = FALSE
-)
+) %>%
+  dplyr::bind_rows(
+    comp_rec_pl_seasons_9899
+  ) %>%
+  dplyr::arrange(
+    surname,
+    forename,
+    ssn
+  )
 
 comp_rec_plr_apps <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/apps_long.csv",
@@ -305,11 +310,63 @@ sb_player_apps <- vroom::vroom(
     shirt_no = squad_no
   )
 
+get_ssn_apps <- function(ssn_yr) {
+  ssn_yr = as.numeric(ssn_yr)
+  nxt_ssn_yr = ssn_yr + 1
+  ssns <- paste0("19", ssn_yr, "/", nxt_ssn_yr)
 
+  ssn_cr <- comp_rec_plr_apps %>%
+    dplyr::filter(
+      season == ssns
+    ) %>%
+    dplyr::select(
+      -goals_scored
+    )
+
+  ssn_sb <- sb_player_apps %>%
+    dplyr::filter(
+      season == ssns
+    ) %>%
+    dplyr::select(
+      -shirt_no,
+      -role,
+    )
+
+  ssn_pl_apps <- ssn_sb %>%
+    dplyr::left_join(
+      ssn_cr,
+      by = c(
+        "season" = "season",
+        "game_date" = "game_date",
+        "player_name" = "player_name"
+      )
+    )  %>%
+    dplyr::select(
+      season,
+      game_no,
+      game_date,
+      player_name,
+      role,
+      goals_scored,
+      mins_played,
+      yellow_cards,
+      red_cards,
+      shirt_no,
+      on_for,
+      off_for,
+    )
+
+  return(ssn_pl_apps)
+}
+
+s9697_pl_apps <- get_ssn_apps("96")
+s9899_pl_apps <- get_ssn_apps("98")
 
 player_apps <- dplyr::bind_rows(
-  comp_rec_plr_apps,
-  sb_player_apps
+  comp_rec_plr_apps %>% dplyr::filter(!season %in% c("1996/97", "1998/99")),
+  sb_player_apps %>% dplyr::filter(!season %in% c("1996/97", "1998/99")),
+  s9697_pl_apps,
+  s9899_pl_apps
 ) %>%
   dplyr::select(
     season,
@@ -481,6 +538,83 @@ player_apps <- player_apps %>%
   dplyr::left_join(
     menu_names,
     by = c("player_name", "season")
+  )
+
+
+sb_plr_career <- vroom::vroom(
+  "https://raw.githubusercontent.com/petebrown/scrape-player-careers/main/data/player_careers.csv",
+  col_select = c(
+    player_id,
+    player_name,
+    season,
+    date_joined,
+    date_left,
+    fee,
+    prev_club,
+    next_club,
+    transfer_type
+  ),
+  show_col_types = FALSE
+) %>%
+  fix_sb_player_names() %>%
+  dplyr::rename(
+    ssn_joined = season
+  ) %>%
+  dplyr::left_join(
+    sb_player_dob,
+    by = "player_id"
+  ) %>%
+  dplyr::arrange(
+    player_name,
+    date_joined
+  ) %>%
+  dplyr::group_by(
+    player_id
+  ) %>%
+  dplyr::mutate(
+    period = dplyr::row_number(),
+    prev_club = dplyr::case_match(
+      prev_club,
+      "Trainee" ~ "YTS",
+      .default = prev_club
+    )
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::select(
+    player_name,
+    player_dob,
+    period,
+    ssn_joined,
+    prev_club,
+    next_club,
+    transfer_type,
+    date_joined,
+    date_left
+  )
+
+cr_plr_career <- cr_plr_info %>%
+  dplyr::rename(
+    player_dob = dob,
+    ssn_joined = ssn_join
+  ) %>%
+  dplyr::mutate(
+    player_name = paste(forename, surname),
+    ssn_joined_2 = as.character(ssn_joined + 1),
+    ssn_joined_2 = stringr::str_sub(ssn_joined_2, -2),
+    ssn_joined = stringr::str_glue("{ssn_joined}/{ssn_joined_2}"),
+    transfer_type = dplyr::case_when(
+      is_loan == 1 ~ "Loan",
+      is_loan == 0 ~ "Transfer",
+    )
+  ) %>%
+  dplyr::select(
+    player_name,
+    player_dob,
+    period,
+    ssn_joined,
+    prev_club,
+    next_club,
+    transfer_type
   )
 
 usethis::use_data(player_apps, goals, goalscorers_by_game, player_info, overwrite = TRUE)
