@@ -11,15 +11,16 @@ mod_SeasonTracker_ui <- function(id){
   ns <- NS(id)
   tagList(
     bslib::page_fluid(
+      # Card containing season results with drop-down line-ups
       bslib::card(
+        full_screen = TRUE,
         bslib::card_header(
           class = "bg-dark",
-          "Season Reactable"
+          "Reactable Results"
         ),
-        bslib::card_body(
-          reactable::reactableOutput(ns("ssn_reactable"))
-        )
+        uiOutput(ns("ssn_reactable"))
       ),
+
       # Card containing main season progress chart
       bslib::card(
         full_screen = TRUE,
@@ -141,9 +142,32 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
-    output$ssn_reactable <- reactable::renderReactable(
-      output_ssn_reactable(c(selected_seasons()))
-    )
+    output$ssn_reactable <- renderUI({
+      req(selected_seasons())
+      if (!is.null(selected_seasons())) {
+        # Sort selected seasons
+        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
+
+        # Create a tab panel of results for each  season
+        ssn_tabs <- lapply(selected_seasons, function(season) {
+          tabPanel(
+            title = season,
+            reactable::renderReactable(
+              output_ssn_reactable(season)
+            )
+          )
+        })
+
+        # Return a tabsetPanel containing season results
+        do.call(tabsetPanel, ssn_tabs)
+      } else {
+        p("Please select one or more seasons from the dropdown menu.")
+      }
+    })
+
+    # output$ssn_reactable <- reactable::renderReactable(
+    #   output_ssn_reactable(c(selected_seasons()))
+    # )
 
     ###########################
     # CARD 1: SEASON PROGRESS #
