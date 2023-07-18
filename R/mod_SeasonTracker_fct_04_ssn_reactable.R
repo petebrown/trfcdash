@@ -53,8 +53,8 @@ output_ssn_reactable <- function(selected_seasons) {
       opposition = reactable::colDef(name = "Opponent", width = 200),
       outcome = reactable::colDef(name = "Outcome", align = "left", width = 100),
       score = reactable::colDef(name = "Score", width = 100),
-      competition = reactable::colDef(name = "Comp"),
-      attendance = reactable::colDef(name = "Att", width = 110,
+      competition = reactable::colDef(name = "Competition"),
+      attendance = reactable::colDef(name = "Att.", width = 110,
                                      format = reactable::colFormat(digits = 0, separators = TRUE)),
       manager = reactable::colDef(name = "Manager")
     ),

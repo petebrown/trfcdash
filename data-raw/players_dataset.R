@@ -148,6 +148,10 @@ game_lengths <- results_dataset %>%
     game_length
   )
 
+comp_rec_pl_seasons_9798 <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/player_ssns_9798.csv",
+  show_col_types = FALSE
+)
 comp_rec_pl_seasons_9899 <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/player_ssns_9899.csv",
   show_col_types = FALSE
@@ -157,6 +161,7 @@ comp_rec_plr_seasons <- vroom::vroom(
   show_col_types = FALSE
 ) %>%
   dplyr::bind_rows(
+    comp_rec_pl_seasons_9798,
     comp_rec_pl_seasons_9899
   ) %>%
   dplyr::arrange(
@@ -360,12 +365,14 @@ get_ssn_apps <- function(ssn_yr) {
 }
 
 s9697_pl_apps <- get_ssn_apps("96")
+s9798_pl_apps <- get_ssn_apps("97")
 s9899_pl_apps <- get_ssn_apps("98")
 
 player_apps <- dplyr::bind_rows(
-  comp_rec_plr_apps %>% dplyr::filter(!season %in% c("1996/97", "1998/99")),
-  sb_player_apps %>% dplyr::filter(!season %in% c("1996/97", "1998/99")),
+  comp_rec_plr_apps %>% dplyr::filter(!season %in% c("1996/97", "1997/98", "1998/99")),
+  sb_player_apps %>% dplyr::filter(!season %in% c("1996/97", "1997/98", "1998/99")),
   s9697_pl_apps,
+  s9798_pl_apps,
   s9899_pl_apps
 ) %>%
   dplyr::select(
