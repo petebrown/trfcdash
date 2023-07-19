@@ -32,5 +32,9 @@ div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
   width: fit-content;
   border: none;
   width: fit-content;
-  font-size: smaller;
+  font-size: small;
+}
+
+.reactable-text {
+  color: #404040;
 }

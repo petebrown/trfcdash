@@ -37,7 +37,8 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
       score,
       competition,
       attendance,
-      manager
+      manager,
+      league_tier
     )
 
   second_level <- player_apps %>%
@@ -73,21 +74,22 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
     striped = TRUE,
     resizable = TRUE,
     columns = list(
-      season = reactable::colDef(name = "Season", width = 80),
+      season = reactable::colDef(name = "Season", width = 100),
       ssn_game_no = reactable::colDef(name = "Game\nNo.", align = "left", width = 80),
       game_date = reactable::colDef(name = "Date", width = 120,
                                     format = reactable::colFormat(date = TRUE, locales = "en-GB")),
-      venue = reactable::colDef(name = "Venue", width = 100),
+      venue = reactable::colDef(name = "Venue", width = 80),
       opposition = reactable::colDef(name = "Opponent", width = 180),
-      outcome = reactable::colDef(name = "Outcome", align = "left", width = 100),
-      score = reactable::colDef(name = "Score", width = 100),
-      competition = reactable::colDef(name = "Competition"),
+      outcome = reactable::colDef(name = "Res", align = "left", width = 70),
+      score = reactable::colDef(name = "Score", width = 80),
+      competition = reactable::colDef(name = "Competition", width = 130),
       attendance = reactable::colDef(name = "Att.", width = 110,
                                      format = reactable::colFormat(digits = 0, separators = TRUE)),
-      manager = reactable::colDef(name = "Manager")
+      manager = reactable::colDef(name = "Manager"),
+      league_tier = reactable::colDef(show = FALSE)
     ),
     details = function(index) {
-      sec_lvl = second_level[second_level$game_date == top_level$game_date[index], ]
+      line_up = second_level[second_level$game_date == top_level$game_date[index], ]
       lge_tab = lge_tabs[lge_tabs$game_date == top_level$game_date[index], ]
       bslib::layout_column_wrap(
         width = 1/2,
@@ -95,8 +97,8 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
           class = "reactable-details",
           bslib::card_title("Line-up"),
           reactable::reactable(
-            data = sec_lvl,
-            # class = "reactable-details",
+            data = line_up,
+            class = "reactable-text",
             outlined = FALSE,
             bordered = FALSE,
             borderless = TRUE,
@@ -116,9 +118,8 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
               red_cards = reactable::colDef(name = "RC", width = 40)
             ),
             rowStyle = function(index) {
-              if (sec_lvl[index, "role"] == "sub") {
+              if (line_up[index, "role"] == "sub") {
                 list(
-                  # fontWeight = "bold",
                   background = "rgba(0, 0, 0, 0.03)"
                 )
               }
@@ -130,7 +131,7 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
           bslib::card_title("As It Stood"),
           reactable::reactable(
             data = lge_tab,
-            # class = "reactable-details",
+            class = "reactable-text",
             defaultPageSize = 24,
             compact    = TRUE,
             bordered = FALSE,
@@ -144,21 +145,42 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
               game_no = reactable::colDef(show = FALSE),
               game_date = reactable::colDef(show = FALSE),
               pos = reactable::colDef(name = "Pos", width = 50),
-              Team = reactable::colDef(width = 200),
+              Team = reactable::colDef(width = 145),
               Pld = reactable::colDef(width = 50),
-              W = reactable::colDef(width = 50),
-              D = reactable::colDef(width = 50),
-              L = reactable::colDef(width = 50),
+              W = reactable::colDef(width = 40),
+              D = reactable::colDef(width = 40),
+              L = reactable::colDef(width = 40),
               GF = reactable::colDef(width = 50),
               GA = reactable::colDef(width = 50),
               Pts = reactable::colDef(width = 50)
             ),
             rowStyle = function(index) {
-              if (lge_tab[index, "Team"] == "Tranmere Rovers") {
-                list(
-                  fontWeight = "bold"
-                )
+              tier = top_level[index, "league_tier"]
+              season = lge_tab[index, "season"]
+              pos = lge_tab[index, "pos"]
+              team = lge_tab[index, "Team"]
+
+              styles = list()
+              if (team == "Tranmere Rovers") {
+                styles = c(styles, fontWeight = "bold")
               }
+
+              if (season == "2019/20") {
+                if (pos > 21) {
+                  styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
+                }
+              } else {
+                if (tier %in% c(2, 3, 5)) {
+                  if (pos >= 20) {
+                    styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
+                  }
+                } else {
+                  if (pos >= 23) {
+                    styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
+                  }
+                }
+              }
+              return(styles)
             }
           )
         )
