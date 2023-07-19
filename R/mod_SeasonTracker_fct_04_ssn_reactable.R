@@ -1,4 +1,28 @@
-output_ssn_reactable <- function(selected_seasons) {
+get_eos_table <- function(selected_seasons) {
+  final_tables %>%
+    dplyr::filter(
+      season %in% selected_seasons
+    ) %>%
+    dplyr::arrange(
+      season,
+      game_no,
+      pos
+    )
+}
+
+get_lge_tables <- function(selected_seasons) {
+  lge_tables %>%
+    dplyr::filter(
+      season %in% selected_seasons
+    ) %>%
+    dplyr::arrange(
+      season,
+      game_no,
+      pos
+    )
+}
+
+output_ssn_reactable <- function(selected_seasons, n_fixtures) {
   top_level <- results_dataset %>%
     dplyr::filter(
       season %in% selected_seasons
@@ -37,10 +61,14 @@ output_ssn_reactable <- function(selected_seasons) {
       red_cards
     )
 
+  lge_tabs <- get_lge_tables(selected_seasons)
+
   reactable::reactable(
     data = top_level,
+    defaultPageSize = n_fixtures,
     compact = TRUE,
     searchable = TRUE,
+    borderless = TRUE,
     filterable = FALSE,
     striped = TRUE,
     resizable = TRUE,
@@ -50,7 +78,7 @@ output_ssn_reactable <- function(selected_seasons) {
       game_date = reactable::colDef(name = "Date", width = 120,
                                     format = reactable::colFormat(date = TRUE, locales = "en-GB")),
       venue = reactable::colDef(name = "Venue", width = 100),
-      opposition = reactable::colDef(name = "Opponent", width = 200),
+      opposition = reactable::colDef(name = "Opponent", width = 180),
       outcome = reactable::colDef(name = "Outcome", align = "left", width = 100),
       score = reactable::colDef(name = "Score", width = 100),
       competition = reactable::colDef(name = "Competition"),
@@ -60,33 +88,80 @@ output_ssn_reactable <- function(selected_seasons) {
     ),
     details = function(index) {
       sec_lvl = second_level[second_level$game_date == top_level$game_date[index], ]
-      reactable::reactable(
-        data = sec_lvl,
-        class = "line_up_details",
-        defaultPageSize = 14,
-        compact    = TRUE,
-        filterable = FALSE,
-        bordered   = TRUE,
-        resizable  = TRUE,
-        columns    = list(
-          season = reactable::colDef(show = FALSE),
-          game_date = reactable::colDef(show = FALSE),
-          shirt_no = reactable::colDef(name = "Shirt No.", align = "left", width = 100),
-          player_name = reactable::colDef(name = "Player", width = 230),
-          role = reactable::colDef(name = "Role", width = 100),
-          mins_played = reactable::colDef(name = "Mins played", width = 100),
-          goals_scored = reactable::colDef(name = "Goals", width = 100),
-          yellow_cards = reactable::colDef(name = "YC", width = 100),
-          red_cards = reactable::colDef(name = "RC", width = 100)
+      lge_tab = lge_tabs[lge_tabs$game_date == top_level$game_date[index], ]
+      bslib::layout_column_wrap(
+        width = 1/2,
+        div(
+          class = "reactable-details",
+          bslib::card_title("Line-up"),
+          reactable::reactable(
+            data = sec_lvl,
+            # class = "reactable-details",
+            outlined = FALSE,
+            bordered = FALSE,
+            borderless = TRUE,
+            defaultPageSize = 14,
+            compact    = TRUE,
+            filterable = FALSE,
+            resizable  = TRUE,
+            columns    = list(
+              season = reactable::colDef(show = FALSE),
+              game_date = reactable::colDef(show = FALSE),
+              shirt_no = reactable::colDef(name = "No.", align = "left", width = 60),
+              player_name = reactable::colDef(name = "Player", width = 180),
+              role = reactable::colDef(name = "Role", width = 60),
+              mins_played = reactable::colDef(name = "Mins", width = 60),
+              goals_scored = reactable::colDef(name = "Goals", width = 50),
+              yellow_cards = reactable::colDef(name = "YC", width = 40),
+              red_cards = reactable::colDef(name = "RC", width = 40)
+            ),
+            rowStyle = function(index) {
+              if (sec_lvl[index, "role"] == "sub") {
+                list(
+                  # fontWeight = "bold",
+                  background = "rgba(0, 0, 0, 0.03)"
+                )
+              }
+            }
+          )
         ),
-        rowStyle = function(index) {
-          if (sec_lvl[index, "role"] == "sub") {
-            list(
-              # fontWeight = "bold",
-              background = "rgba(0, 0, 0, 0.03)"
-            )
-          }
-        }
+        div(
+          class = "reactable-details",
+          bslib::card_title("As It Stood"),
+          reactable::reactable(
+            data = lge_tab,
+            # class = "reactable-details",
+            defaultPageSize = 24,
+            compact    = TRUE,
+            bordered = FALSE,
+            borderless = TRUE,
+            outlined = FALSE,
+            filterable = FALSE,
+            searchable = FALSE,
+            resizable  = TRUE,
+            columns    = list(
+              season = reactable::colDef(show = FALSE),
+              game_no = reactable::colDef(show = FALSE),
+              game_date = reactable::colDef(show = FALSE),
+              pos = reactable::colDef(name = "Pos", width = 50),
+              Team = reactable::colDef(width = 200),
+              Pld = reactable::colDef(width = 50),
+              W = reactable::colDef(width = 50),
+              D = reactable::colDef(width = 50),
+              L = reactable::colDef(width = 50),
+              GF = reactable::colDef(width = 50),
+              GA = reactable::colDef(width = 50),
+              Pts = reactable::colDef(width = 50)
+            ),
+            rowStyle = function(index) {
+              if (lge_tab[index, "Team"] == "Tranmere Rovers") {
+                list(
+                  fontWeight = "bold"
+                )
+              }
+            }
+          )
+        )
       )
     }
   )

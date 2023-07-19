@@ -153,7 +153,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
           tabPanel(
             title = season,
             reactable::renderReactable(
-              output_ssn_reactable(season)
+              output_ssn_reactable(season, n_fixtures())
             )
           )
         })
