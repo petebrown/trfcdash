@@ -67,6 +67,7 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
   reactable::reactable(
     data = top_level,
     defaultPageSize = n_fixtures,
+    fullWidth = TRUE,
     compact = TRUE,
     searchable = TRUE,
     borderless = TRUE,
@@ -165,21 +166,16 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
                 styles = c(styles, fontWeight = "bold")
               }
 
-              if (season == "2019/20") {
-                if (pos > 21) {
+              if (tier %in% c(2, 3, 5)) {
+                if (pos >= 20) {
                   styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
                 }
               } else {
-                if (tier %in% c(2, 3, 5)) {
-                  if (pos >= 20) {
-                    styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
-                  }
-                } else {
-                  if (pos >= 23) {
-                    styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
-                  }
+                if (pos >= 23) {
+                  styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
                 }
               }
+
               return(styles)
             }
           )
