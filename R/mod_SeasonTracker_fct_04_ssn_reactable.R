@@ -1,4 +1,7 @@
 get_eos_table <- function(selected_seasons) {
+  res <- filter_ssn_results(selected_seasons) %>%
+    dplyr::select(game_date, league_tier)
+
   final_tables %>%
     dplyr::filter(
       season %in% selected_seasons
@@ -7,10 +10,17 @@ get_eos_table <- function(selected_seasons) {
       season,
       game_no,
       pos
+    ) %>%
+    dplyr::left_join(
+      res,
+      by = "game_date"
     )
 }
 
 get_lge_tables <- function(selected_seasons) {
+  res <- filter_ssn_results(selected_seasons) %>%
+    dplyr::select(game_date, league_tier)
+
   lge_tables %>%
     dplyr::filter(
       season %in% selected_seasons
@@ -19,6 +29,10 @@ get_lge_tables <- function(selected_seasons) {
       season,
       game_no,
       pos
+    ) %>%
+    dplyr::left_join(
+      res,
+      by = "game_date"
     )
 }
 
@@ -103,7 +117,7 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
             outlined = FALSE,
             bordered = FALSE,
             borderless = TRUE,
-            defaultPageSize = 14,
+            defaultPageSize = 15,
             compact    = TRUE,
             filterable = FALSE,
             resizable  = TRUE,
@@ -145,7 +159,7 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
               season = reactable::colDef(show = FALSE),
               game_no = reactable::colDef(show = FALSE),
               game_date = reactable::colDef(show = FALSE),
-              pos = reactable::colDef(name = "Pos", width = 50),
+              pos = reactable::colDef(name = "Pos", align = "left", width = 52),
               Team = reactable::colDef(width = 145),
               Pld = reactable::colDef(width = 50),
               W = reactable::colDef(width = 40),
@@ -153,10 +167,11 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
               L = reactable::colDef(width = 40),
               GF = reactable::colDef(width = 50),
               GA = reactable::colDef(width = 50),
-              Pts = reactable::colDef(width = 50)
+              Pts = reactable::colDef(width = 50),
+              league_tier = reactable::colDef(show = FALSE)
             ),
             rowStyle = function(index) {
-              tier = top_level[index, "league_tier"]
+              tier = lge_tab[index, "league_tier"]
               season = lge_tab[index, "season"]
               pos = lge_tab[index, "pos"]
               team = lge_tab[index, "Team"]
@@ -166,14 +181,19 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
                 styles = c(styles, fontWeight = "bold")
               }
 
-              if (tier %in% c(2, 3, 5)) {
-                if (pos >= 20) {
+              if (
+                tier %in% c(2, 3, 5) & pos >= 21 |
+                tier == 4 & pos >= 23
+                ) {
                   styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
-                }
-              } else {
-                if (pos >= 23) {
-                  styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
-                }
+              }
+
+              if (
+                tier %in% c(2, 3) & (pos %in% c(2, 6)) |
+                tier == 4 & (pos %in% c(3, 7)) |
+                tier == 5 & (pos %in% c(1, 3, 7))
+                ) {
+                styles = c(styles, borderBottom = "1px solid rgba(0, 0, 0, 0.1)")
               }
 
               return(styles)
