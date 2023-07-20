@@ -479,11 +479,13 @@ sb_plr_dobs <- sb_player_apps %>%
   )
 
 player_info <- dplyr::bind_rows(
-  cr_plr_dobs, sb_plr_dobs
+  cr_plr_dobs,
+  sb_plr_dobs
 ) %>%
   dplyr::group_by(
     player_name,
-    player_dob
+    player_dob,
+    min_season
   ) %>%
   dplyr::slice(
     rep(1:dplyr::n(), each = max_season - min_season + 1)
@@ -494,11 +496,13 @@ player_info <- dplyr::bind_rows(
     nxt_season = stringr::str_sub(nxt_season, start = 3, end = 4),
     season = stringr::str_glue("{season}/{nxt_season}")
   ) %>%
+  dplyr::ungroup() %>%
   dplyr::select(
     -min_season,
     -max_season,
     -nxt_season
-  )
+  ) %>%
+  unique()
 
 dupe_names <- player_info %>%
   dplyr::arrange(
@@ -622,6 +626,61 @@ cr_plr_career <- cr_plr_info %>%
     prev_club,
     next_club,
     transfer_type
+  )
+
+# !!!!!
+# TEMPORARY FIX FOR PLAYER_INFO BELOW
+# !!!!!
+player_info_1 <- player_info %>%
+  dplyr::filter(
+    season < 1996
+  ) %>%
+  dplyr::arrange(
+    dplyr::desc(season)
+  )
+
+player_info_2 <- player_apps %>%
+  dplyr::filter(
+    season > 1996
+  ) %>%
+  dplyr::mutate(
+    forename = dplyr::case_match(
+      player_name,
+      "Pedro Miguel Matias" ~ "Pedro Miguel",
+      .default = stringr::str_split_i(player_name, " ", 1)
+    ),
+    surname = dplyr::case_match(
+      player_name,
+      "Jean-Louis Akpa Akpro" ~ "Akpa Akpro",
+      "Owain Fon Williams" ~ "Fon Williams",
+      "Craig Le Cornu" ~ "Le Cornu",
+      "Ian St John" ~ "St John",
+      .default = stringr::str_split_i(player_name, " ", 2)
+    ),
+    pl_name_index = paste(surname, forename, sep = ", ")
+  ) %>%
+  dplyr::select(
+    surname,
+    forename,
+    player_name,
+    pl_name_index,
+    player_dob,
+    dob_display,
+    season
+  ) %>%
+  unique() %>%
+  dplyr::arrange(
+    pl_name_index,
+    season
+  )
+
+player_info <- rbind(
+  player_info_1,
+  player_info_2
+) %>%
+  dplyr::arrange(
+    pl_name_index,
+    season
   )
 
 usethis::use_data(player_apps, goals, goalscorers_by_game, player_info, overwrite = TRUE)
