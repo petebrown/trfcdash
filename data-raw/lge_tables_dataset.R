@@ -10,4 +10,10 @@ lge_tables <- vroom::vroom(
   col_select = -("url")
 )
 
-usethis::use_data(lge_tables, final_tables, overwrite = TRUE)
+lge_tables_by_venue <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/scrape-latest-table/main/data/lge_tables_venue.csv",
+  show_col_types = FALSE,
+  col_select = -("url")
+)
+
+usethis::use_data(lge_tables, final_tables, lge_tables_by_venue, overwrite = TRUE)
