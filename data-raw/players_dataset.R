@@ -1,3 +1,24 @@
+fa_trophy_apps_raw <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_fixtures.csv",
+  show_col_types = FALSE
+)
+
+fa_trophy_goals <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_goals.csv",
+  show_col_types = FALSE
+)
+
+fa_trophy_cards <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_cards.csv",
+  show_col_types = FALSE
+)
+
+fa_trophy_goals_against <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_goals_against.csv",
+  show_col_types = FALSE
+)
+
+
 fix_sb_player_names <- function(df) {
   df %>%
     dplyr::mutate(
@@ -34,25 +55,6 @@ fix_sb_game_ids <- function(df) {
     )
 }
 
-comp_rec_goals <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/cr-scorers.csv",
-  show_col_types = FALSE
-)
-
-sb_goals <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/scrape-goals/main/data/goals.csv",
-  col_select = c("game_id", "player_id", "player_name", "minute", "penalty", "own_goal", "goal_type"),
-  show_col_types = FALSE
-) %>%
-  fix_sb_player_names()
-
-goals <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/scorers-long.csv",
-  show_col_types = FALSE
-) %>%
-  fix_sb_player_names()
-
-
 game_ids_and_dates <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/update-player-stats/main/data/players_df.csv",
   col_select = c("sb_game_id", "game_date", "season"),
@@ -66,6 +68,84 @@ game_dates_and_nos <- results_dataset %>%
     season,
     ssn_game_no,
     game_date
+  )
+
+comp_rec_goals <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/cr-scorers.csv",
+  show_col_types = FALSE
+)
+
+fa_trophy_goals_raw <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_goals.csv",
+  show_col_types = FALSE
+)
+
+fa_trophy_goals_by_date <- fa_trophy_goals_raw %>%
+  dplyr::left_join(
+    game_dates_and_nos,
+    by = c("game_date")
+  ) %>%
+  dplyr::rename(
+    game_no = ssn_game_no
+  ) %>%
+  dplyr::mutate(
+    player_name = dplyr::case_when(
+      own_goal == 1 ~ "OG",
+      .default = player_name
+    )
+  ) %>%
+  dplyr::group_by(
+    season,
+    game_date,
+    player_name
+  ) %>%
+  dplyr::summarise(
+    goals_scored = dplyr::n(),
+    pens = sum(penalty, na.rm = TRUE)
+  ) %>%
+  dplyr::ungroup()
+
+fa_trophy_goals <- fa_trophy_goals_raw %>%
+  dplyr::left_join(
+    game_dates_and_nos,
+    by = c("game_date")
+  ) %>%
+  dplyr::rename(
+    game_no = ssn_game_no
+  ) %>%
+  dplyr::mutate(
+    player_name = dplyr::case_when(
+      own_goal == 1 ~ "OG",
+      .default = player_name
+    )
+  ) %>%
+  dplyr::group_by(
+    season,
+    game_no,
+    player_name
+  ) %>%
+  dplyr::summarise(
+    goals_scored = dplyr::n()
+  ) %>%
+  dplyr::ungroup()
+
+
+sb_goals <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/scrape-goals/main/data/goals.csv",
+  col_select = c("game_id", "player_id", "player_name", "minute", "penalty", "own_goal", "goal_type"),
+  show_col_types = FALSE
+) %>%
+  fix_sb_player_names()
+
+goals <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/scorers-long.csv",
+  show_col_types = FALSE
+) %>%
+  fix_sb_player_names() %>%
+  rbind(fa_trophy_goals) %>%
+  dplyr::arrange(
+    season,
+    game_no
   )
 
 
@@ -101,11 +181,14 @@ goalscorers_by_game <- sb_goals %>%
   ) %>%
   dplyr::summarise(
     goals_scored = dplyr::n(),
-    pens = sum(penalty),
+    pens = sum(penalty, na.rm = TRUE),
     .groups = "drop"
   ) %>%
   dplyr::bind_rows(
     comp_rec_goals
+  ) %>%
+  dplyr::bind_rows(
+    fa_trophy_goals_by_date
   ) %>%
   dplyr::select(
     game_date,
@@ -549,6 +632,71 @@ player_apps <- player_apps %>%
   dplyr::left_join(
     menu_names,
     by = c("player_name", "season")
+  )
+
+fa_trophy_apps <- fa_trophy_apps_raw %>%
+  dplyr::left_join(
+    results_dataset,
+    by = "game_date"
+  ) %>%
+  dplyr::left_join(
+    fa_trophy_goals_by_date %>% dplyr::select(-season),
+    by = c("game_date", "player_name")
+  ) %>%
+  dplyr::left_join(
+    fa_trophy_cards,
+    by = c("game_date", "player_name")
+  ) %>%
+  dplyr::left_join(
+    squad_nos,
+    by = c("season", "player_name")
+  ) %>%
+  dplyr::left_join(
+    player_info,
+    by = c("season", "player_name")
+  ) %>%
+  dplyr::left_join(
+    game_lengths,
+    by = c("game_date")
+  ) %>%
+  tidyr::replace_na(list(
+    min_on = 0,
+    min_off = 0
+  )) %>%
+  dplyr::mutate(
+    mins_played = dplyr::case_when(
+      !is.na(min_so) ~ min_so - min_on,
+      role == "starter" ~ game_length - min_off,
+      role == "sub" ~ game_length - min_on - min_off
+    )
+  ) %>%
+  dplyr::select(
+    season,
+    ssn_game_no,
+    game_date,
+    player_name,
+    role,
+    goals_scored,
+    mins_played,
+    yellow_card,
+    red_card,
+    shirt_no,
+    on_for,
+    off_for,
+    player_dob,
+    dob_display,
+    pl_name_index
+  ) %>%
+  dplyr::rename(
+    game_no = ssn_game_no,
+    yellow_cards = yellow_card,
+    red_cards = red_card,
+    menu_name = pl_name_index
+  )
+
+player_apps <- player_apps %>%
+  rbind(
+    fa_trophy_apps
   )
 
 
