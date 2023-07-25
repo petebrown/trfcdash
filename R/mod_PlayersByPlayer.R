@@ -32,7 +32,17 @@ mod_PlayersByPlayer_ui <- function(id){
           class = "bg-dark",
           "By Season"
         ),
-        DT::dataTableOutput(ns("pl_summary_by_ssn"), height = "100%", fill = FALSE)
+        reactable::reactableOutput(ns("pl_ssn_reactable"))
+      )
+    ),
+    bslib::page_fluid(
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "By Competition"
+        ),
+        reactable::reactableOutput(ns("pl_comp_reactable"))
       )
     ),
     bslib::page_fluid(
@@ -113,20 +123,12 @@ mod_PlayersByPlayer_server <- function(id, player_name){
       )
     }
 
-    output$pl_summary_by_ssn <- {
-      DT::renderDT(
-        output_pl_summary_by_ssn(player_name()),
-        rownames = FALSE,
-        options = list(
-          dom = 'tip',
-          info = FALSE,
-          paging = FALSE,
-          fillContainer = TRUE,
-          columnDefs = list(
-            list(targets = c(4), className = 'dt-right')
-          )
-        )
-      )
+    output$pl_ssn_reactable <- {
+      reactable::renderReactable(output_plr_ssn_reactable(player_name()))
+    }
+
+    output$pl_comp_reactable <- {
+      reactable::renderReactable(output_plr_comps_reactable(player_name()))
     }
 
     output$pl_summary_by_tier <- {
