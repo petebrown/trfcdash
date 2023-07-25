@@ -287,20 +287,20 @@ comp_rec_plr_apps <- vroom::vroom(
     shirt_no,
     on_for,
     off_for
-  )# %>%
-  # dplyr::left_join(
-  #   game_lengths,
-  #   by = "game_date"
-  # ) %>%
-  # dplyr::mutate(
-  #   mins_played = dplyr::case_when(
-  #     role == "starter" & is.na(off_for) ~ game_length,
-  #     .default = NA
-  #   )
-  # ) %>%
-  # dplyr::select(
-  #   -game_length
-  # )
+  ) %>%
+  dplyr::left_join(
+    game_lengths,
+    by = "game_date"
+  ) %>%
+  dplyr::mutate(
+    mins_played = dplyr::case_when(
+      season < 1996 & role == "starter" & is.na(off_for) ~ game_length,
+      .default = NA
+    )
+  ) %>%
+  dplyr::select(
+    -game_length
+  )
 
 
 
@@ -408,7 +408,8 @@ get_ssn_apps <- function(ssn_yr) {
       season == ssns
     ) %>%
     dplyr::select(
-      -goals_scored
+      -goals_scored,
+      -mins_played
     )
 
   ssn_sb <- sb_player_apps %>%
