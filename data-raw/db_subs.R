@@ -104,18 +104,16 @@ subs_table <- cr_subs %>%
     sb_subs
   ) %>%
   dplyr::mutate(
-    min_off = dplyr::case_match(
-      shirt_no,
-      6 ~ 72,
-      8 ~ 80,
-      10 ~ 81,
+    min_off = dplyr::case_when(
+      game_date == "1997-01-10" & shirt_no == 6 ~ 72,
+      game_date == "1997-01-10" & shirt_no == 8 ~ 80,
+      game_date == "1997-01-10" & shirt_no == 10 ~ 81,
       .default = min_off
     ),
-    min_on = dplyr::case_match(
-      shirt_no,
-      14 ~ 72,
-      13 ~ 80,
-      12 ~ 81,
+    min_on = dplyr::case_when(
+      game_date == "1997-01-10" & shirt_no == 14 ~ 72,
+      game_date == "1997-01-10" & shirt_no == 13 ~ 80,
+      game_date == "1997-01-10" & shirt_no == 12 ~ 81,
       .default = min_on
     )
   )
