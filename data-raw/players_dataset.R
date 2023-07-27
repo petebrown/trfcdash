@@ -832,4 +832,10 @@ player_info <- rbind(
     season
   )
 
-usethis::use_data(player_apps, goals, goalscorers_by_game, player_info, overwrite = TRUE)
+usethis::use_data(
+  player_apps,
+  goals,
+  goalscorers_by_game,
+  player_info,
+  overwrite = TRUE
+)
