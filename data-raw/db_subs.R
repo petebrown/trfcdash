@@ -84,8 +84,8 @@ sb_subs <- sb_subs_and_reds %>%
     shirt_no,
     player_id,
     player_name,
-    min_off,
-    min_on
+    min_on,
+    min_off
   ) %>%
   dplyr::filter(
     !game_date %in% cr_subs$game_date
