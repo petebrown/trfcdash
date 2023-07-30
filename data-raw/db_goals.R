@@ -20,7 +20,7 @@ sb_gf <- sb_goals %>%
     own_goal
   )
 
-goals_table <- goals %>%
+db_goals <- goals %>%
   dplyr::filter(
     season < 1996
   ) %>%
@@ -63,4 +63,4 @@ goals_table <- goals %>%
     player_name
   )
 
-usethis::use_data(goals_table, overwrite = TRUE)
+usethis::use_data(db_goals, overwrite = TRUE)
