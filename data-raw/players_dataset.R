@@ -1,23 +1,11 @@
-fa_trophy_apps_raw <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_fixtures.csv",
-  show_col_types = FALSE
-)
-
-fa_trophy_goals <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_goals.csv",
-  show_col_types = FALSE
-)
-
-fa_trophy_cards <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_cards.csv",
-  show_col_types = FALSE
-)
-
-fa_trophy_goals_against <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_goals_against.csv",
-  show_col_types = FALSE
-)
-
+fix_sb_game_ids <- function(df) {
+  df %>%
+    dplyr::rename(game_id := sb_game_id) %>%
+    dplyr::mutate(
+      game_id := stringr::str_remove(game_id, "tpg"),
+      game_id := as.numeric(game_id)
+    )
+}
 
 fix_sb_player_names <- function(df) {
   df %>%
@@ -46,14 +34,39 @@ fix_sb_player_names <- function(df) {
     )
 }
 
-fix_sb_game_ids <- function(df) {
+calc_mins_played <- function(df) {
   df %>%
-    dplyr::rename(game_id := sb_game_id) %>%
     dplyr::mutate(
-      game_id := stringr::str_remove(game_id, "tpg"),
-      game_id := as.numeric(game_id)
+      mins_played = dplyr::case_when(
+        role == "starter" & is.na(min_off) & is.na(min_so) ~ game_length, # Played full game
+        role == "starter" & !is.na(min_off) ~ min_off, # Started; subbed off
+        role == "starter" & !is.na(min_so) ~ min_so, # Started; sent off
+        role == "sub" & is.na(min_off) & is.na(min_so) ~ game_length - min_on, # Subbed on; played to end
+        role == "sub" & !is.na(min_off) ~ min_off - min_on, # Subbed on; subbed off
+        role == "sub" & !is.na(min_so) ~ min_so - min_on # Subbed on; sent off
+      )
     )
 }
+
+fa_trophy_apps_raw <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_fixtures.csv",
+  show_col_types = FALSE
+)
+
+fa_trophy_goals <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_goals.csv",
+  show_col_types = FALSE
+)
+
+fa_trophy_cards <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_cards.csv",
+  show_col_types = FALSE
+)
+
+fa_trophy_goals_against <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/fa-trophy/fa_trophy_goals_against.csv",
+  show_col_types = FALSE
+)
 
 game_ids_and_dates <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/update-player-stats/main/data/players_df.csv",
@@ -69,6 +82,23 @@ game_dates_and_nos <- results_dataset %>%
     ssn_game_no,
     game_date
   )
+
+sb_players_df <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/update-player-stats/main/data/players_df.csv",
+  col_select = c("sb_game_id", "sb_player_id", "game_date", "season", "player_name",  "pl_goals", "yellow_cards", "red_cards"),
+  show_col_types = FALSE
+)
+
+sb_players_ids_and_names <- sb_players_df %>%
+  fix_sb_player_names() %>%
+  dplyr::rename(
+    player_id = sb_player_id
+  ) %>%
+  dplyr::select(
+    player_id,
+    player_name
+  ) %>%
+  unique()
 
 comp_rec_goals <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/cr-scorers.csv",
@@ -253,6 +283,41 @@ comp_rec_plr_seasons <- vroom::vroom(
     ssn
   )
 
+sb_subs_and_reds <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/scrape-events/main/data/subs-and-reds.csv",
+  show_col_types = FALSE
+)
+
+sb_subs_and_reds_by_name <- sb_subs_and_reds %>%
+  dplyr::left_join(
+    sb_players_ids_and_names,
+    by = "player_id"
+  ) %>%
+  dplyr::left_join(
+    game_ids_and_dates,
+    by = "game_id"
+  ) %>%
+  dplyr::filter(
+    season %in% c("1996/97", "1997/98", "1998/99")
+  ) %>%
+  dplyr::select(
+    game_date,
+    player_name,
+    min_on,
+    min_off,
+    min_so
+  )
+
+cr_subs_and_reds <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/cr_subs_and_reds.csv",
+  na = "0",
+  show_col_types = FALSE
+) %>%
+  dplyr::filter(
+    game_date < "1996-08-01"
+  )
+
+
 comp_rec_plr_apps <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/apps_long.csv",
   show_col_types = FALSE) %>%
@@ -277,6 +342,13 @@ comp_rec_plr_apps <- vroom::vroom(
     goals,
     by = c("season" = "season", "game_no" = "game_no", "player_name" = "player_name")
   ) %>%
+  dplyr::left_join(
+    rbind(
+      cr_subs_and_reds,
+      sb_subs_and_reds_by_name
+    ),
+    by = c("game_date","player_name")
+  ) %>%
   dplyr::select(
     season,
     game_no,
@@ -286,22 +358,19 @@ comp_rec_plr_apps <- vroom::vroom(
     goals_scored,
     shirt_no,
     on_for,
-    off_for
+    off_for,
+    min_on,
+    min_off,
+    min_so
   ) %>%
   dplyr::left_join(
     game_lengths,
     by = "game_date"
   ) %>%
-  dplyr::mutate(
-    mins_played = dplyr::case_when(
-      season < 1996 & role == "starter" & is.na(off_for) ~ game_length,
-      .default = NA
-    )
-  ) %>%
+  calc_mins_played() %>%
   dplyr::select(
     -game_length
   )
-
 
 
 squad_nos <- vroom::vroom(
@@ -309,10 +378,7 @@ squad_nos <- vroom::vroom(
   show_col_types = FALSE
 )
 
-sb_subs_and_reds <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/scrape-events/main/data/subs-and-reds.csv",
-  show_col_types = FALSE
-)
+
 
 sb_player_dob <- vroom::vroom(
   "https://raw.githubusercontent.com/petebrown/scrape-player-info/main/data/player-info.csv",
@@ -323,11 +389,7 @@ sb_player_dob <- vroom::vroom(
     player_dob
   )
 
-sb_player_apps <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/update-player-stats/main/data/players_df.csv",
-  col_select = c("sb_game_id", "sb_player_id", "game_date", "season", "player_name",  "pl_goals", "yellow_cards", "red_cards"),
-  show_col_types = FALSE
-) %>%
+sb_player_apps <- sb_players_df %>%
   fix_sb_player_names() %>%
   fix_sb_game_ids() %>%
   dplyr::rename(player_id = sb_player_id) %>%
@@ -371,16 +433,9 @@ sb_player_apps <- vroom::vroom(
     role = dplyr::case_when(
       is.na(min_on) ~ "starter",
       !is.na(min_on) ~ "sub"
-    ),
-    mins_played = dplyr::case_when(
-      role == "starter" & is.na(min_off) & is.na(min_so) ~ game_length,
-      role == "starter" & !is.na(min_off) ~ min_off,
-      role == "starter" & !is.na(min_so) ~ min_so,
-      role == "sub" & is.na(min_off) & is.na(min_so) ~ game_length - min_on,
-      role == "sub" & is.na(min_off) ~ min_off - min_on,
-      role == "sub" & is.na(min_so) ~ min_so - min_on
     )
   ) %>%
+  calc_mins_played() %>%
   dplyr::select(
     season,
     game_date,
@@ -832,6 +887,7 @@ player_info <- rbind(
     season
   )
 
+#
 usethis::use_data(
   player_apps,
   goals,

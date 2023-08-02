@@ -1,3 +1,39 @@
+
+# Manually added sub mins
+cr_sub_mins <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/cr_subs_and_reds.csv",
+  col_select = c("game_date", "player_name", "min_off", "min_on"),
+  na = "0",
+  show_col_types = FALSE
+)
+
+sb_sub_mins_96_to_99 <- sb_subs_and_reds %>%
+  dplyr::left_join(
+    sb_ids %>% dplyr::select(player_id, player_name) %>% unique(),
+    by = "player_id"
+  ) %>%
+  dplyr::left_join(
+    sb_ids %>% dplyr::select(game_id, game_date, season) %>% unique(),
+    by = "game_id"
+  ) %>%
+  dplyr::filter(
+    season %in% c("1996/97", "1997/98", "1998/99")
+  ) %>%
+  dplyr::select(
+    game_date,
+    player_name,
+    min_on,
+    min_off
+  ) %>%
+  dplyr::arrange(
+    game_date
+  )
+
+subs_pre_9900 <- rbind(
+  cr_sub_mins,
+  sb_sub_mins_96_to_99
+)
+
 cr_subs <- comp_rec_plr_apps %>%
   dplyr::filter(
     !is.na(on_for) | !is.na(off_for)
@@ -6,8 +42,8 @@ cr_subs <- comp_rec_plr_apps %>%
     game_date,
     shirt_no,
     player_name,
-    off_for,
-    on_for
+    on_for,
+    off_for
   ) %>%
   dplyr::group_by_all() %>%
   dplyr::mutate(
@@ -20,6 +56,10 @@ cr_subs <- comp_rec_plr_apps %>%
   dplyr::ungroup() %>%
   dplyr::select(
     -shirt_nos
+  ) %>%
+  dplyr::left_join(
+    subs_pre_9900,
+    by = c("game_date", "player_name")
   )
 
 sb_ids <- vroom::vroom(
@@ -29,7 +69,9 @@ sb_ids <- vroom::vroom(
 ) %>%
   fix_sb_player_names() %>%
   fix_sb_game_ids() %>%
-  dplyr::rename(player_id = sb_player_id)
+  dplyr::rename(
+    player_id = sb_player_id
+  )
 
 sb_subs <- sb_subs_and_reds %>%
   dplyr::filter(
@@ -95,7 +137,7 @@ sb_subs <- sb_subs_and_reds %>%
     -player_id
   )
 
-subs_table <- cr_subs %>%
+db_subs <- cr_subs %>%
   dplyr::left_join(
     sb_subs,
     by = c("game_date", "shirt_no", "player_name")
@@ -118,4 +160,4 @@ subs_table <- cr_subs %>%
     )
   )
 
-usethis::use_data(subs_table, overwrite = TRUE)
+usethis::use_data(db_subs, overwrite = TRUE)
