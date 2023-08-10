@@ -6,31 +6,30 @@
 #  Import full data set scraped from 11v11                #
 ###########################################################
 
-results_df <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/update-results/main/data/results_df.csv",
-  col_select = c(
-    "game_date",
-    "season",
-    "opposition",
-    "venue",
-    "home_team",
-    "away_team",
-    "score",
-    "outcome",
-    "competition",
-    "generic_comp",
-    "goals_for",
-    "goals_against",
-    "attendance",
-    "league_tier",
-    "game_type",
-    "ssn_game_no",
-    "ssn_comp_game_no",
-    "weekday",
-    "manager"
-  ),
-  show_col_types = FALSE)
-
+# results_df <- vroom::vroom(
+#   file = "https://raw.githubusercontent.com/petebrown/update-results/main/data/results_df.csv",
+#   col_select = c(
+#     "game_date",
+#     "season",
+#     "opposition",
+#     "venue",
+#     "home_team",
+#     "away_team",
+#     "score",
+#     "outcome",
+#     "competition",
+#     "generic_comp",
+#     "goals_for",
+#     "goals_against",
+#     "attendance",
+#     "league_tier",
+#     "game_type",
+#     "ssn_game_no",
+#     "ssn_comp_game_no",
+#     "weekday",
+#     "manager"
+#   ),
+#   show_col_types = FALSE)
 
 ############################################################
 #  IMPORT results_mini                                     #
@@ -38,17 +37,17 @@ results_df <- vroom::vroom(
 #  N.B. League games ONLY                                  #
 ############################################################
 
-results_mini <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/league-position-tool/main/docs/input/results_mini.csv",
-  col_select = c(
-    "game_date",
-    "ranking",
-    "pts"
-  ),
-  show_col_types = FALSE) %>%
-  dplyr::rename(
-    league_pos = ranking
-  )
+# results_mini <- vroom::vroom(
+#   file = "https://raw.githubusercontent.com/petebrown/league-position-tool/main/docs/input/results_mini.csv",
+#   col_select = c(
+#     "game_date",
+#     "ranking",
+#     "pts"
+#   ),
+#   show_col_types = FALSE) %>%
+#   dplyr::rename(
+#     league_pos = ranking
+#   )
 
 
 ###########################################################
@@ -57,10 +56,10 @@ results_mini <- vroom::vroom(
 #  N.B. Cup games ONLY                                    #
 ###########################################################
 
-extra_details <- readr::read_csv(
-  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/11v11-extra-details/cup_details.csv",
-  show_col_types = FALSE
-)
+# extra_details <- readr::read_csv(
+#   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/11v11-extra-details/cup_details.csv",
+#   show_col_types = FALSE
+# )
 
 
 #################################################################
@@ -68,24 +67,39 @@ extra_details <- readr::read_csv(
 #  Import extra cup game data scraped from 11v11                #
 #################################################################
 
-results_dataset <- results_df %>%
-  dplyr::left_join(
-    results_mini,
-    by = "game_date"
-  ) %>%
-  dplyr::left_join(
-    extra_details,
-    by = "game_date"
-  ) %>%
-  dplyr::left_join(
-    goalscorers_by_game,
-    by = "game_date"
-  ) %>%
-  dplyr::mutate(
-    ssn_year = as.numeric(stringr::str_sub(season, end = 4)),
-    game_year = lubridate::year(game_date),
-    game_month = lubridate::month(game_date),
-    game_day = lubridate::day(game_date),
-  )
+# results_dataset <- results_df %>%
+#   dplyr::left_join(
+#     results_mini,
+#     by = "game_date"
+#   ) %>%
+#   dplyr::left_join(
+#     extra_details,
+#     by = "game_date"
+#   ) %>%
+#   dplyr::left_join(
+#     goalscorers_by_game,
+#     by = "game_date"
+#   ) %>%
+#   dplyr::mutate(
+#     ssn_year = as.numeric(stringr::str_sub(season, end = 4)),
+#     game_year = lubridate::year(game_date),
+#     game_month = lubridate::month(game_date),
+#     game_day = lubridate::day(game_date),
+#   )
+
+results_dataset <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/pre-2023-data-prep/main/data/results.csv",
+  show_col_types = FALSE
+) %>%
+dplyr::left_join(
+  goalscorers_by_game,
+  by = "game_date"
+) %>%
+dplyr::mutate(
+  ssn_year = as.numeric(stringr::str_sub(season, end = 4)),
+  game_year = lubridate::year(game_date),
+  game_month = lubridate::month(game_date),
+  game_day = lubridate::day(game_date),
+)
 
 usethis::use_data(results_dataset, overwrite = TRUE)

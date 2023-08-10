@@ -22,16 +22,11 @@ get_max_goals <- function(selected_seasons) {
 plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
   results <- filter_ssn_results(selected_season)
 
-
   goals_for <- goals %>%
-    # dplyr::filter(
-    #   !is.na(goals_scored)
-    # ) %>%
     dplyr::inner_join(
       results,
       by = c(
-        "season" = "season",
-        "game_no" = "ssn_game_no"
+        "game_date"
       )
     ) %>%
     dplyr::mutate(
@@ -49,17 +44,18 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
       generic_comp
     ) %>%
     dplyr::summarise(
-      n_goals = sum(goals_scored)
+      n_goals = dplyr::n(),
+      .groups = "drop"
     )
 
-  summaries <- goals_for %>%
+  summaries <- summaries_long %>%
     dplyr::group_by(
       season,
       player_name,
       generic_comp
     ) %>%
     dplyr::summarise(
-      n_goals = sum(goals_scored)
+      n_goals = sum(n_goals)
     ) %>%
     tidyr::pivot_wider(
       id_cols = c(season, player_name),

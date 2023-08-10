@@ -43,7 +43,7 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
     ) %>%
     dplyr::select(
       season,
-      ssn_game_no,
+      game_no,
       game_date,
       opposition,
       venue,
@@ -90,7 +90,7 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
     resizable = TRUE,
     columns = list(
       season = reactable::colDef(name = "Season", width = 100),
-      ssn_game_no = reactable::colDef(name = "Game\nNo.", align = "left", width = 80),
+      game_no = reactable::colDef(name = "Game\nNo.", align = "left", width = 80),
       game_date = reactable::colDef(name = "Date", width = 120,
                                     format = reactable::colFormat(date = TRUE, locales = "en-GB")),
       venue = reactable::colDef(name = "Venue", width = 80),
@@ -117,7 +117,7 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
             outlined = FALSE,
             bordered = FALSE,
             borderless = TRUE,
-            defaultPageSize = 15,
+            defaultPageSize = 16,
             compact    = TRUE,
             filterable = FALSE,
             resizable  = TRUE,

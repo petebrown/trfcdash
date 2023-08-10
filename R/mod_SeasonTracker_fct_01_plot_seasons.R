@@ -4,9 +4,6 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
     dplyr::filter(
       game_type == "League"
     ) %>%
-    dplyr::rename(
-      game_no = ssn_comp_game_no
-    ) %>%
     dplyr::select(
       season,
       game_no,
@@ -81,6 +78,12 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
     ggplot2::labs(
       x = "Game no.",
       y = names(plot_types)[plot_types == chosen_plot]
+    ) +
+    ggplot2::scale_x_continuous(
+      limits = dplyr::case_when(
+        selected_seasons == "2023/24" ~ c(1, 46),
+        .default = c(1, max(df$game_no))
+      )
     ) +
     y_scale_var +
     ggplot2::scale_color_brewer(name = "", palette = "Paired") +

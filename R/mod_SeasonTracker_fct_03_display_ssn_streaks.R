@@ -1,6 +1,6 @@
 get_streaks <- function(selected_seasons) {
   streaks <- filter_ssn_results(selected_seasons) %>%
-    dplyr::arrange(season, ssn_game_no) %>%
+    dplyr::arrange(season, game_no) %>%
     dplyr::group_by(season) %>%
     dplyr::mutate(
       wins = ifelse(outcome == "W", 1, 0),

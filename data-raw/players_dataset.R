@@ -79,7 +79,7 @@ game_ids_and_dates <- vroom::vroom(
 game_dates_and_nos <- results_dataset %>%
   dplyr::select(
     season,
-    ssn_game_no,
+    game_no,
     game_date
   )
 
@@ -115,9 +115,6 @@ fa_trophy_goals_by_date <- fa_trophy_goals_raw %>%
     game_dates_and_nos,
     by = c("game_date")
   ) %>%
-  dplyr::rename(
-    game_no = ssn_game_no
-  ) %>%
   dplyr::mutate(
     player_name = dplyr::case_when(
       own_goal == 1 ~ "OG",
@@ -139,9 +136,6 @@ fa_trophy_goals <- fa_trophy_goals_raw %>%
   dplyr::left_join(
     game_dates_and_nos,
     by = c("game_date")
-  ) %>%
-  dplyr::rename(
-    game_no = ssn_game_no
   ) %>%
   dplyr::mutate(
     player_name = dplyr::case_when(
@@ -179,83 +173,76 @@ goals <- vroom::vroom(
   )
 
 
-goalscorers_by_game <- sb_goals %>%
-  fix_sb_player_names() %>%
-  dplyr::filter(
-    goal_type == "for"
-  ) %>%
-  dplyr::mutate(
-    player_name = dplyr::case_when(
-      own_goal == 1 ~ "OG",
-      .default = player_name
-    )
-  ) %>%
-  dplyr::left_join(
-    game_ids_and_dates,
-    by = "game_id"
-  ) %>%
-  dplyr::select(
-    season,
-    game_date,
-    player_name,
-    minute,
-    penalty
-  ) %>%
-  dplyr::arrange(
-    game_date,
-    minute
-  ) %>%
-  dplyr::group_by(
-    game_date,
-    player_name
-  ) %>%
-  dplyr::summarise(
-    goals_scored = dplyr::n(),
-    pens = sum(penalty, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  dplyr::bind_rows(
-    comp_rec_goals
-  ) %>%
-  dplyr::bind_rows(
-    fa_trophy_goals_by_date
-  ) %>%
-  dplyr::select(
-    game_date,
-    player_name,
-    goals_scored,
-    pens
-  ) %>%
-  dplyr::group_by(game_date) %>%
-  dplyr::mutate(
-    player_name = dplyr::case_when(
-      goals_scored == 1 & pens == 0 ~ player_name,
-      goals_scored > 1 & pens == 0 ~ stringr::str_glue("{player_name} {goals_scored}"),
-      goals_scored == 1 & pens == 1 ~ stringr::str_glue("{player_name} (pen)"),
-      goals_scored > 1 & pens == 1 ~ stringr::str_glue("{player_name} {goals_scored} (1 pen)"),
-      goals_scored > 1 & pens > 1 ~ stringr::str_glue("{player_name} {goals_scored} ({pens} pens)"),
-      .default = stringr::str_glue("{player_name}"),
-    ),
-    scorers = paste(player_name, collapse = ", ")
-  ) %>%
-  dplyr::select(
-    game_date,
-    scorers
-  ) %>%
-  unique() %>%
-  dplyr::arrange(
-    game_date
-  )
+# goalscorers_by_game <- sb_goals %>%
+#   fix_sb_player_names() %>%
+#   dplyr::filter(
+#     goal_type == "for"
+#   ) %>%
+#   dplyr::mutate(
+#     player_name = dplyr::case_when(
+#       own_goal == 1 ~ "OG",
+#       .default = player_name
+#     )
+#   ) %>%
+#   dplyr::left_join(
+#     game_ids_and_dates,
+#     by = "game_id"
+#   ) %>%
+#   dplyr::select(
+#     season,
+#     game_date,
+#     player_name,
+#     minute,
+#     penalty
+#   ) %>%
+#   dplyr::arrange(
+#     game_date,
+#     minute
+#   ) %>%
+#   dplyr::group_by(
+#     game_date,
+#     player_name
+#   ) %>%
+#   dplyr::summarise(
+#     goals_scored = dplyr::n(),
+#     pens = sum(penalty, na.rm = TRUE),
+#     .groups = "drop"
+#   ) %>%
+#   dplyr::bind_rows(
+#     comp_rec_goals
+#   ) %>%
+#   dplyr::bind_rows(
+#     fa_trophy_goals_by_date
+#   ) %>%
+#   dplyr::select(
+#     game_date,
+#     player_name,
+#     goals_scored,
+#     pens
+#   ) %>%
+#   dplyr::group_by(game_date) %>%
+#   dplyr::mutate(
+#     player_name = dplyr::case_when(
+#       goals_scored == 1 & pens == 0 ~ player_name,
+#       goals_scored > 1 & pens == 0 ~ stringr::str_glue("{player_name} {goals_scored}"),
+#       goals_scored == 1 & pens == 1 ~ stringr::str_glue("{player_name} (pen)"),
+#       goals_scored > 1 & pens == 1 ~ stringr::str_glue("{player_name} {goals_scored} (1 pen)"),
+#       goals_scored > 1 & pens > 1 ~ stringr::str_glue("{player_name} {goals_scored} ({pens} pens)"),
+#       .default = stringr::str_glue("{player_name}"),
+#     ),
+#     scorers = paste(player_name, collapse = ", ")
+#   ) %>%
+#   dplyr::select(
+#     game_date,
+#     scorers
+#   ) %>%
+#   unique() %>%
+#   dplyr::arrange(
+#     game_date
+#   )
 
 
 game_lengths <- results_dataset %>%
-  dplyr::mutate(
-    game_length = dplyr::case_when(
-      !is.na(gg_outcome) ~ 116,
-      is.na(gg_outcome) & extra_time == 1 ~ 120,
-      .default = 90
-    )
-  ) %>%
   dplyr::select(
     game_date,
     game_length
@@ -323,7 +310,7 @@ comp_rec_plr_apps <- vroom::vroom(
   show_col_types = FALSE) %>%
   dplyr::left_join(
     game_dates_and_nos,
-    by = c("season" = "season", "game_no" = "ssn_game_no")
+    by = c("season" = "season", "game_no" = "game_no")
   ) %>%
   dplyr::left_join(
     comp_rec_plr_seasons %>%
@@ -711,10 +698,6 @@ fa_trophy_apps <- fa_trophy_apps_raw %>%
     player_info,
     by = c("season", "player_name")
   ) %>%
-  dplyr::left_join(
-    game_lengths,
-    by = c("game_date")
-  ) %>%
   tidyr::replace_na(list(
     min_on = 0,
     min_off = 0
@@ -728,7 +711,7 @@ fa_trophy_apps <- fa_trophy_apps_raw %>%
   ) %>%
   dplyr::select(
     season,
-    ssn_game_no,
+    game_no,
     game_date,
     player_name,
     role,
@@ -744,7 +727,6 @@ fa_trophy_apps <- fa_trophy_apps_raw %>%
     pl_name_index
   ) %>%
   dplyr::rename(
-    game_no = ssn_game_no,
     yellow_cards = yellow_card,
     red_cards = red_card,
     menu_name = pl_name_index
@@ -890,8 +872,8 @@ player_info <- rbind(
 #
 usethis::use_data(
   player_apps,
-  goals,
-  goalscorers_by_game,
+  # goals,
+  # goalscorers_by_game,
   player_info,
   overwrite = TRUE
 )
