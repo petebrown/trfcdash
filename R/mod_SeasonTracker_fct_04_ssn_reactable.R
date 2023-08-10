@@ -53,6 +53,10 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
       attendance,
       manager,
       league_tier
+    ) %>%
+    dplyr::arrange(
+      season,
+      game_no
     )
 
   second_level <- player_apps %>%
