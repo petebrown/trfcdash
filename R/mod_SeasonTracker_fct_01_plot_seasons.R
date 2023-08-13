@@ -6,7 +6,7 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
     ) %>%
     dplyr::select(
       season,
-      game_no,
+      ssn_comp_game_no,
       game_date,
       opposition,
       venue,
@@ -21,6 +21,9 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       league_pos,
       pts,
       attendance
+    ) %>%
+    dplyr::rename(
+      game_no = ssn_comp_game_no
     ) %>%
     dplyr::mutate(
       attendance = format(attendance, nsmall = 0, big.mark = ","),
@@ -39,6 +42,17 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
   }
 
   # Set Y-axis based on chart type
+  if (isTRUE(selected_seasons == "2023/24" & max(df$game_no < 10))) {
+    x_scale_var = ggplot2::scale_x_continuous(
+      limits = c(1, 46)
+    )
+  } else {
+    x_scale_var = ggplot2::scale_x_continuous(
+      limits = c(1, max(df$game_no))
+    )
+  }
+
+  # Set Y-axis based on chart type
   if (chosen_plot == "league_pos") {
     y_scale_var = ggplot2::scale_y_reverse(
       limits = c(max_pos, 1),
@@ -48,6 +62,11 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
     y_scale_var = ggplot2::scale_y_continuous(
       limits = c(0, 3),
       breaks = c(0, 1, 2, 3)
+    )
+  } else if (isTRUE(chosen_plot == "pts" & selected_seasons == "2023/24")) {
+    y_scale_var = ggplot2::scale_y_continuous(
+      limits = c(0, max(df$game_no) * 3),
+      breaks = c(0, max(df$game_no) * 3)
     )
   } else {
     y_scale_var = ggplot2::scale_y_continuous()
@@ -79,12 +98,7 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       x = "Game no.",
       y = names(plot_types)[plot_types == chosen_plot]
     ) +
-    ggplot2::scale_x_continuous(
-      limits = dplyr::case_when(
-        selected_seasons == "2023/24" ~ c(1, 46),
-        .default = c(1, max(df$game_no))
-      )
-    ) +
+    x_scale_var +
     y_scale_var +
     ggplot2::scale_color_brewer(name = "", palette = "Paired") +
     ggplot2::theme_bw() +
@@ -93,7 +107,7 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       axis.text = ggplot2::element_text(size = 7)
     )
 
-  output_p <- plotly::ggplotly(p, tooltip="text")  |>
+  output_p <- plotly::ggplotly(p, tooltip = "text")  |>
     plotly::layout(
       plot_bgcolor = "rgba(0,0,0,0)",
       paper_bgcolor = "rgba(0,0,0,0)",

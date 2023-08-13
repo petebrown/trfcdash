@@ -105,7 +105,7 @@ mod_SeasonTracker_ui <- function(id){
         full_screen = TRUE,
         bslib::card_header(
           class = "bg-dark",
-          "Reactable Results"
+          "Season Results"
         ),
         uiOutput(ns("ssn_results"))
       ),
