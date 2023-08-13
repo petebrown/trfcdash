@@ -1,8 +1,4 @@
-selected_season = "1998/99"
-
 add_unused_levels <- function(data, var) {
-  warning("This adds a row for each unused factor level to ensure plotly displays all levels in the legend. It should be used only for input within a ggplotly object.")
-
   var <- rlang::enquo(var)
 
   var_vctr <- dplyr::pull(data, !!var)
@@ -14,7 +10,7 @@ add_unused_levels <- function(data, var) {
   return(data)
 }
 
-plot_app_heatmap <- function(selected_season) {
+output_app_heatmap <- function(selected_season) {
   textcol = "grey40"
   selected_season == "1994/95"
   ssn_games <- results_dataset %>%
@@ -125,11 +121,15 @@ plot_app_heatmap <- function(selected_season) {
     )
   ) +
     ggplot2::geom_tile(
-      color = ifelse(
-        plot_data$red_cards == 1, "maroon", "grey50"
+      color = dplyr::case_when(
+        plot_data$red_cards == 1 ~ "maroon",
+        plot_data$yellow_cards == 1 ~ "gold1",
+        .default = "grey50"
       ),
-      linewidth = ifelse(
-        plot_data$red_cards == 1, 1, 0.15
+      linewidth = dplyr::case_when(
+        plot_data$red_cards == 1 ~ 1,
+        plot_data$yellow_cards == 1 ~ 0.4,
+        .default = 0.15
       )
     ) +
     ggplot2::geom_text(
@@ -140,29 +140,26 @@ plot_app_heatmap <- function(selected_season) {
       ),
       show.legend = FALSE,
       na.rm = TRUE,
-      size = 3,
+      fontface = "bold",
+      size = 4,
       color = ifelse(
-        plot_data$mins_played < 50, "gray25", "gray85"
+        plot_data$mins_played < 40, "gray25", "gray85"
       )
     ) +
-    ggplot2::guides(
-      fill = ggplot2::guide_legend(
-        title = "")
-    ) +
     ggplot2::labs(
-      title = paste0("Minutes played per game in ", selected_season),
+      title = ggplot2::element_blank(),
+      fill = ggplot2::element_blank(),
       x = ggplot2::element_blank(),
       y = ggplot2::element_blank()
     ) +
     ggplot2::scale_y_discrete(
       expand = c(0, 0)
     ) +
-    ggplot2::scale_x_discrete(
-      expand = c(0, 0),
-      breaks = c(seq(
-        from = 1,
-        to = 60,
-        by = 5)
+    ggplot2::scale_x_continuous(
+      breaks = seq(
+        from = 5,
+        to = ifelse(selected_season == "2023/24", 46, max(plot_data$game_no)),
+        by = 5
       )
     ) +
     ggplot2::scale_fill_manual(
@@ -178,7 +175,7 @@ plot_app_heatmap <- function(selected_season) {
         "#08519c",
         "#08306b"
       )),
-      labels = c(
+      labels = rev(c(
         "0",
         "0-10",
         "10-20",
@@ -189,40 +186,69 @@ plot_app_heatmap <- function(selected_season) {
         "60-70",
         "70-80",
         "80-90"
-      ),
-      drop = FALSE
+      )),
+      drop = FALSE,
+      guide = ggplot2::guide_legend(
+        nrow = 1,
+        reverse = TRUE
+      )
     ) +
     ggplot2::theme_minimal(
       base_size = 12
     ) +
     ggplot2::theme(
-      # legend.position = "right",
-      # legend.direction = "vertical",
-      # legend.title = ggplot2::element_text(colour = textcol),
+      legend.position = "bottom",
+      legend.direction = "horizontal",
+      # legend.title = ggplot2::element_blank(),
       # legend.margin = ggplot2::margin(grid::unit(0, "cm")),
-      # legend.text = ggplot2::element_text(colour = textcol, size = 8, face="bold"),
+      legend.text = ggplot2::element_text(colour = textcol, size = 12),
       # legend.key.height = grid::unit(0.8, "cm"),
       # legend.key.width = grid::unit(0.2, "cm"),
-      axis.text.x = ggplot2::element_text(size = 10, colour = textcol),
-      axis.text.y = ggplot2::element_text(vjust = 0.2, colour = textcol),
-      axis.ticks = ggplot2::element_line(size = 0.4),
+      axis.text.x = ggplot2::element_text(size = 12, colour = textcol),
+      axis.text.y = ggplot2::element_text(size = 12, vjust = 0.2, colour = textcol),
+      axis.ticks.x = ggplot2::element_blank(),
+      axis.ticks.y = ggplot2::element_line(size = 0.1),
       plot.background = ggplot2::element_blank(),
       panel.border = ggplot2::element_blank(),
       plot.margin = ggplot2::margin(0.7, 0.4, 0.1, 0.2, "cm"),
       plot.title = ggplot2::element_text(colour = textcol, hjust = 0, size = 14, face = "bold"),
-      plot.title.position = "plot"
+      plot.title.position = "plot",
+      text = ggtext::element_markdown(
+        family = "Helvetica Neue",
+        face = "plain",
+        size = 16,
+        colour = NULL,
+        fill = NA,
+        box.colour = NA,
+        linetype = NA,
+        linewidth = NA,
+        hjust = NULL,
+        vjust = NULL,
+        halign = "right",
+        valign = NA,
+        angle = NULL,
+        lineheight = NULL,
+        margin = NULL,
+        padding = NA,
+        r = NA,
+        align_widths = NA,
+        align_heights = NA,
+        rotate_margins = NA,
+      )
     ) +
     ggplot2::coord_cartesian(expand = FALSE)
 
-  plotly::ggplotly(p, tooltip = "text") %>%
-    plotly::layout(
-      legend = list(
-        x = 0,
-        xanchor = 'left',
-        yanchor = 'bottom',
-        orientation = 'h'),
-      font = list(
-        family = "Helvetica Neue"
-      )
-    )
+  # plotly::ggplotly(p, tooltip = "text", height = 800) %>%
+  #   plotly::layout(
+  #     font = list(
+  #       family = "Helvetica Neue"
+  #     ),
+  #     legend = list(
+  #       x = 0,
+  #       xanchor = 'left',
+  #       yanchor = 'bottom',
+  #       orientation = 'h'
+  #     )
+  #   )
+  p
 }
