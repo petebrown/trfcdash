@@ -26,7 +26,8 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
     dplyr::inner_join(
       results,
       by = c(
-        "game_date"
+        "season",
+        "game_no"
       )
     ) %>%
     dplyr::mutate(

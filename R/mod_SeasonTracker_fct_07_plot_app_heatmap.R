@@ -234,7 +234,8 @@ output_app_heatmap <- function(selected_season) {
         align_widths = NA,
         align_heights = NA,
         rotate_margins = NA,
-      )
+      ),
+      legend.key = ggplot2::element_rect(fill = "white", colour = "black")
     ) +
     ggplot2::coord_cartesian(expand = FALSE)
 
