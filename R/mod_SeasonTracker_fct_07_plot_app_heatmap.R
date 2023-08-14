@@ -24,6 +24,19 @@ output_app_heatmap <- function(selected_season) {
       ssn_comp_game_no
     )
 
+  if (selected_season == "2023/24") {
+    s2324_missing <- dplyr::tibble(
+      season = "2023/24",
+      game_date = as.Date("2024-05-01"),
+      ssn_comp_game_no = (max(ssn_games$ssn_comp_game_no) + 1):46
+    )
+
+    ssn_games <- dplyr::bind_rows(
+      ssn_games,
+      s2324_missing
+    )
+  }
+
   ssn_players <- player_apps %>%
     dplyr::filter(
       season == selected_season
@@ -140,7 +153,7 @@ output_app_heatmap <- function(selected_season) {
       show.legend = FALSE,
       na.rm = TRUE,
       fontface = "bold",
-      size = 4,
+      size = 4.5,
       color = ifelse(
         plot_data$mins_played < 40, "gray25", "gray85"
       )
