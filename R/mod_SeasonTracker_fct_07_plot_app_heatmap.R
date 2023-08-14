@@ -12,7 +12,7 @@ add_unused_levels <- function(data, var) {
 
 output_app_heatmap <- function(selected_season) {
   textcol = "grey40"
-  selected_season == "1994/95"
+
   ssn_games <- results_dataset %>%
     dplyr::filter(
       season == selected_season,
@@ -108,8 +108,7 @@ output_app_heatmap <- function(selected_season) {
         )
       ),
       countfactor = factor(as.character(countfactor), levels = rev(levels(countfactor)))
-    ) %>%
-    add_unused_levels(countfactor)
+    )
 
   p <-  ggplot2::ggplot(
     data = plot_data,
@@ -153,12 +152,14 @@ output_app_heatmap <- function(selected_season) {
       y = ggplot2::element_blank()
     ) +
     ggplot2::scale_y_discrete(
+      drop = FALSE,
+      na.translate = FALSE,
       expand = c(0, 0)
     ) +
     ggplot2::scale_x_continuous(
       breaks = seq(
         from = 5,
-        to = ifelse(selected_season == "2023/24", 46, max(plot_data$game_no)),
+        to = ifelse(selected_season == "2023/24", 46, max(plot_data$game_no, na.rm = TRUE)),
         by = 5
       )
     ) +
@@ -187,6 +188,7 @@ output_app_heatmap <- function(selected_season) {
         "70-80",
         "80-90"
       )),
+      na.value = "grey92",
       drop = FALSE,
       guide = ggplot2::guide_legend(
         nrow = 1,
@@ -205,12 +207,12 @@ output_app_heatmap <- function(selected_season) {
       # legend.key.height = grid::unit(0.8, "cm"),
       # legend.key.width = grid::unit(0.2, "cm"),
       axis.text.x = ggplot2::element_text(size = 12, colour = textcol),
-      axis.text.y = ggplot2::element_text(size = 12, vjust = 0.2, colour = textcol),
+      axis.text.y = ggplot2::element_text(size = 14, vjust = 0.2, colour = textcol),
       axis.ticks.x = ggplot2::element_blank(),
-      axis.ticks.y = ggplot2::element_line(size = 0.1),
+      axis.ticks.y = ggplot2::element_line(size = 0.25),
       plot.background = ggplot2::element_blank(),
       panel.border = ggplot2::element_blank(),
-      plot.margin = ggplot2::margin(0.7, 0.4, 0.1, 0.2, "cm"),
+      # plot.margin = ggplot2::margin(0.7, 0.4, 0.1, 0.2, "cm"),
       plot.title = ggplot2::element_text(colour = textcol, hjust = 0, size = 14, face = "bold"),
       plot.title.position = "plot",
       text = ggtext::element_markdown(

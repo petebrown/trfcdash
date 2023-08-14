@@ -161,16 +161,16 @@ sb_goals <- vroom::vroom(
 ) %>%
   fix_sb_player_names()
 
-goals <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/scorers-long.csv",
-  show_col_types = FALSE
-) %>%
-  fix_sb_player_names() %>%
-  rbind(fa_trophy_goals) %>%
-  dplyr::arrange(
-    season,
-    game_no
-  )
+# goals <- vroom::vroom(
+#   file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/scorers-long.csv",
+#   show_col_types = FALSE
+# ) %>%
+#   fix_sb_player_names() %>%
+#   rbind(fa_trophy_goals) %>%
+#   dplyr::arrange(
+#     season,
+#     game_no
+#   )
 
 
 # goalscorers_by_game <- sb_goals %>%
