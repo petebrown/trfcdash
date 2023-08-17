@@ -170,10 +170,11 @@ output_app_heatmap <- function(selected_season) {
       expand = c(0, 0)
     ) +
     ggplot2::scale_x_continuous(
+      position = "top",
       breaks = seq(
-        from = 5,
+        from = 2,
         to = ifelse(selected_season == "2023/24", 46, max(plot_data$game_no, na.rm = TRUE)),
-        by = 5
+        by = 2
       )
     ) +
     ggplot2::scale_fill_manual(
@@ -219,10 +220,10 @@ output_app_heatmap <- function(selected_season) {
       legend.text = ggplot2::element_text(colour = textcol, size = 12),
       # legend.key.height = grid::unit(0.8, "cm"),
       # legend.key.width = grid::unit(0.2, "cm"),
-      axis.text.x = ggplot2::element_text(size = 12, colour = textcol),
+      axis.text.x = ggplot2::element_text(size = 12, colour = "grey60", face = "bold"),
       axis.text.y = ggplot2::element_text(size = 14, vjust = 0.2, colour = textcol),
       axis.ticks.x = ggplot2::element_blank(),
-      axis.ticks.y = ggplot2::element_line(size = 0.25),
+      axis.ticks.y = ggplot2::element_line(linewidth = 0.25),
       plot.background = ggplot2::element_blank(),
       panel.border = ggplot2::element_blank(),
       # plot.margin = ggplot2::margin(0.7, 0.4, 0.1, 0.2, "cm"),

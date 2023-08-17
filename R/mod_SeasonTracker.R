@@ -291,12 +291,11 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
             title = season,
             bslib::card(
               full_screen = TRUE,
-              class = "borderless",
+              class = c("borderless", "no_padding"),
               bslib::card_title(
-                paste0("Appearance, goals and cards in ", season)
+                paste0("Appearances, goals and cards in ", season)
               ),
               min_height = "880px",
-              # plotly::renderPlotly({
               renderPlot({
                 output_app_heatmap(season)
               })
