@@ -1,5 +1,5 @@
 goals <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/pre-2023-data-prep/main/data/goals.csv",
+  file = "https://raw.githubusercontent.com/petebrown/data-updater/main/data/goals.csv",
   show_col_types = FALSE
 )
 
