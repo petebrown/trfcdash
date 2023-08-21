@@ -1,6 +1,6 @@
 get_season_list <- function() {
   df <- results_dataset
-  return (unique(df$season))
+  return (rev(unique(df$season)))
 }
 
 get_chart_options <- function() {

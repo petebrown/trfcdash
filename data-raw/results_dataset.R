@@ -13,4 +13,16 @@ dplyr::mutate(
   game_day = lubridate::day(game_date),
 )
 
-usethis::use_data(results_dataset, overwrite = TRUE)
+
+game_lengths <- results_dataset %>%
+  dplyr::select(
+    game_date,
+    game_length
+  )
+
+
+usethis::use_data(
+  results_dataset,
+  game_lengths,
+  overwrite = TRUE
+)
