@@ -3,6 +3,15 @@ goals <- vroom::vroom(
   show_col_types = FALSE
 )
 
+player_goals_per_game <- goals %>%
+  dplyr::group_by(
+    game_date,
+    player_name
+  ) %>%
+  dplyr::summarise(
+    goals_scored = dplyr::n()
+  )
+
 usethis::use_data(goals, overwrite = TRUE)
 
 ###########################################################

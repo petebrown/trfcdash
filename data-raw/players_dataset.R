@@ -871,9 +871,9 @@ player_info <- rbind(
 
 #
 usethis::use_data(
-  player_apps,
+  # player_apps,
   # goals,
   # goalscorers_by_game,
-  player_info,
+  # player_info,
   overwrite = TRUE
 )

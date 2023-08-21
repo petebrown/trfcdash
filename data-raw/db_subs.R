@@ -170,7 +170,7 @@ sub_plrs <- vroom::vroom(
   show_col_types = FALSE
 )
 
-db_subs <- dplyr::left_join(
+subs <- dplyr::left_join(
   sub_plrs,
   sub_mins,
   by = c(
@@ -179,4 +179,4 @@ db_subs <- dplyr::left_join(
   )
 )
 
-usethis::use_data(db_subs, overwrite = TRUE)
+usethis::use_data(subs, overwrite = TRUE)
