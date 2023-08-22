@@ -234,13 +234,13 @@ player_apps <- player_apps %>%
   dplyr::mutate(
     mins_played = dplyr::case_when(
       # Started, played to end
-      role == "starter" & is.na(min_off) & is.na(min_so) ~ game_length,
+      role == "starter" & is.na(min_off) & is.na(off_for) & is.na(min_so) ~ game_length,
       # Started, subbed off
       role == "starter" & !is.na(min_off) & is.na(min_so) ~ min_off,
       # Started, sent off
       role == "starter" & is.na(min_off) & !is.na(min_so) ~ min_so,
       # Subbed on, played to end
-      role == "sub" & is.na(min_off) & is.na(min_so) ~ game_length - min_on,
+      role == "sub" & is.na(min_off) & is.na(off_for) & is.na(min_so) ~ game_length - min_on,
       # Subbed on, subbed off
       role == "sub" & !is.na(min_off) & is.na(min_so) ~ min_off - min_on,
       # Subbed on, sent off
