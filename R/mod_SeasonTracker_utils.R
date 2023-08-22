@@ -1,6 +1,9 @@
 get_season_list <- function() {
-  df <- results_dataset
-  return (rev(unique(df$season)))
+  df <- results_dataset %>%
+    dplyr::arrange(
+      dplyr::desc(game_date)
+    )
+  return (unique(df$season))
 }
 
 get_chart_options <- function() {

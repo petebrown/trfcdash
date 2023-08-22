@@ -61,8 +61,7 @@ player_apps <- player_apps %>%
     subs,
     by = c(
       "game_date",
-      "player_name",
-      "shirt_no"
+      "player_name"
     )
   ) %>%
   dplyr::left_join(

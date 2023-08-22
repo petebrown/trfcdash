@@ -22,14 +22,17 @@ sub_plrs <- vroom::vroom(
     off_for = dplyr::na_if(off_for, 0)
   )
 
-subs <- dplyr::left_join(
+subs <- dplyr::full_join(
   sub_plrs,
   sub_mins,
   by = c(
     "game_date",
     "player_name"
   )
-)
+) %>%
+  dplyr::select(
+    -shirt_no
+  )
 
 usethis::use_data(subs, overwrite = TRUE)
 
