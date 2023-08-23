@@ -11,7 +11,7 @@ output_h2h_streaks <- function(year_range, league_tiers, cup_comps, venue_option
     ) %>%
     dplyr::arrange(
       season,
-      ssn_game_no
+      game_no
     ) %>%
     dplyr::group_by(
       opposition

@@ -33,17 +33,17 @@ app_ui <- function(request) {
         # Individual head-to-head sidebar
         shiny::conditionalPanel(
           "input.nav === 'Record vs. specific team'",
-          "Head2HeadByOpponent_sidebar()"
+          Head2HeadByOpponent_sidebar()
         ),
         # Main manager comparison sidebar
         shiny::conditionalPanel(
           "input.nav === 'Compare manager records'",
-          "ManagersAllManagers_sidebar()"
+          ManagersAllManagers_sidebar()
         ),
         # Individual manager stats
         shiny::conditionalPanel(
           "input.nav === 'Individual manager stats'",
-          "ManagersByManager_sidebar()"
+          ManagersByManager_sidebar()
         ),
         # Main player comparison tool
         shiny::conditionalPanel(

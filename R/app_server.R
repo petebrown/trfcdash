@@ -33,6 +33,19 @@ app_server <- function(input, output, session) {
     n_fixtures = SeasonTracker_inputs[[2]]
   )
 
+  # Receive user inputs from Head-to-Head (individual) sidebar
+  Head2HeadByOpponent_inputs <- mod_Head2HeadByOpponent_sidebar_server("Head2HeadByOpponent_sidebar_ui_1")
+  # Send user inputs from Head-to-Head (individual) sidebar to Head-to-Head (individual) server
+  mod_Head2HeadByOpponent_server(
+    "Head2HeadByOpponent_ui_1",
+    opponent = Head2HeadByOpponent_inputs[[1]],
+    year_range = Head2HeadByOpponent_inputs[[2]],
+    league_tiers = Head2HeadByOpponent_inputs[[3]],
+    cup_comps = Head2HeadByOpponent_inputs[[4]],
+    venue_options = Head2HeadByOpponent_inputs[[5]]
+  )
+
+
   # Receive user inputs from Head-to-Head (all opponents) sidebar
   Head2HeadAll_inputs <- mod_Head2HeadAllOpponents_sidebar_server("Head2HeadAllOpponents_sidebar_ui_1")
   # Send user inputs from Head-to-Head (all opponents) sidebar to Head-to-Head (all opponents) server
@@ -45,6 +58,7 @@ app_server <- function(input, output, session) {
     min_games = Head2HeadAll_inputs[[5]]
   )
 
+
   # Receive user inputs from Players (all players) sidebar
   PlayersAllPlayers_inputs <- mod_PlayersAllPlayers_sidebar_server("PlayersAllPlayers_sidebar_ui_1")
   # Send user inputs from Players (all players) sidebar to Players (all players) server
@@ -53,11 +67,47 @@ app_server <- function(input, output, session) {
     year_range = PlayersAllPlayers_inputs[[1]]
   )
 
-  # Receive user inputs from Players (all players) sidebar
+
+  # Receive user inputs from Players (individual) sidebar
   PlayersByPlayer_inputs <- mod_PlayersByPlayer_sidebar_server("PlayersByPlayer_sidebar_ui_1")
   # Send user inputs from Players sidebar to Players server
   mod_PlayersByPlayer_server(
     "PlayersByPlayer_ui_1",
     player_name = PlayersByPlayer_inputs[[1]]
+  )
+
+
+  # Receive user inputs from Head-to-Head (all opponents) sidebar
+  Head2HeadAll_inputs <- mod_Head2HeadAllOpponents_sidebar_server("Head2HeadAllOpponents_sidebar_ui_1")
+  # Send user inputs from Head-to-Head (all opponents) sidebar to Head-to-Head (all opponents) server
+  mod_Head2HeadAllOpponents_server(
+    "Head2HeadAllOpponents_ui_1",
+    year_range = Head2HeadAll_inputs[[1]],
+    league_tiers = Head2HeadAll_inputs[[2]],
+    cup_comps = Head2HeadAll_inputs[[3]],
+    venue_options = Head2HeadAll_inputs[[4]],
+    min_games = Head2HeadAll_inputs[[5]]
+  )
+
+
+  # Receive user inputs from Managers (all managers) sidebar
+  ManagersByManager_inputs <- mod_ManagersByManager_sidebar_server("ManagersByManager_sidebar_ui_1")
+  # Send user inputs from Managers sidebar to Managers server
+  mod_ManagersByManager_server(
+    "ManagersByManager_ui_1",
+    manager_name = ManagersByManager_inputs[[1]]
+  )
+
+
+  # Receive user inputs from Managers (all managers) sidebar
+  ManagersAllManagers_inputs <- mod_ManagersAllManagers_sidebar_server("ManagersAllManagers_sidebar_ui_1")
+  # Send user inputs from Managers (all managers) sidebar to Manager (all managers) server
+  mod_ManagersAllManagers_server(
+    "ManagersAllManagers_ui_1",
+    year_range = ManagersAllManagers_inputs[[1]],
+    league_tiers = ManagersAllManagers_inputs[[2]],
+    cup_comps = ManagersAllManagers_inputs[[3]],
+    venue_options = ManagersAllManagers_inputs[[4]],
+    min_games = ManagersAllManagers_inputs[[5]]
   )
 }

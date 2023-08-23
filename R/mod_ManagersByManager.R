@@ -17,7 +17,7 @@ mod_ManagersByManager_ui <- function(id){
 #' ManagersByManager Server Functions
 #'
 #' @noRd
-mod_ManagersByManager_server <- function(id){
+mod_ManagersByManager_server <- function(id, manager_name){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

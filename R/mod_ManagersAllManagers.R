@@ -17,7 +17,7 @@ mod_ManagersAllManagers_ui <- function(id){
 #' ManagersAllManagers Server Functions
 #'
 #' @noRd
-mod_ManagersAllManagers_server <- function(id){
+mod_ManagersAllManagers_server <- function(id, year_range, league_tiers, cup_comps, venue_options, min_games){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

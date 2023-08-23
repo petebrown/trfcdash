@@ -40,9 +40,3 @@ mod_PlayersAllPlayers_sidebar_server <- function(id){
 
   })
 }
-
-## To be copied in the UI
-# mod_PlayersAllPlayers_sidebar_ui("PlayersAllPlayers_sidebar_1")
-
-## To be copied in the server
-# mod_PlayersAllPlayers_sidebar_server("PlayersAllPlayers_sidebar_1")
