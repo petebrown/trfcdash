@@ -6,6 +6,10 @@
   border: 0;
 }
 
+.navbar {
+  --bs-navbar-brand-margin-end: 0 !important;
+}
+
 div[id*="_sidebar_ui_1-"] {
   font-size: smaller;
 }

@@ -16,7 +16,14 @@ app_ui <- function(request) {
         bg = "white",
         primary = "#385580"
       ),
-      title = "Tranmere Rovers: A Complete Record",
+      title = div(
+        img(
+          src = "./www/images/crest.svg",
+          height = 55,
+          width = 55,
+          style = "margin:1px 1px"
+        ),
+        "Tranmere Rovers: A Complete Record"),
       bslib::nav_spacer(),
       id = "nav",
       sidebar = bslib::sidebar(

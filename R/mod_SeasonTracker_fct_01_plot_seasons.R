@@ -72,12 +72,12 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
     y_scale_var = ggplot2::scale_y_continuous()
   }
 
-  # Set y-axis for geom_ribbon
-  if (chosen_plot == "league_pos") {
-    y_max_var = max_pos
-  } else {
-    y_max_var = 0
-  }
+  # # Set y-axis for geom_ribbon
+  # if (chosen_plot == "league_pos") {
+  #   y_max_var = max_pos
+  # } else {
+  #   y_max_var = 0
+  # }
 
   plot_types <- get_chart_options()
 
@@ -101,10 +101,10 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
     ) +
     ggplot2::geom_ribbon(ggplot2::aes(
       ymin = get(chosen_plot),
-      ymax = y_max_var,
+      ymax = ifelse(chosen_plot == "league_pos", max_pos, 0),
       fill = season
     ),
-    alpha = 0.05
+    alpha = 0.08
     ) +
     ggplot2::geom_line(ggplot2::aes(color = season)) +
     ggplot2::geom_point(ggplot2::aes(color = season)) +
