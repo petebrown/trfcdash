@@ -16,9 +16,6 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
       results_dataset,
       by = "game_date"
     ) %>%
-    dplyr::filter(
-      game_type == "League"
-    ) %>%
     dplyr::group_by(
       manager
     ) %>%

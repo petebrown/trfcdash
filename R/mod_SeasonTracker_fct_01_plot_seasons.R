@@ -72,6 +72,13 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
     y_scale_var = ggplot2::scale_y_continuous()
   }
 
+  # Set y-axis for geom_ribbon
+  if (chosen_plot == "league_pos") {
+    y_max_var = max_pos
+  } else {
+    y_max_var = 0
+  }
+
   plot_types <- get_chart_options()
 
   df <- df %>%
@@ -92,6 +99,13 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       group = 1,
       text = tooltip_text)
     ) +
+    ggplot2::geom_ribbon(ggplot2::aes(
+      ymin = get(chosen_plot),
+      ymax = y_max_var,
+      fill = season
+    ),
+    alpha = 0.05
+    ) +
     ggplot2::geom_line(ggplot2::aes(color = season)) +
     ggplot2::geom_point(ggplot2::aes(color = season)) +
     ggplot2::labs(
@@ -101,10 +115,14 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
     x_scale_var +
     y_scale_var +
     ggplot2::scale_color_brewer(name = "", palette = "Paired") +
+    ggplot2::scale_fill_brewer(palette = "Paired") +
     ggplot2::theme_bw() +
     ggplot2::theme(
       text = ggplot2::element_text(size = 8),
       axis.text = ggplot2::element_text(size = 7)
+    ) +
+    ggplot2::guides(
+      fill = "none"
     )
 
   output_p <- plotly::ggplotly(p, tooltip = "text")  |>
