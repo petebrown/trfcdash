@@ -14,7 +14,8 @@ app_ui <- function(request) {
         fg = "#385580",
         # fg = "rgb(30, 35, 85)",
         bg = "white",
-        primary = "#385580"
+        primary = "#385580",
+        "enable-rounded" = FALSE
       ),
       title = div(
         img(
