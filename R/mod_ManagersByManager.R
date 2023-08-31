@@ -60,29 +60,36 @@ mod_ManagersByManager_server <- function(id, manager_name){
 
       title <- h1(manager_name)
 
-      img_dir = "./www/images/managers"
+      if (isTRUE(manager_name == "No manager")) {
+        file_path = "./www/images/crest.svg"
+      } else {
+        img_dir = "./www/images/managers"
 
-      if (stringr::str_detect(manager_name, " & ")) {
-        manager_name <- stringr::str_split_i(manager_name(), " &", 1)
+        if (stringr::str_detect(manager_name, " & ")) {
+          manager_name <- stringr::str_split_i(manager_name(), " &", 1)
+        }
+
+        file_name = paste0(
+          stringr::str_to_lower(stringr::str_replace_all(manager_name, " ", "-")),
+          ".jpg"
+        )
+
+        file_path = file.path(img_dir, file_name)
       }
 
-      file_name = paste0(
-        stringr::str_to_lower(stringr::str_replace_all(manager_name, " ", "-")),
-        ".jpg"
-      )
-
-      file_path = file.path(img_dir, file_name)
 
       bslib::card(
+        class = "borderless",
         h1(manager_name()),
         img(
           src = file_path,
-          class = "rounded-circle",
+          class = if(manager_name != "No manager") {"rounded-circle"},
           width = 150,
           height = 150,
           alt = manager_name
         )
       )
+
     })
 
     output$mgr_summary_overall <- {
