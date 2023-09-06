@@ -32,6 +32,7 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       ppg = pts / game_no
     )
 
+
   # Set lowest league position for League Position chart
   if (max(df$season) %in% selected_seasons) {
     max_pos = 24 # Current season
@@ -41,7 +42,8 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       max_pos = (max(df$game_no) / 2) + 1
   }
 
-  # Set Y-axis based on chart type
+
+  # Set X-axis based on chart type
   if (isTRUE(selected_seasons == "2023/24" & max(df$game_no < 10))) {
     x_scale_var = ggplot2::scale_x_continuous(
       limits = c(1, 46)
@@ -51,6 +53,7 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       limits = c(1, max(df$game_no))
     )
   }
+
 
   # Set Y-axis based on chart type
   if (chosen_plot == "league_pos") {
@@ -72,14 +75,9 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
     y_scale_var = ggplot2::scale_y_continuous()
   }
 
-  # # Set y-axis for geom_ribbon
-  # if (chosen_plot == "league_pos") {
-  #   y_max_var = max_pos
-  # } else {
-  #   y_max_var = 0
-  # }
 
   plot_types <- get_chart_options()
+
 
   df <- df %>%
     dplyr::mutate(
