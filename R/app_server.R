@@ -106,8 +106,9 @@ app_server <- function(input, output, session) {
     "ManagersAllManagers_ui_1",
     year_range = ManagersAllManagers_inputs[[1]],
     league_tiers = ManagersAllManagers_inputs[[2]],
-    cup_comps = ManagersAllManagers_inputs[[3]],
-    venue_options = ManagersAllManagers_inputs[[4]],
-    min_games = ManagersAllManagers_inputs[[5]]
+    includePlayOffs = ManagersAllManagers_inputs[[3]],
+    cup_comps = ManagersAllManagers_inputs[[4]],
+    venue_options = ManagersAllManagers_inputs[[5]],
+    min_games = ManagersAllManagers_inputs[[6]]
   )
 }

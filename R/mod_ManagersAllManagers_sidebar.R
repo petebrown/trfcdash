@@ -38,6 +38,14 @@ mod_ManagersAllManagers_sidebar_ui <- function(id){
       selected = c(2, 3, 4, 5)
     ),
 
+    radioButtons(
+      inputId = ns("includePlayOffs"),
+      label = "Include play-off games?",
+      choices = c("Yes", "No"),
+      selected = "Yes",
+      inline = TRUE
+    ),
+
     actionButton(
       inputId = ns("select_all_leagues"),
       label = "All leagues"
@@ -97,7 +105,7 @@ mod_ManagersAllManagers_sidebar_ui <- function(id){
 
     sliderInput(
       inputId = ns("min_games"),
-      label = h6("Minimum no. of meetings:"),
+      label = h6("Minimum no. of games managed:"),
       min = 1,
       max = 100,
       value = 10,
@@ -164,10 +172,17 @@ mod_ManagersAllManagers_sidebar_server <- function(id){
           max(results_dataset$ssn_year)
         )
       )
+
       updateNumericInput(
         inputId = "league_tiers",
         value = c(2, 3, 4, 5)
       )
+
+      updateRadioButtons(
+        inputId = "includePlayOffs",
+        selected = "Yes"
+      )
+
       updateTextInput(
         inputId = "cup_comps",
         value = c(
@@ -180,9 +195,11 @@ mod_ManagersAllManagers_sidebar_server <- function(id){
           "War League"
         )
       )
+
       updateTextInput(
         inputId = "venue_options",
         value = c("H", "A", "N"))
+
       updateNumericInput(
         inputId = "min_games",
         value = 10
@@ -192,6 +209,7 @@ mod_ManagersAllManagers_sidebar_server <- function(id){
     managers_all_inputs <- list(
       reactive({input$year_range}),
       reactive({input$league_tiers}),
+      reactive({input$includePlayOffs}),
       reactive({input$cup_comps}),
       reactive({input$venue_options}),
       reactive({input$min_games})

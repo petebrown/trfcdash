@@ -22,6 +22,10 @@ div.sidebar-content div[class^="selectize-"] {
   font-size: small;
 }
 
+#includePlayOffs {
+  font-size: small;
+}
+
 div#PlayersByPlayer_ui_1-pl_quick_facts div.value-box-area.html-fill-item.html-fill-container {
   justify-content: start;
 }
