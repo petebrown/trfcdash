@@ -27,7 +27,7 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
     ) %>%
     dplyr::mutate(
       mgr_name = manager,
-      win_pc = round((W / P) * 100, 2)
+      win_pc = W / P
     ) %>%
     dplyr::filter(
       P >= min_games
@@ -104,7 +104,11 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
       ),
       win_pc = reactable::colDef(
         name = "Win %",
-        vAlign = "center"
+        vAlign = "center",
+        format = reactable::colFormat(
+          digits = 1,
+          percent = TRUE
+        )
       )
     )
   )
