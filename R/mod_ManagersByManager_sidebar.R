@@ -14,7 +14,7 @@ mod_ManagersByManager_sidebar_ui <- function(id){
       inputId = ns("manager_name"),
       label = h6("Select manager:"),
       choices = sort(unique(results_dataset$manager)),
-      selected = "Ian Dawes",
+      selected = "Nigel Adkins",
       multiple = FALSE,
       selectize = TRUE
     )

@@ -65,5 +65,6 @@ output_player_records <- function(year_range) {
       "Mins played" = mins_played,
       "Yellow cards" = yellow_cards,
       "Red cards" = red_cards
-    )
+    ) %>%
+    reactable::reactable()
 }

@@ -17,7 +17,7 @@ mod_PlayersAllPlayers_ui <- function(id){
           class = "bg-dark",
           "Player Records"
         ),
-        DT::dataTableOutput(ns("player_records"), height = "100%", fill = FALSE)
+        reactable::reactableOutput(ns("player_records"))
       )
     )
   )
@@ -31,21 +31,8 @@ mod_PlayersAllPlayers_server <- function(id, year_range){
     ns <- session$ns
 
     output$player_records <- {
-      DT::renderDT(
-        output_player_records(year_range()),
-        selection = 'single',
-        filter = 'bottom',
-        rownames = FALSE,
-        fillContainer = FALSE,
-        options = list(
-          fillContainer = TRUE,
-          paging = TRUE,
-          info = TRUE,
-          scrollX = TRUE,
-          columnDefs = list(
-            list(targets = c(6, 9), className = 'dt-right')
-          )
-        )
+      reactable::renderReactable(
+        output_player_records(year_range())
       )
     }
 
