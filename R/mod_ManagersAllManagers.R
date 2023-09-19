@@ -12,7 +12,6 @@ mod_ManagersAllManagers_ui <- function(id){
   tagList(
 
     bslib::card(
-      min_height = "100%",
       full_screen = TRUE,
       bslib::card_header(
         class = "bg-dark",
@@ -25,14 +24,13 @@ mod_ManagersAllManagers_ui <- function(id){
 
 
     bslib::card(
-      min_height = "100%",
       full_screen = TRUE,
       bslib::card_header(
         class = "bg-dark",
         "Longest Streaks"
       ),
       bslib::card_body(
-        reactable::reactableOutput(ns("mgr_streaks"))
+        reactable::reactableOutput(ns("mgr_streaks"), height = "auto"),
       )
     )
 

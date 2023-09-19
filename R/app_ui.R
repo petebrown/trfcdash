@@ -9,10 +9,10 @@ app_ui <- function(request) {
     # Leave this function for adding external resources
     golem_add_external_resources(),
     bslib::page_navbar(
+      fillable = FALSE,
       theme = bslib::bs_theme_update(
         bslib::bs_theme(),
         fg = "#385580",
-        # fg = "rgb(30, 35, 85)",
         bg = "white",
         primary = "#385580",
         "enable-rounded" = FALSE
@@ -123,7 +123,7 @@ golem_add_external_resources <- function() {
     favicon(),
     bundle_resources(
       path = app_sys("app/www"),
-      app_title = "trfcdash"
+      app_title = "Tranmere Rovers: A Complete Record"
     )
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
