@@ -14,7 +14,7 @@ output_all_plr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
     ) %>%
     dplyr::mutate(
       outcome = dplyr::case_when(
-        pens_as_draw == "Yes" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
+        pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
         .default = outcome,
       )
     ) %>%

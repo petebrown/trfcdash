@@ -114,7 +114,7 @@ app_server <- function(input, output, session) {
     league_tiers = ManagersAllManagers_inputs[[2]],
     includePlayOffs = ManagersAllManagers_inputs[[3]],
     cup_comps = ManagersAllManagers_inputs[[4]],
-    pens_as_draw = PlayersAllPlayers_inputs[[5]],
+    pens_as_draw = ManagersAllManagers_inputs[[5]],
     venue_options = ManagersAllManagers_inputs[[6]],
     min_games = ManagersAllManagers_inputs[[7]]
   )

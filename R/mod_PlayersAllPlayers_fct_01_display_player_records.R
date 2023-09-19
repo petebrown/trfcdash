@@ -1,4 +1,4 @@
-output_player_records <- function(year_range, league_tiers, includePlayOffs, cup_comps, venue_options, min_games) {
+output_player_records <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games) {
 
   min_year <- year_range[1]
   max_year <- year_range[2]
@@ -14,7 +14,11 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
     ) %>%
     dplyr::mutate(
       ssn_year = as.numeric(stringr::str_sub(season, end = 4)),
-      game_year = lubridate::year(game_date)
+      game_year = lubridate::year(game_date),
+      outcome = dplyr::case_when(
+        pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
+        .default = outcome,
+      )
     ) %>%
     dplyr::filter(
       ssn_year >= min_year,

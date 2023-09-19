@@ -1,15 +1,11 @@
 output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games) {
 
+  print(pens_as_draw)
+
   min_year <- year_range[1]
   max_year <- year_range[2]
 
   df <- results_dataset %>%
-    dplyr::mutate(
-      outcome = dplyr::case_when(
-        pens_as_draw == "Yes" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
-        .default = outcome,
-      )
-    ) %>%
     dplyr::filter(
       ssn_year >= min_year,
       ssn_year <= max_year,
@@ -19,6 +15,12 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
         TRUE ~ TRUE
       ),
       venue %in% venue_options
+    ) %>%
+    dplyr::mutate(
+      outcome = dplyr::case_when(
+        pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
+        .default = outcome
+      )
     ) %>%
     dplyr::group_by(manager) %>%
     dplyr::summarize(

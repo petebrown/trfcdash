@@ -42,7 +42,7 @@ mod_PlayersAllPlayers_server <- function(id, year_range, league_tiers, includePl
 
     output$player_records <- {
       reactable::renderReactable(
-        output_player_records(year_range(), league_tiers(), includePlayOffs(), cup_comps(), venue_options(), min_games())
+        output_player_records(year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), min_games())
       )
     }
 
