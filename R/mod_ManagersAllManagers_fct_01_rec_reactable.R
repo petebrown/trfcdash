@@ -1,7 +1,5 @@
 output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games) {
 
-  print(pens_as_draw)
-
   min_year <- year_range[1]
   max_year <- year_range[2]
 

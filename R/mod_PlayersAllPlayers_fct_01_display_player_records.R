@@ -121,7 +121,8 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
       ),
       debut = reactable::colDef(
         name = "Debut",
-        show = TRUE
+        show = TRUE,
+        align = "right"
       )
     )
   )
