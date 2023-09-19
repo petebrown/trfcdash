@@ -1,9 +1,17 @@
-output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games) {
+output_all_plr_streaks <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games) {
 
   min_year <- year_range[1]
   max_year <- year_range[2]
 
-  df <- results_dataset %>%
+  df <- player_apps %>%
+    dplyr::left_join(
+      results_dataset,
+      by = c(
+        "season",
+        "game_date",
+        "game_no"
+      )
+    ) %>%
     dplyr::mutate(
       outcome = dplyr::case_when(
         pens_as_draw == "Yes" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
@@ -11,6 +19,7 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
       )
     ) %>%
     dplyr::filter(
+      role == "starter",
       ssn_year >= min_year,
       ssn_year <= max_year,
       league_tier %in% league_tiers | generic_comp %in% cup_comps,
@@ -21,9 +30,15 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
       venue %in% venue_options
     ) %>%
     dplyr::group_by(
-      manager
+      menu_name
+    ) %>%
+    dplyr::arrange(
+      game_date
     ) %>%
     dplyr::mutate(
+      goals = ifelse(goals_scored > 0, 1, 0),
+      yellow_cards = ifelse(yellow_cards > 0, 1, 0),
+      red_cards = ifelse(red_cards > 0, 1, 0),
       wins = ifelse(outcome == "W", 1, 0),
       unbeaten = ifelse(outcome != "L", 1, 0),
       losses = ifelse(outcome == "L", 1, 0),
@@ -31,6 +46,9 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
       draws = ifelse(outcome == "D", 1, 0),
       cs = ifelse(goals_against == 0, 1, 0),
       wins_cs = ifelse(outcome == "W" & goals_against == 0, 1, 0),
+      goal_streak = ifelse(goals == 0, 0, sequence(rle(as.character(goals))$lengths)),
+      yc_streak = ifelse(yellow_cards == 0, 0, sequence(rle(as.character(yellow_cards))$lengths)),
+      rc_streak = ifelse(red_cards == 0, 0, sequence(rle(as.character(red_cards))$lengths)),
       w_streak = ifelse(wins == 0, 0, sequence(rle(as.character(wins))$lengths)),
       unbeaten_streak = ifelse(unbeaten == 0, 0, sequence(rle(as.character(unbeaten))$lengths)),
       losing_streak = ifelse(losses == 0, 0, sequence(rle(as.character(losses))$lengths)),
@@ -40,7 +58,10 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
       wins_to_0 = ifelse(wins_cs == 0, 0, sequence(rle(as.character(wins_cs))$lengths))
     ) %>%
     dplyr::summarize(
-      games = dplyr::n(),
+      starts = dplyr::n(),
+      goals = max(goal_streak),
+      yel_cards = max(yc_streak),
+      red_cards = max(rc_streak),
       wins = max(w_streak),
       unbeaten = max(unbeaten_streak),
       losses = max(losing_streak),
@@ -51,18 +72,18 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
       .groups = "drop"
     ) %>%
     dplyr::filter(
-      games >= min_games,
-    ) %>%
-    dplyr::mutate(
-      mgr_name = manager
+      starts >= min_games,
     ) %>%
     dplyr::arrange(
-      dplyr::desc(wins)
+      dplyr::desc(starts)
     ) %>%
     dplyr::select(
-      manager,
-      mgr_name,
+      menu_name,
+      starts,
       wins,
+      goals,
+      yel_cards,
+      red_cards,
       unbeaten,
       losses,
       winless,
@@ -73,61 +94,69 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
 
   output_tab <- reactable::reactable(
     data = df,
+    defaultSortOrder = "desc",
     defaultSorted = list("wins" = "desc"),
+
     columns = list(
-      manager = reactable::colDef(
-        name = "",
-        width = 75,
-        vAlign = "top",
-        cell = function(value) {
-          image <- img(
-            src = dplyr::case_when(
-              .default = paste0(
-                "./www/images/managers/", tolower(gsub(' ', '-', value)), ".jpg"),
-              value == "No manager" ~ "./www/images/crest.svg",
-              stringr::str_detect(value, "Sheedy") ~ "./www/images/managers/kevin-sheedy.jpg",
-              stringr::str_detect(value, "McAteer") ~ "./www/images/managers/jason-mcateer.jpg"
-            ),
-            style = dplyr::case_when(
-              .default = "height: 50px; border-radius: 50%;",
-              value == "No manager" ~ "height: 50px;"
-            ),
-            alt = value
-          )
-          tagList(
-            div(style = "display: inline-block; width: 60px;", image)
-          )
-        }),
-      mgr_name = reactable::colDef(
-        name = "",
+      menu_name = reactable::colDef(
+        name = "Player",
+        show = TRUE,
+        minWidth = 150,
+        vAlign = "center"
+      ),
+      starts = reactable::colDef(
+        name = "Total Starts",
+        show = TRUE,
         vAlign = "center"
       ),
       wins = reactable::colDef(
         name = "Wins",
+        show = TRUE,
+        vAlign = "center"
+      ),
+      goals = reactable::colDef(
+        name = "Goals",
+        show = TRUE,
+        vAlign = "center"
+      ),
+      yel_cards = reactable::colDef(
+        name = "Yellow Cards",
+        show = TRUE,
+        vAlign = "center"
+      ),
+      red_cards = reactable::colDef(
+        name = "Red Cards",
+        show = TRUE,
         vAlign = "center"
       ),
       unbeaten = reactable::colDef(
         name = "Unbeaten",
+        show = TRUE,
         vAlign = "center"
       ),
       losses = reactable::colDef(
         name = "Losses",
+        show = TRUE,
         vAlign = "center"
       ),
       winless = reactable::colDef(
         name = "Winless",
+        show = TRUE,
         vAlign = "center"
       ),
       draws = reactable::colDef(
         name = "Draws",
+        show = TRUE,
         vAlign = "center"
       ),
       clean_sheets = reactable::colDef(
         name = "Clean Sheets",
+        show = TRUE,
         vAlign = "center"
       ),
       wins_to_0 = reactable::colDef(
         name = "Wins to nil",
+        show = TRUE,
         vAlign = "center"
       )
     )

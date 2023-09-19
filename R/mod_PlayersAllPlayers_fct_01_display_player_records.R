@@ -1,12 +1,30 @@
-output_player_records <- function(year_range) {
-  player_apps %>%
+output_player_records <- function(year_range, league_tiers, includePlayOffs, cup_comps, venue_options, min_games) {
+
+  min_year <- year_range[1]
+  max_year <- year_range[2]
+
+  df <- player_apps %>%
+    dplyr::left_join(
+      results_dataset,
+      by = c(
+        "season",
+        "game_date",
+        "game_no"
+      )
+    ) %>%
     dplyr::mutate(
       ssn_year = as.numeric(stringr::str_sub(season, end = 4)),
       game_year = lubridate::year(game_date)
     ) %>%
     dplyr::filter(
-      ssn_year >= year_range[1],
-      ssn_year <= year_range[2]
+      ssn_year >= min_year,
+      ssn_year <= max_year,
+      league_tier %in% league_tiers | generic_comp %in% cup_comps,
+      dplyr::case_when(
+        includePlayOffs == "No" ~ !grepl("play-off", competition, ignore.case = TRUE),
+        TRUE ~ TRUE
+      ),
+      venue %in% venue_options
     ) %>%
     tidyr::replace_na(
       list(
@@ -18,7 +36,7 @@ output_player_records <- function(year_range) {
       )
     ) %>%
     dplyr::group_by(
-      player_name
+      menu_name
     ) %>%
     dplyr::summarise(
       starts = sum(role == "starter"),
@@ -30,21 +48,21 @@ output_player_records <- function(year_range) {
       mins_played = sum(mins_played)
     ) %>%
     dplyr::mutate(
-      surname = stringr::str_split_i(player_name, " ", -1),
-      forename = stringr::str_remove(player_name, surname),
-      forename = stringr::str_trim(forename),
+      # surname = stringr::str_split_i(player_name, " ", -1),
+      # forename = stringr::str_remove(player_name, surname),
+      # forename = stringr::str_trim(forename),
       total_apps = starts + sub_apps,
       debut = as.Date(debut, format = '%d-%m-%Y'),
-      debut = format(debut, "%d/%m/%Y"),
-      mins_played = format(mins_played, nsmall = 0, big.mark = ",")
+      debut = format(debut, "%d/%m/%Y")
+    ) %>%
+    dplyr::filter(
+      starts >= min_games
     ) %>%
     dplyr::arrange(
-      surname,
-      forename
+      menu_name
     ) %>%
     dplyr::select(
-      surname,
-      forename,
+      menu_name,
       total_apps,
       starts,
       sub_apps,
@@ -53,18 +71,54 @@ output_player_records <- function(year_range) {
       yellow_cards,
       red_cards,
       debut
-    ) %>%
-    dplyr::rename(
-      Surname = surname,
-      Forename = forename,
-      "Total Apps" = total_apps,
-      Starts = starts,
-      "Sub Apps" = sub_apps,
-      Goals = goals,
-      Debut = debut,
-      "Mins played" = mins_played,
-      "Yellow cards" = yellow_cards,
-      "Red cards" = red_cards
-    ) %>%
-    reactable::reactable()
+    )
+
+  reactable::reactable(
+    data = df,
+    defaultSortOrder = "desc",
+    defaultSorted = list("total_apps" = "desc"),
+
+    columns = list(
+      menu_name = reactable::colDef(
+        name = "Player",
+        show = TRUE,
+        minWidth = 150,
+      ),
+      total_apps = reactable::colDef(
+        name = "Apps",
+        show = TRUE
+      ),
+      starts = reactable::colDef(
+        name = "Starts",
+        show = TRUE
+      ),
+      sub_apps = reactable::colDef(
+        name = "Sub Apps",
+        show = TRUE
+      ),
+      goals = reactable::colDef(
+        name = "Goals",
+        show = TRUE
+      ),
+      mins_played = reactable::colDef(
+        name = "Mins Played",
+        show = TRUE,
+        format = reactable::colFormat(
+          separators = TRUE
+        )
+      ),
+      yellow_cards = reactable::colDef(
+        name = "Yellow Cards",
+        show = TRUE
+      ),
+      red_cards = reactable::colDef(
+        name = "Red Cards",
+        show = TRUE
+      ),
+      debut = reactable::colDef(
+        name = "Debut",
+        show = TRUE
+      )
+    )
+  )
 }

@@ -64,7 +64,13 @@ app_server <- function(input, output, session) {
   # Send user inputs from Players (all players) sidebar to Players (all players) server
   mod_PlayersAllPlayers_server(
     "PlayersAllPlayers_ui_1",
-    year_range = PlayersAllPlayers_inputs[[1]]
+    year_range = PlayersAllPlayers_inputs[[1]],
+    league_tiers = PlayersAllPlayers_inputs[[2]],
+    includePlayOffs = PlayersAllPlayers_inputs[[3]],
+    cup_comps = PlayersAllPlayers_inputs[[4]],
+    pens_as_draw = PlayersAllPlayers_inputs[[5]],
+    venue_options = PlayersAllPlayers_inputs[[6]],
+    min_games = PlayersAllPlayers_inputs[[7]]
   )
 
 
@@ -108,7 +114,8 @@ app_server <- function(input, output, session) {
     league_tiers = ManagersAllManagers_inputs[[2]],
     includePlayOffs = ManagersAllManagers_inputs[[3]],
     cup_comps = ManagersAllManagers_inputs[[4]],
-    venue_options = ManagersAllManagers_inputs[[5]],
-    min_games = ManagersAllManagers_inputs[[6]]
+    pens_as_draw = PlayersAllPlayers_inputs[[5]],
+    venue_options = ManagersAllManagers_inputs[[6]],
+    min_games = ManagersAllManagers_inputs[[7]]
   )
 }

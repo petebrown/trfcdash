@@ -80,6 +80,14 @@ mod_ManagersAllManagers_sidebar_ui <- function(id){
       )
     ),
 
+    radioButtons(
+      inputId = ns("pensAsDraw"),
+      label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+      choices = c("Yes", "No"),
+      selected = "Yes",
+      inline = TRUE
+    ),
+
     actionButton(
       inputId = ns("select_all_cups"),
       label = "All cups"
@@ -196,6 +204,11 @@ mod_ManagersAllManagers_sidebar_server <- function(id){
         )
       )
 
+      updateRadioButtons(
+        inputId = "pensAsDraw",
+        selected = "Yes"
+      )
+
       updateTextInput(
         inputId = "venue_options",
         value = c("H", "A", "N"))
@@ -207,12 +220,13 @@ mod_ManagersAllManagers_sidebar_server <- function(id){
     })
 
     managers_all_inputs <- list(
-      reactive({input$year_range}),
-      reactive({input$league_tiers}),
-      reactive({input$includePlayOffs}),
-      reactive({input$cup_comps}),
-      reactive({input$venue_options}),
-      reactive({input$min_games})
+      reactive({input$year_range}), #1
+      reactive({input$league_tiers}), #2
+      reactive({input$includePlayOffs}), #3
+      reactive({input$cup_comps}), #4
+      reactive({input$pensAsDraw}), #5
+      reactive({input$venue_options}), #6
+      reactive({input$min_games}) #7
     )
     return(managers_all_inputs)
 

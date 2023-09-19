@@ -1,16 +1,15 @@
-output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cup_comps, venue_options, min_games) {
-
-  # Render a bar chart with a label on the left
-  bar_chart <- function(label, width = "100%", height = "1.2rem", fill = "#00bfc4", background = NULL) {
-    bar <- div(style = list(background = fill, width = width, height = height))
-    chart <- div(style = list(flexGrow = 1, marginLeft = "2.0rem", marginRight = "1.0rem", background = background, `border-style` = "solid", `border-color` = "slategrey", `border-width` = "thin"), bar)
-    div(style = list(display = "flex", alignItems = "center"), chart, label)
-  }
+output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games) {
 
   min_year <- year_range[1]
   max_year <- year_range[2]
 
   df <- results_dataset %>%
+    dplyr::mutate(
+      outcome = dplyr::case_when(
+        pens_as_draw == "Yes" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
+        .default = outcome,
+      )
+    ) %>%
     dplyr::filter(
       ssn_year >= min_year,
       ssn_year <= max_year,
@@ -40,8 +39,7 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
       P >= min_games
     ) %>%
     dplyr::arrange(
-      dplyr::desc(win_pc),
-      P,
+      dplyr::desc(P),
       manager
     ) %>%
     dplyr::select(
@@ -59,7 +57,10 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
 
   output_tab <- reactable::reactable(
     data = df,
-    defaultSorted = list("win_pc" = "desc"),
+    defaultSortOrder = "desc",
+    defaultSorted = list(
+      "P" = "desc"
+    ),
     columns = list(
       manager = reactable::colDef(
         name = "",
@@ -116,6 +117,7 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
       GD = reactable::colDef(
         vAlign = "center",
         minWidth = 70,
+        # Function to add plus sign (+) before positive figures
         cell = function(value) {
           sprintf("%+3d", value)
         }

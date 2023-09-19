@@ -43,6 +43,16 @@ mod_ManagersByManager_ui <- function(id){
         bslib::card_body(
           gt::gt_output(ns("mgr_summary_by_ssn"))
         )
+      ),
+
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Players Used"
+        ),
+        bslib::card_body(
+          reactable::reactableOutput(ns("mgr_player_recs"))
+        )
       )
     )
   )
@@ -110,6 +120,12 @@ mod_ManagersByManager_server <- function(id, manager_name){
       gt::render_gt(
         expr = get_mgr_summary_by_comp(manager_name()),
         width = "100%"
+      )
+    }
+
+    output$mgr_player_recs <- {
+      reactable::renderReactable(
+        expr = output_mgr_plr_records(manager_name())
       )
     }
 
