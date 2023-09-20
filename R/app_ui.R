@@ -71,7 +71,7 @@ app_ui <- function(request) {
         # Individual player stats
         shiny::conditionalPanel(
           "input.nav === 'Attendance stats by season'",
-          "AttendanceBySeason_sidebar"
+          AttendancesBySeason_sidebar()
         ),
         # On This Day
         shiny::conditionalPanel(

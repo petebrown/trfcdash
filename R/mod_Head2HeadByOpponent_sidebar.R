@@ -19,7 +19,6 @@ mod_Head2HeadByOpponent_sidebar_ui <- function(id){
       selectize = TRUE
     ),
 
-
     sliderInput(
       inputId = ns("year_range"),
       label = h6("Select season range:"),
@@ -46,6 +45,14 @@ mod_Head2HeadByOpponent_sidebar_ui <- function(id){
         "5: National League" = 5
       ),
       selected = c(2, 3, 4, 5)
+    ),
+
+    radioButtons(
+      inputId = ns("includePlayOffs"),
+      label = "Include play-off games?",
+      choices = c("Yes", "No"),
+      selected = "Yes",
+      inline = TRUE
     ),
 
     actionButton(
@@ -82,6 +89,14 @@ mod_Head2HeadByOpponent_sidebar_ui <- function(id){
       )
     ),
 
+    radioButtons(
+      inputId = ns("pensAsDraw"),
+      label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+      choices = c("Yes", "No"),
+      selected = "Yes",
+      inline = TRUE
+    ),
+
     actionButton(
       inputId = ns("select_all_cups"),
       label = "All cups"
@@ -115,7 +130,7 @@ mod_Head2HeadByOpponent_sidebar_ui <- function(id){
 #' Head2HeadByOpponent_sidebar Server Functions
 #'
 #' @noRd
-mod_Head2HeadByOpponent_sidebar_server <- function(id, opponent, year_range, league_tiers, cup_comps, venue_options){
+mod_Head2HeadByOpponent_sidebar_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -169,6 +184,12 @@ mod_Head2HeadByOpponent_sidebar_server <- function(id, opponent, year_range, lea
         inputId = "league_tiers",
         value = c(2, 3, 4, 5)
       )
+
+      updateRadioButtons(
+        inputId = "includePlayOffs",
+        selected = "Yes"
+      )
+
       updateTextInput(
         inputId = "cup_comps",
         value = c(
@@ -181,21 +202,26 @@ mod_Head2HeadByOpponent_sidebar_server <- function(id, opponent, year_range, lea
           "War League"
         )
       )
+
+      updateRadioButtons(
+        inputId = "pensAsDraw",
+        selected = "Yes"
+      )
+
       updateTextInput(
         inputId = "venue_options",
         value = c("H", "A", "N"))
-      updateNumericInput(
-        inputId = "min_games",
-        value = 10
-      )
+
     })
 
     head2head_ind_inputs <- list(
-      reactive({input$opponent}),
-      reactive({input$year_range}),
-      reactive({input$league_tiers}),
-      reactive({input$cup_comps}),
-      reactive({input$venue_options})
+      reactive({input$opponent}), #1
+      reactive({input$year_range}), #2
+      reactive({input$league_tiers}), #3
+      reactive({input$includePlayOffs}), #4
+      reactive({input$cup_comps}), #5
+      reactive({input$pensAsDraw}), #6
+      reactive({input$venue_options}) #7
     )
     return(head2head_ind_inputs)
 

@@ -17,7 +17,7 @@ mod_Head2HeadByOpponent_ui <- function(id){
 #' Head2HeadByOpponent Server Functions
 #'
 #' @noRd
-mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tiers, cup_comps, venue_options){
+mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
