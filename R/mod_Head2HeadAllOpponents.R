@@ -17,7 +17,7 @@ mod_Head2HeadAllOpponents_ui <- function(id){
           "Overall Records"
         ),
         bslib::card_body(
-          DT::dataTableOutput(ns("h2h_records"), height = "100%", fill = FALSE)
+          reactable::reactableOutput(ns("h2h_records"))
         )
       ),
       bslib::card(
@@ -25,7 +25,7 @@ mod_Head2HeadAllOpponents_ui <- function(id){
           class = "bg-dark",
           "Longest Streaks"
         ),
-        DT::dataTableOutput(ns("streaks"), height = "100%", fill = FALSE)
+        reactable::reactableOutput(ns("streaks"))
       )
     )
   )
@@ -34,7 +34,7 @@ mod_Head2HeadAllOpponents_ui <- function(id){
 #' Head2HeadAllOpponents Server Functions
 #'
 #' @noRd
-mod_Head2HeadAllOpponents_server <- function(id, year_range, league_tiers, cup_comps, venue_options, min_games){
+mod_Head2HeadAllOpponents_server <- function(id, year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
@@ -42,36 +42,16 @@ mod_Head2HeadAllOpponents_server <- function(id, year_range, league_tiers, cup_c
     # CARD 1: HEAD-TO-HEAD RECORDS #
     ################################
 
-    output$h2h_records <- DT::renderDT(
-      output_h2h_records(year_range(), league_tiers(), cup_comps(), venue_options(), min_games()),
-      selection = 'single',
-      filter = 'bottom',
-      rownames = FALSE,
-      fillContainer = FALSE,
-      options = list(
-        fillContainer = TRUE,
-        paging = TRUE,
-        info = TRUE,
-        scrollX = TRUE
-      )
+    output$h2h_records <- reactable::renderReactable(
+      output_h2h_records(year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), min_games())
     )
 
     ################################
     # CARD 2: LONGEST STREAKS      #
     ################################
 
-    output$streaks <- DT::renderDT(
-      output_h2h_streaks(year_range(), league_tiers(), cup_comps(), venue_options(), min_games()),
-      selection = 'single',
-      filter = 'bottom',
-      rownames = FALSE,
-      fillContainer = FALSE,
-      options = list(
-        fillContainer = TRUE,
-        paging = TRUE,
-        info = TRUE,
-        scrollX = TRUE
-      )
+    output$streaks <- reactable::renderReactable(
+      output_h2h_streaks(year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), min_games())
     )
 
   })

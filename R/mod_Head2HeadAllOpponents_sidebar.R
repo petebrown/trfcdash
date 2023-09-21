@@ -38,6 +38,14 @@ mod_Head2HeadAllOpponents_sidebar_ui <- function(id){
       selected = c(2, 3, 4, 5)
     ),
 
+    radioButtons(
+      inputId = ns("includePlayOffs"),
+      label = "Include play-off games?",
+      choices = c("Yes", "No"),
+      selected = "Yes",
+      inline = TRUE
+    ),
+
     actionButton(
       inputId = ns("select_all_leagues"),
       label = "All leagues"
@@ -70,6 +78,14 @@ mod_Head2HeadAllOpponents_sidebar_ui <- function(id){
         "League Cup",
         "War League"
       )
+    ),
+
+    radioButtons(
+      inputId = ns("pensAsDraw"),
+      label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+      choices = c("Yes", "No"),
+      selected = "Yes",
+      inline = TRUE
     ),
 
     actionButton(
@@ -164,10 +180,17 @@ mod_Head2HeadAllOpponents_sidebar_server <- function(id){
           max(results_dataset$ssn_year)
         )
       )
+
       updateNumericInput(
         inputId = "league_tiers",
         value = c(2, 3, 4, 5)
       )
+
+      updateRadioButtons(
+        inputId = "includePlayOffs",
+        selected = "Yes"
+      )
+
       updateTextInput(
         inputId = "cup_comps",
         value = c(
@@ -180,6 +203,12 @@ mod_Head2HeadAllOpponents_sidebar_server <- function(id){
           "War League"
         )
       )
+
+      updateRadioButtons(
+        inputId = "pensAsDraw",
+        selected = "Yes"
+      )
+
       updateTextInput(
         inputId = "venue_options",
         value = c("H", "A", "N"))
@@ -190,11 +219,13 @@ mod_Head2HeadAllOpponents_sidebar_server <- function(id){
     })
 
     head2head_all_inputs <- list(
-      reactive({input$year_range}),
-      reactive({input$league_tiers}),
-      reactive({input$cup_comps}),
-      reactive({input$venue_options}),
-      reactive({input$min_games})
+      reactive({input$year_range}), #1
+      reactive({input$league_tiers}), #2
+      reactive({input$includePlayOffs}), #3
+      reactive({input$cup_comps}), #4
+      reactive({input$pensAsDraw}), #5
+      reactive({input$venue_options}), #6
+      reactive({input$min_games}) #7
     )
     return(head2head_all_inputs)
 

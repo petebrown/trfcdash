@@ -18,7 +18,7 @@ bar_chart <- function(label, width = "100%", height = "1.2rem", fill = "#00bfc4"
   chart <- div(
     style = list(
       flexGrow = 1,
-      marginLeft = "2.0rem",
+      marginLeft = "10%",
       marginRight = "1.0rem",
       background = background,
       `border-style` = "solid",

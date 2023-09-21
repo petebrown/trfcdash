@@ -45,8 +45,8 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
       season,
       game_no,
       game_date,
-      opposition,
       venue,
+      opposition,
       outcome,
       score,
       competition,
@@ -90,23 +90,67 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
     searchable = TRUE,
     borderless = TRUE,
     filterable = FALSE,
-    striped = TRUE,
     resizable = TRUE,
     columns = list(
-      season = reactable::colDef(name = "Season", minWidth = 100),
-      game_no = reactable::colDef(name = "Game\nNo.", align = "left", minWidth = 80),
-      game_date = reactable::colDef(name = "Date", minWidth = 120,
-                                    format = reactable::colFormat(date = TRUE, locales = "en-GB")),
-      venue = reactable::colDef(name = "Venue", minWidth = 80),
-      opposition = reactable::colDef(name = "Opponent", minWidth = 180),
-      outcome = reactable::colDef(name = "Res", align = "left", minWidth = 70),
-      score = reactable::colDef(name = "Score", minWidth = 80),
-      competition = reactable::colDef(name = "Competition", minWidth = 130),
-      attendance = reactable::colDef(name = "Att.", minWidth = 110,
-                                     format = reactable::colFormat(digits = 0, separators = TRUE)),
-      manager = reactable::colDef(name = "Manager"),
-      league_tier = reactable::colDef(show = FALSE)
+      season = reactable::colDef(
+        name = "Season",
+        minWidth = 100
+      ),
+      game_no = reactable::colDef(
+        name = "Game\nNo.",
+        align = "left",
+        minWidth = 65
+      ),
+      game_date = reactable::colDef(
+        name = "Date",
+        minWidth = 105,
+        format = reactable::colFormat(date = TRUE, locales = "en-GB")
+      ),
+      venue = reactable::colDef(
+        name = "Venue",
+        minWidth = 65,
+        align = "center"
+      ),
+      opposition = reactable::colDef(
+        name = "Opponent",
+        minWidth = 180
+      ),
+      outcome = reactable::colDef(
+        name = "Res",
+        align = "left",
+        minWidth = 45
+      ),
+      score = reactable::colDef(
+        name = "Score",
+        minWidth = 60,
+        align = "center"
+      ),
+      competition = reactable::colDef(
+        name = "Competition",
+        minWidth = 110
+      ),
+      attendance = reactable::colDef(
+        name = "Att.",
+        minWidth = 70,
+        format = reactable::colFormat(digits = 0, separators = TRUE)
+      ),
+      manager = reactable::colDef(
+        name = "Manager",
+        minWidth = 120,
+        align = "right"
+      ),
+      league_tier = reactable::colDef(
+        show = FALSE
+      )
     ),
+    rowClass = "results-row",
+    rowStyle = function(index) {
+      if (top_level[index, "venue"] == "H") {
+        list(
+          background = "rgb(248, 251, 253)"
+        )
+      }
+    },
     details = function(index) {
       line_up = second_level[second_level$game_date == top_level$game_date[index], ]
       lge_tab = lge_tabs[lge_tabs$game_date == top_level$game_date[index], ]

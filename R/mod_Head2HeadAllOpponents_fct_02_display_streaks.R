@@ -1,4 +1,5 @@
-output_h2h_streaks <- function(year_range, league_tiers, cup_comps, venue_options, min_games) {
+output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games) {
+
   df <- results_dataset %>%
     dplyr::mutate(
       ssn_year = as.numeric(stringr::str_sub(season, end = 4))
@@ -6,8 +7,18 @@ output_h2h_streaks <- function(year_range, league_tiers, cup_comps, venue_option
     dplyr::filter(
       ssn_year >= year_range[1],
       ssn_year <= year_range[2],
-      venue %in% venue_options,
-      league_tier %in% league_tiers | generic_comp %in% cup_comps
+      league_tier %in% league_tiers | generic_comp %in% cup_comps,
+      dplyr::case_when(
+        includePlayOffs == "No" ~ !grepl("play-off", competition, ignore.case = TRUE),
+        TRUE ~ TRUE
+      ),
+      venue %in% venue_options
+    ) %>%
+    dplyr::mutate(
+      outcome = dplyr::case_when(
+        pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
+        .default = outcome
+      )
     ) %>%
     dplyr::arrange(
       season,
@@ -32,22 +43,31 @@ output_h2h_streaks <- function(year_range, league_tiers, cup_comps, venue_option
       clean_sheets = ifelse(cs == 0, 0, sequence(rle(as.character(cs))$lengths))) %>%
     dplyr::summarize(
       P = dplyr::n(),
-      "Winning" = max(w_streak),
+      "Wins" = max(w_streak),
       "Unbeaten" = max(unbeaten_streak),
-      "Losing" = max(losing_streak),
+      "Defeats" = max(losing_streak),
       "Winless" = max(winless_streak),
-      "Drawing" = max(d_streak),
+      "Draws" = max(d_streak),
       "Clean sheets" = max(clean_sheets)
     ) %>%
     dplyr::filter(
       P >= min_games
     ) %>%
     dplyr::arrange(
-      dplyr::desc(Winning),
+      dplyr::desc(Wins),
       dplyr::desc(P)
-    ) %>%
-    dplyr::rename(
-      Opposition = opposition
     )
-  return(df)
+
+  reactable::reactable(
+    data = df,
+    searchable = TRUE,
+    defaultSortOrder = "desc",
+    defaultSorted = "Wins",
+    columns = list(
+      opposition = reactable::colDef(
+        name = "Opposition",
+        minWidth = 130
+      )
+    )
+  )
 }

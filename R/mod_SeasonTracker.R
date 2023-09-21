@@ -63,7 +63,7 @@ mod_SeasonTracker_ui <- function(id){
           ),
           bslib::card_body(
             fillable = FALSE,
-            DT::dataTableOutput(ns("season_records"))
+            reactable::reactableOutput(ns("season_records"))
           )
         ),
         hr(style = "width:30%; margin: 1.5rem auto;"),
@@ -75,7 +75,7 @@ mod_SeasonTracker_ui <- function(id){
             ),
             bslib::card_body(
               fillable = FALSE,
-              DT::dataTableOutput(ns("season_records_home"))
+              reactable::reactableOutput(ns("season_records_home"))
             )
           ),
           bslib::card(
@@ -84,7 +84,7 @@ mod_SeasonTracker_ui <- function(id){
             ),
             bslib::card_body(
               fillable = FALSE,
-              DT::dataTableOutput(ns("season_records_away"))
+              reactable::reactableOutput(ns("season_records_away"))
             )
           )
         )
@@ -109,7 +109,7 @@ mod_SeasonTracker_ui <- function(id){
         ),
         bslib::card_body(
           fillable = FALSE,
-          DT::dataTableOutput(ns("streaks"))
+          reactable::reactableOutput(ns("streaks"))
         )
       ),
 
@@ -178,16 +178,8 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
 
     # Function to produce season record data tables
     render_ssn_records <- function(venues) {
-      DT::renderDT(
-        output_ssn_records(selected_seasons(), venues),
-        rownames = FALSE,
-        options = list(
-          pageLength = 5,
-          dom = 'tip',
-          info = FALSE,
-          paging = FALSE,
-          fillContainer = TRUE
-        )
+      reactable::renderReactable(
+        output_ssn_records(selected_seasons(), venues)
       )
     }
 
@@ -203,10 +195,8 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
     ###########################
 
     # CARD 3: Longest streaks in selected seasons
-    output$streaks <- DT::renderDT(
-      get_streaks(selected_seasons()),
-      rownames = FALSE,
-      options = list(pageLength = 5, dom = 'tip', info = FALSE, paging = FALSE, fillContainer = TRUE)
+    output$streaks <- reactable::renderReactable(
+      render_streaks(selected_seasons())
     )
 
     ###################

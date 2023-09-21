@@ -92,9 +92,11 @@ app_server <- function(input, output, session) {
     "Head2HeadAllOpponents_ui_1",
     year_range = Head2HeadAll_inputs[[1]],
     league_tiers = Head2HeadAll_inputs[[2]],
-    cup_comps = Head2HeadAll_inputs[[3]],
-    venue_options = Head2HeadAll_inputs[[4]],
-    min_games = Head2HeadAll_inputs[[5]]
+    includePlayOffs = Head2HeadAll_inputs[[3]],
+    cup_comps = Head2HeadAll_inputs[[4]],
+    pens_as_draw = Head2HeadAll_inputs[[5]],
+    venue_options = Head2HeadAll_inputs[[6]],
+    min_games = Head2HeadAll_inputs[[7]]
   )
 
 

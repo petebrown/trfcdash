@@ -18,5 +18,19 @@ output_ssn_records <- function(selected_seasons, selected_venue) {
     ) %>%
     dplyr::rename(Season = season)
 
-  return (df)
+  tab <- reactable::reactable(
+    data = df,
+    striped = TRUE,
+    columns = list(
+      GD = reactable::colDef(
+        show = TRUE,
+        # Function to add plus sign (+) before positive figures
+        cell = function(value) {
+          sprintf("%+3d", value)
+        }
+      )
+    )
+  )
+
+  return (tab)
 }
