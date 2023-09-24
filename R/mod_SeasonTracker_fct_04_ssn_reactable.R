@@ -147,7 +147,8 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
     rowStyle = function(index) {
       if (top_level[index, "venue"] == "H") {
         list(
-          background = "rgb(248, 251, 253)"
+          # background = "rgb(248, 251, 253)",
+          fontWeight = "600"
         )
       }
     },
