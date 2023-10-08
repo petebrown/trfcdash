@@ -514,3 +514,7 @@ usethis::use_data(
   managers,
   overwrite = TRUE
 )
+
+###################
+# UPDATE COMPLETE #
+###################

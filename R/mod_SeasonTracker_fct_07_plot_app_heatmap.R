@@ -62,7 +62,11 @@ output_app_heatmap <- function(selected_season) {
       )
     ) %>%
     dplyr::mutate(
-      mins_played = tidyr::replace_na(mins_played, 0),
+      mins_played = dplyr::case_when(
+        mins_played == 0 ~ 1,
+        is.na(mins_played) ~ -1,
+        TRUE ~ mins_played
+      ),
       goals_scored = tidyr::replace_na(goals_scored, 0),
       yellow_cards = tidyr::replace_na(yellow_cards, 0),
       red_cards = tidyr::replace_na(red_cards, 0),
@@ -109,15 +113,15 @@ output_app_heatmap <- function(selected_season) {
         ),
         labels = c(
           "0",
-          "0-10",
-          "10-20",
-          "20-30",
-          "30-40",
-          "40-50",
-          "50-60",
-          "60-70",
-          "70-80",
-          "80-90"
+          "1-10",
+          "11-20",
+          "21-30",
+          "31-40",
+          "41-50",
+          "51-60",
+          "61-70",
+          "71-80",
+          "81-90"
         )
       ),
       countfactor = factor(as.character(countfactor), levels = rev(levels(countfactor)))
@@ -192,15 +196,15 @@ output_app_heatmap <- function(selected_season) {
       )),
       labels = rev(c(
         "0",
-        "0-10",
-        "10-20",
-        "20-30",
-        "30-40",
-        "40-50",
-        "50-60",
-        "60-70",
-        "70-80",
-        "80-90"
+        "1-10",
+        "11-20",
+        "21-30",
+        "31-40",
+        "41-50",
+        "51-60",
+        "61-70",
+        "71-80",
+        "81-90"
       )),
       na.value = "grey92",
       drop = FALSE,
