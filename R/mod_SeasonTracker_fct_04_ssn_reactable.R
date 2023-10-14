@@ -6,6 +6,12 @@ get_eos_table <- function(selected_seasons) {
     dplyr::filter(
       season %in% selected_seasons
     ) %>%
+    dplyr::mutate(
+      GD = GF - GA
+    ) %>%
+    dplyr::relocate(
+      GD, .after = GA
+    ) %>%
     dplyr::arrange(
       season,
       game_no,
@@ -24,6 +30,12 @@ get_lge_tables <- function(selected_seasons) {
   lge_tables %>%
     dplyr::filter(
       season %in% selected_seasons
+    ) %>%
+    dplyr::mutate(
+      GD = GF - GA
+    ) %>%
+    dplyr::relocate(
+      GD, .after = GA
     ) %>%
     dplyr::arrange(
       season,
@@ -216,6 +228,15 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
               L = reactable::colDef(width = 40),
               GF = reactable::colDef(width = 50),
               GA = reactable::colDef(width = 50),
+              GD = reactable::colDef(width = 50,
+                # Function to add plus sign (+) before positive figures
+                cell = function(value) {
+                  if (value != 0)
+                    sprintf("%+3d", value)
+                  else
+                    value
+                }
+              ),
               Pts = reactable::colDef(width = 50),
               league_tier = reactable::colDef(show = FALSE)
             ),

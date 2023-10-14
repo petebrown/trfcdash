@@ -119,7 +119,10 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
         minWidth = 70,
         # Function to add plus sign (+) before positive figures
         cell = function(value) {
-          sprintf("%+3d", value)
+          if (value != 0)
+            sprintf("%+3d", value)
+          else
+            value
         }
       ),
       win_pc = reactable::colDef(
