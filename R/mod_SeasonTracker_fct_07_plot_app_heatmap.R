@@ -37,9 +37,15 @@ output_app_heatmap <- function(selected_season) {
     )
   }
 
+  league_games <- results_dataset %>%
+    dplyr::filter(
+      season == selected_season,
+      game_type == "League"
+    )
+
   ssn_players <- player_apps %>%
     dplyr::filter(
-      season == selected_season
+      game_date %in% league_games$game_date
     ) %>%
     dplyr::select(
       season,

@@ -160,7 +160,7 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
       if (top_level[index, "venue"] == "H") {
         list(
           # background = "rgb(248, 251, 253)",
-          fontWeight = "600"
+          fontWeight = "500"
         )
       }
     },
@@ -231,10 +231,7 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
               GD = reactable::colDef(width = 50,
                 # Function to add plus sign (+) before positive figures
                 cell = function(value) {
-                  if (value != 0)
-                    sprintf("%+3d", value)
-                  else
-                    value
+                  format_gd(value)
                 }
               ),
               Pts = reactable::colDef(width = 50),
