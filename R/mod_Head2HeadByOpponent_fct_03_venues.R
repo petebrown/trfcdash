@@ -1,4 +1,4 @@
-get_h2h_summary <- function(opponent, year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options) {
+get_h2h_by_venue <- function(opponent, year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options) {
 
   min_year <- year_range[1]
   max_year <- year_range[2]
@@ -16,10 +16,19 @@ get_h2h_summary <- function(opponent, year_range, league_tiers, includePlayOffs,
       venue %in% venue_options
     ) %>%
     dplyr::mutate(
+      venue = dplyr::case_match(
+        venue,
+        "H" ~ "Home",
+        "A" ~ "Away",
+        "N" ~ "Neutral"
+      ),
       outcome = dplyr::case_when(
         pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
         .default = outcome
       )
+    ) %>%
+    dplyr::group_by(
+      venue
     ) %>%
     dplyr::summarize(
       P = dplyr::n(),
@@ -30,12 +39,18 @@ get_h2h_summary <- function(opponent, year_range, league_tiers, includePlayOffs,
       GA = sum(goals_against),
       GD = sum(GF - GA),
       .groups = "drop"
+    ) %>%
+  dplyr::arrange(
+      factor(
+        venue,
+        levels = c("Home", "Away", "Neutral")
+      )
     )
 
   return(df)
 }
 
-plot_h2h_summary <- function(opponent, year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options) {
+plot_h2h_by_venue <- function(opponent, year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options) {
 
   min_year <- year_range[1]
   max_year <- year_range[2]
@@ -53,12 +68,20 @@ plot_h2h_summary <- function(opponent, year_range, league_tiers, includePlayOffs
       venue %in% venue_options
     ) %>%
     dplyr::mutate(
+      venue = dplyr::case_when(
+        venue == "H" ~ "Home",
+        venue == "A" ~ "Away",
+        TRUE ~ "Neutral"
+      ),
       outcome = dplyr::case_when(
         pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
         .default = outcome
       )
     ) %>%
-    dplyr::group_by(outcome) %>%
+    dplyr::group_by(
+      venue,
+      outcome
+    ) %>%
     dplyr::summarise(
       n = dplyr::n(),
       pc = n / sum(n),
@@ -100,6 +123,12 @@ plot_h2h_summary <- function(opponent, year_range, league_tiers, includePlayOffs
     # remove legend
     ggplot2::guides(
       fill = "none"
+    ) +
+    ggplot2::facet_wrap(
+      ~factor(
+        venue,
+        levels = c("Home", "Away", "Neutral")
+      )
     ) +
     # remove guidelines
     ggplot2::theme(

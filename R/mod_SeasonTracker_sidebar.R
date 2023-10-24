@@ -15,7 +15,7 @@ mod_SeasonTracker_sidebar_ui <- function(id){
       inputId = ns("selected_seasons"),
       label = h6("Select seasons:"),
       choices = get_season_list(),
-      selected = c("2023/24", "2022/23"),
+      selected = c("2023/24", "2014/15"),
       multiple = TRUE
     ),
     hr(),
