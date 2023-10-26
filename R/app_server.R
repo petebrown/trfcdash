@@ -10,6 +10,8 @@ app_server <- function(input, output, session) {
 
   mod_SeasonTracker_server("SeasonTracker_ui_1")
 
+  mod_SeasonOverviews_server("SeasonOverviews_ui_1")
+
   mod_Head2HeadByOpponent_server("Head2HeadByOpponent_ui_1")
   mod_Head2HeadAllOpponents_server("Head2HeadAllOpponents_ui_1")
 
@@ -31,6 +33,20 @@ app_server <- function(input, output, session) {
     "SeasonTracker_ui_1",
     selected_seasons = SeasonTracker_inputs[[1]],
     n_fixtures = SeasonTracker_inputs[[2]]
+  )
+
+  # Receive user inputs from Season Overviews sidebar
+  SeasonOverviews_inputs <- mod_SeasonOverviews_sidebar_server("SeasonOverviews_sidebar_ui_1")
+  # Send user inputs from Season Overviews sidebar to Season server
+  mod_SeasonOverviews_server(
+    "SeasonOverviews_ui_1",
+    year_range = SeasonOverviews_inputs[[1]],
+    league_tiers = SeasonOverviews_inputs[[2]],
+    includePlayOffs = SeasonOverviews_inputs[[3]],
+    cup_comps = SeasonOverviews_inputs[[4]],
+    pens_as_draw = SeasonOverviews_inputs[[5]],
+    venue_options = SeasonOverviews_inputs[[6]],
+    game_range = SeasonOverviews_inputs[[7]]
   )
 
   # Receive user inputs from Head-to-Head (individual) sidebar

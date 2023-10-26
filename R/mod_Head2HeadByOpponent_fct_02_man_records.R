@@ -37,7 +37,7 @@ get_h2h_man_summary <- function(opponent, year_range, league_tiers, includePlayO
       win_pc = W / P
     ) %>%
     dplyr::arrange(
-      dplyr::desc(W),
+      dplyr::desc(win_pc),
       dplyr::desc(P)
     ) %>%
     dplyr::select(

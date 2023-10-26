@@ -33,6 +33,11 @@ app_ui <- function(request) {
           "input.nav === 'Season Tracker'",
           SeasonTracker_sidebar()
         ),
+        # Season Overview sidebar
+        conditionalPanel(
+          "input.nav === 'Season Overviews'",
+          SeasonOverviews_sidebar()
+        ),
         # Main head-to-head sidebar
         shiny::conditionalPanel(
           "input.nav === 'All head-to-head records'",
@@ -80,6 +85,7 @@ app_ui <- function(request) {
         )
       ),
       bslib::nav_panel("Season Tracker", mod_SeasonTracker_ui("SeasonTracker_ui_1")),
+      bslib::nav_panel("Season Overviews", mod_SeasonOverviews_ui("SeasonOverviews_ui_1")),
       bslib::nav_menu(
         title = "Head-to-Head Records",
         bslib::nav_panel("All head-to-head records", mod_Head2HeadAllOpponents_ui("Head2HeadAllOpponents_ui_1")),

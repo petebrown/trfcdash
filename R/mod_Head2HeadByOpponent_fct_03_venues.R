@@ -128,7 +128,8 @@ plot_h2h_by_venue <- function(opponent, year_range, league_tiers, includePlayOff
       ~factor(
         venue,
         levels = c("Home", "Away", "Neutral")
-      )
+      ),
+      scales = "free_y"
     ) +
     # remove guidelines
     ggplot2::theme(

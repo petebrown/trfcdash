@@ -56,3 +56,7 @@ div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
   border-bottom-width: thin;
   border-bottom-color: #16188f17;
 }
+
+.opponent-title {
+  margin-bottom: 1.5rem;
+}

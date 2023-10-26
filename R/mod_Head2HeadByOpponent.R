@@ -11,7 +11,7 @@ mod_Head2HeadByOpponent_ui <- function(id){
   ns <- NS(id)
   tagList(
 
-    h1(textOutput(ns("opponent"))),
+    h1(textOutput(ns("opponent")), class = "opponent-title"),
 
     bslib::card(
       full_screen = TRUE,
@@ -128,7 +128,7 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
           get_h2h_man_summary(
             opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
           ),
-          col_sort = "win_pc"
+          col_sort = c("win_pc", "P")
         )
       )
     }
