@@ -18,6 +18,8 @@ results_dataset <- vroom::vroom(
   )
 
 
+first_game_current_season <- min(results_dataset[results_dataset$season == max(results_dataset$season), ]$game_date)
+
 game_lengths <- results_dataset %>%
   dplyr::select(
     game_date,
@@ -58,7 +60,7 @@ goals_pre_23 <- vroom::vroom(
   show_col_types = FALSE
 ) %>%
   dplyr::filter(
-    game_date < "2023-08-05"
+    game_date < first_game_current_season
   )
 
 
@@ -67,7 +69,7 @@ goals <- vroom::vroom(
   show_col_types = FALSE
 ) %>%
   dplyr::filter(
-    game_date >= "2023-08-05"
+    game_date >= first_game_current_season
   )
 
 
@@ -160,7 +162,7 @@ rc_pre_23 <- vroom::vroom(
     red_cards = dplyr::n()
   ) %>%
   dplyr::filter(
-    game_date < "2023-08-05"
+    game_date < first_game_current_season
   )
 
 
@@ -173,7 +175,7 @@ red_cards <- vroom::vroom(
     red_cards = dplyr::n()
   ) %>%
   dplyr::filter(
-    game_date >= "2023-08-05"
+    game_date >= first_game_current_season
   )
 
 
@@ -198,7 +200,7 @@ sub_mins_pre_23 <- vroom::vroom(
   show_col_types = FALSE
 ) %>%
   dplyr::filter(
-    game_date < "2023-08-05"
+    game_date < first_game_current_season
   )
 
 
@@ -207,7 +209,7 @@ sub_mins <- vroom::vroom(
   show_col_types = FALSE
 ) %>%
   dplyr::filter(
-    game_date >= "2023-08-05"
+    game_date >= first_game_current_season
   )
 
 
@@ -236,7 +238,7 @@ sub_plrs_pre_23 <- vroom::vroom(
     off_for = dplyr::na_if(off_for, 0)
   ) %>%
   dplyr::filter(
-    game_date < "2023-08-05"
+    game_date < first_game_current_season
   )
 
 
@@ -259,7 +261,7 @@ sub_plrs <- vroom::vroom(
     off_for = dplyr::na_if(off_for, 0)
   ) %>%
   dplyr::filter(
-    game_date >= "2023-08-05"
+    game_date >= first_game_current_season
   )
 
 
@@ -327,7 +329,7 @@ player_apps_pre_23 <- vroom::vroom(
   show_col_types = FALSE
 ) %>%
   dplyr::filter(
-    game_date < "2023-08-05"
+    game_date < first_game_current_season
   )
 
 
@@ -336,7 +338,7 @@ player_apps <- vroom::vroom(
   show_col_types = FALSE
 ) %>%
   dplyr::filter(
-    game_date >= "2023-08-05"
+    game_date >= first_game_current_season
   )
 
 
@@ -515,6 +517,6 @@ usethis::use_data(
   overwrite = TRUE
 )
 
-###################
-# UPDATE COMPLETE #
-###################
+##############################
+##     UPDATE COMPLETE      ##
+##############################

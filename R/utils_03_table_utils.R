@@ -14,6 +14,42 @@ format_gd <- function(value) {
     value
 }
 
+generate_streaks <- function(df) {
+  df %>%
+    dplyr::mutate(
+      wins = ifelse(outcome == "W", 1, 0),
+      unbeaten = ifelse(outcome != "L", 1, 0),
+      losses = ifelse(outcome == "L", 1, 0),
+      winless = ifelse(outcome != "W", 1, 0),
+      blanks = ifelse(goals_for == 0, 1, 0),
+      draws = ifelse(outcome == "D", 1, 0),
+      cs = ifelse(goals_against == 0, 1, 0),
+      wins_cs = ifelse(outcome == "W" & goals_against == 0, 1, 0),
+      defeats_to_0 = ifelse(outcome == "L" & goals_for == 0, 1, 0),
+      w_streak = ifelse(wins == 0, 0, sequence(rle(as.character(wins))$lengths)),
+      unbeaten_streak = ifelse(unbeaten == 0, 0, sequence(rle(as.character(unbeaten))$lengths)),
+      losing_streak = ifelse(losses == 0, 0, sequence(rle(as.character(losses))$lengths)),
+      winless_streak = ifelse(winless == 0, 0, sequence(rle(as.character(winless))$lengths)),
+      blanks_streak = ifelse(blanks == 0, 0, sequence(rle(as.character(blanks))$lengths)),
+      d_streak = ifelse(draws == 0, 0, sequence(rle(as.character(draws))$lengths)),
+      clean_sheets = ifelse(cs == 0, 0, sequence(rle(as.character(cs))$lengths)),
+      wins_to_nil = ifelse(wins_cs == 0, 0, sequence(rle(as.character(wins_cs))$lengths)),
+      defeats_to_nil = ifelse(defeats_to_0 == 0, 0, sequence(rle(as.character(defeats_to_0))$lengths))
+    ) %>%
+    dplyr::summarize(
+      wins = max(w_streak),
+      unbeaten = max(unbeaten_streak),
+      clean_sheets = max(clean_sheets),
+      wins_to_nil = max(wins_to_nil),
+      draws = max(d_streak),
+      defeats = max(losing_streak),
+      winless = max(winless_streak),
+      Blanks = max(blanks_streak),
+      defeats_to_nil = max(defeats_to_nil),
+      .groups = "drop"
+    )
+}
+
 streaks_reactable <- function(df) {
   reactable::reactable(
     data = df,

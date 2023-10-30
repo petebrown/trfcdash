@@ -23,33 +23,7 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
     dplyr::group_by(
       manager
     ) %>%
-    dplyr::mutate(
-      wins = ifelse(outcome == "W", 1, 0),
-      unbeaten = ifelse(outcome != "L", 1, 0),
-      losses = ifelse(outcome == "L", 1, 0),
-      winless = ifelse(outcome != "W", 1, 0),
-      draws = ifelse(outcome == "D", 1, 0),
-      cs = ifelse(goals_against == 0, 1, 0),
-      wins_cs = ifelse(outcome == "W" & goals_against == 0, 1, 0),
-      w_streak = ifelse(wins == 0, 0, sequence(rle(as.character(wins))$lengths)),
-      unbeaten_streak = ifelse(unbeaten == 0, 0, sequence(rle(as.character(unbeaten))$lengths)),
-      losing_streak = ifelse(losses == 0, 0, sequence(rle(as.character(losses))$lengths)),
-      winless_streak = ifelse(winless == 0, 0, sequence(rle(as.character(winless))$lengths)),
-      d_streak = ifelse(draws == 0, 0, sequence(rle(as.character(draws))$lengths)),
-      clean_sheets = ifelse(cs == 0, 0, sequence(rle(as.character(cs))$lengths)),
-      wins_to_0 = ifelse(wins_cs == 0, 0, sequence(rle(as.character(wins_cs))$lengths))
-    ) %>%
-    dplyr::summarize(
-      games = dplyr::n(),
-      wins = max(w_streak),
-      unbeaten = max(unbeaten_streak),
-      losses = max(losing_streak),
-      winless = max(winless_streak),
-      draws = max(d_streak),
-      clean_sheets = max(clean_sheets),
-      wins_to_0 = max(wins_to_0),
-      .groups = "drop"
-    ) %>%
+    generate_streaks() %>%
     dplyr::filter(
       games >= min_games,
     ) %>%
