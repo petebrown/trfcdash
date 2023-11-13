@@ -46,6 +46,17 @@ mod_Head2HeadByOpponent_ui <- function(id){
       bslib::card_body(
         reactable::reactableOutput(ns("h2h_man_records"))
       )
+    ),
+
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark",
+        "Previous Meetings"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("h2h_meetings"))
+      )
     )
 
   )
@@ -117,7 +128,8 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
               cell = function(value) {
                 format_gd(value)
               }
-            )          )
+            )
+          )
         )
       )
     }
@@ -129,6 +141,14 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
             opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
           ),
           col_sort = c("win_pc", "P")
+        )
+      )
+    }
+
+    output$h2h_meetings <- {
+      reactable::renderReactable(
+        get_h2h_meetings(
+          opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
         )
       )
     }

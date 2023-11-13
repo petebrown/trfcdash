@@ -23,9 +23,9 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
     dplyr::group_by(
       manager
     ) %>%
-    generate_streaks() %>%
+    generate_streaks(drop_games_played = FALSE) %>%
     dplyr::filter(
-      games >= min_games,
+      P >= min_games,
     ) %>%
     dplyr::mutate(
       mgr_name = manager
@@ -38,11 +38,11 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
       mgr_name,
       wins,
       unbeaten,
-      losses,
+      defeats,
       winless,
       draws,
       clean_sheets,
-      wins_to_0
+      wins_to_nil
     )
 
   output_tab <- reactable::reactable(
@@ -84,8 +84,8 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
         name = "Unbeaten",
         vAlign = "center"
       ),
-      losses = reactable::colDef(
-        name = "Losses",
+      defeats = reactable::colDef(
+        name = "Defeats",
         vAlign = "center"
       ),
       winless = reactable::colDef(
@@ -100,7 +100,7 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
         name = "Clean Sheets",
         vAlign = "center"
       ),
-      wins_to_0 = reactable::colDef(
+      wins_to_nil = reactable::colDef(
         name = "Wins to nil",
         vAlign = "center"
       )

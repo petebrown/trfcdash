@@ -27,12 +27,9 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
     dplyr::group_by(
       opposition
     ) %>%
-    generate_streaks() %>%
-    dplyr::filter(
-      P >= min_games
-    ) %>%
+    generate_streaks(drop_games_played = FALSE) %>%
     dplyr::arrange(
-      dplyr::desc(Wins),
+      dplyr::desc(wins),
       dplyr::desc(P)
     )
 
@@ -40,12 +37,15 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
     data = df,
     searchable = TRUE,
     defaultSortOrder = "desc",
-    defaultSorted = "Wins",
-    columns = list(
-      opposition = reactable::colDef(
-        name = "Opposition",
-        minWidth = 130
-      )
+    defaultSorted = "wins",
+    columns = c(
+      list(
+        opposition = reactable::colDef(
+          name = "Opposition",
+          minWidth = 130
+        )
+      ),
+      format_streak_cols()
     )
   )
 }

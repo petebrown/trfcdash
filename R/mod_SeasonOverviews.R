@@ -26,6 +26,17 @@ mod_SeasonOverviews_ui <- function(id){
       full_screen = TRUE,
       bslib::card_header(
         class = "bg-dark",
+        "Season Records"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("ssn_records"), height = "auto"),
+      )
+    ),
+
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark",
         "Players Used"
       ),
       bslib::card_body(
@@ -46,6 +57,14 @@ mod_SeasonOverviews_server <- function(id, year_range, league_tiers, includePlay
     output$ssn_streaks <- {
       reactable::renderReactable(
         get_season_streaks(
+          year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), game_range()
+        )
+      )
+    }
+
+    output$ssn_records <- {
+      reactable::renderReactable(
+        get_season_records(
           year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), game_range()
         )
       )
