@@ -39,6 +39,13 @@ get_season_records <- function(year_range, league_tiers, includePlayOffs, cup_co
       season = reactable::colDef(
         name = "Season"
       ),
+      GD = reactable::colDef(
+        show = TRUE,
+        # Function to add plus sign (+) before positive figures
+        cell = function(value) {
+          sprintf("%+3d", value)
+        }
+      ),
       win_pc = reactable::colDef(
         name = "Win %",
         format = reactable::colFormat(

@@ -108,9 +108,7 @@ generate_record <- function(df) {
       GA = sum(goals_against),
       GD = sum(goals_for) - sum(goals_against),
       win_pc = W / P,
-      Pts = ifelse(
-        is.infinite(max(pts, na.rm = TRUE)), NA, max(pts, na.rm = TRUE)
-      ),
+      Pts = (sum(game_type == "League" & outcome == "W") * 3) + sum(game_type == "League" & outcome == "D"),
       PPG = Pts / sum(game_type == "League"),
       .groups = "drop"
     )

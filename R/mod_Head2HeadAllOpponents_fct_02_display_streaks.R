@@ -28,6 +28,9 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
       opposition
     ) %>%
     generate_streaks(drop_games_played = FALSE) %>%
+    dplyr::filter(
+      P >= min_games
+    ) %>%
     dplyr::arrange(
       dplyr::desc(wins),
       dplyr::desc(P)
