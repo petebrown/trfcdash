@@ -20,6 +20,7 @@ output_mgr_plr_records <- function(mgr_name) {
       wins = sum(role == "starter" & outcome == "W"),
       win_pc = wins / starts,
       goals = sum(goals_scored),
+      mins_played = sum(mins_played),
       subbed_off = sum(!is.na(off_for)),
       subbed_off_pc = subbed_off / starts,
       sub_apps = sum(role == "sub"),
@@ -59,13 +60,23 @@ output_mgr_plr_records <- function(mgr_name) {
         )
       ),
 
+      goals = reactable::colDef(
+        name = "Goals",
+        show = TRUE
+      ),
+
+      mins_played = reactable::colDef(
+        name = "Mins Played",
+        show = TRUE
+      ),
+
       subbed_off = reactable::colDef(
-        name = "Subbed off",
+        name = "Subbed Off",
         show = TRUE
       ),
 
       subbed_off_pc = reactable::colDef(
-        name = "Subbed off %",
+        name = "Subbed Off %",
         show = TRUE,
         format = reactable::colFormat(
           percent = TRUE,
