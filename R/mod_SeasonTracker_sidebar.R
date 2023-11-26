@@ -11,29 +11,27 @@ mod_SeasonTracker_sidebar_ui <- function(id){
   ns <- NS(id)
   # Input for selecting season(s) for analysis
   tagList(
-    # Check boxes for selecting league tiers
-    # checkboxGroupInput(
-    #   inputId = ns("selected_tiers"),
-    #   label = h6("Select league tiers:"),
-    #   choices = c("2", "3", "4", "5"),
-    #   selected = c("2", "3", "4", "5"),
-    #   inline = TRUE
-    # ),
-    checkboxGroupInput(
-      inputId = ns("control_tiers"),
-      label = h6("Select league tiers:"),
-      choices = c(2, 3, 4, 5),
-      selected = c(2, 3, 4, 5),
-      inline = TRUE,
-      width = "100%"
-    ),
-    hr(),
     selectInput(
       inputId = ns("selected_seasons"),
       label = h6("Select seasons:"),
       choices = get_season_list(),
       selected = max(get_season_list()),
       multiple = TRUE
+    ),
+    hr(),
+    # Check boxes for selecting league tiers
+    checkboxGroupInput(
+      inputId = ns("control_tiers"),
+      label = h6("Limit seasons by league tier:"),
+      choices = list(
+        "2: Championship" = 2,
+        "3: League One" = 3,
+        "4: League Two" = 4,
+        "5: National League" = 5
+      ),
+      selected = c(2, 3, 4, 5),
+      inline = TRUE,
+      width = "100%"
     ),
     hr(),
     # Input for specifying number of fixtures to be listed in results panel
