@@ -138,7 +138,8 @@ get_mgr_summary_by_comp <- function(selected_manager) {
     )
 
   table %>%
-    dplyr::select(-w_pc, -d_pc, -l_pc, -goals, -generic_comp
+    dplyr::select(
+      -w_pc, -d_pc, -l_pc, -goals, -generic_comp
     ) %>%
     gt::gt() %>%
     gt::cols_align(
