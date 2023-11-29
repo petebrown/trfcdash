@@ -53,6 +53,16 @@ mod_ManagersByManager_ui <- function(id){
         bslib::card_body(
           reactable::reactableOutput(ns("mgr_player_recs"))
         )
+      ),
+
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Head-to-Head Records"
+        ),
+        bslib::card_body(
+          reactable::reactableOutput(ns("mgr_h2h_recs"))
+        )
       )
     )
   )
@@ -126,6 +136,12 @@ mod_ManagersByManager_server <- function(id, manager_name){
     output$mgr_player_recs <- {
       reactable::renderReactable(
         expr = output_mgr_plr_records(manager_name())
+      )
+    }
+
+    output$mgr_h2h_recs <- {
+      reactable::renderReactable(
+        expr = get_mgr_h2h_summary(manager_name()) %>% reactable::reactable()
       )
     }
 

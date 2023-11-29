@@ -1,3 +1,10 @@
+results_dataset <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/data-updater/main/data/results.csv",
+  show_col_types = FALSE
+)
+
+first_game_current_season <- min(results_dataset[results_dataset$season == max(results_dataset$season), ]$game_date)
+
 #########
 # GOALS #
 #########
@@ -100,10 +107,7 @@ usethis::use_data(
 # RESULTS #
 ###########
 
-results_dataset <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/data-updater/main/data/results.csv",
-  show_col_types = FALSE
-) %>%
+results_dataset <- results_dataset %>%
   dplyr::left_join(
     goalscorers_by_game,
     by = "game_date"
