@@ -15,10 +15,10 @@ mod_SeasonOverviews_ui <- function(id){
       full_screen = TRUE,
       bslib::card_header(
         class = "bg-dark",
-        "Longest Streaks"
+        "Season Records"
       ),
       bslib::card_body(
-        reactable::reactableOutput(ns("ssn_streaks"), height = "auto"),
+        reactable::reactableOutput(ns("ssn_records"), height = "auto"),
       )
     ),
 
@@ -26,10 +26,10 @@ mod_SeasonOverviews_ui <- function(id){
       full_screen = TRUE,
       bslib::card_header(
         class = "bg-dark",
-        "Season Records"
+        "Longest Streaks"
       ),
       bslib::card_body(
-        reactable::reactableOutput(ns("ssn_records"), height = "auto"),
+        reactable::reactableOutput(ns("ssn_streaks"), height = "auto"),
       )
     ),
 
