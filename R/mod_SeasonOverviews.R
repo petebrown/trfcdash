@@ -37,6 +37,17 @@ mod_SeasonOverviews_ui <- function(id){
       full_screen = TRUE,
       bslib::card_header(
         class = "bg-dark",
+        "Goal Margins"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("goal_margins"), height = "auto"),
+      )
+    ),
+
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark",
         "Players Used"
       ),
       bslib::card_body(
@@ -65,6 +76,14 @@ mod_SeasonOverviews_server <- function(id, year_range, league_tiers, includePlay
     output$ssn_records <- {
       reactable::renderReactable(
         get_season_records(
+          year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), game_range()
+        )
+      )
+    }
+
+    output$goal_margins <- {
+      reactable::renderReactable(
+        get_goal_margins(
           year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), game_range()
         )
       )
