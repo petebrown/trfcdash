@@ -1,0 +1,32 @@
+name: Data Update
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run every day at midnight
+
+jobs:
+  data_update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up R
+      uses: r-lib/actions/setup-r@v1
+      with:
+        r-version: '4.x'
+
+    - name: Install dependencies
+      run: Rscript -e 'install.packages(c("vroom", "dplyr", "stringr", "lubridate", "usethis", "tidyr"), dependencies=TRUE)'
+
+    - name: Run R script
+      run: Rscript data-raw/00_source_data.R
+
+    - name: Commit and push data updates
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add -A
+        git commit -m "Update data [skip ci]"
+        git push
