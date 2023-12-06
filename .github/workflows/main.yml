@@ -19,7 +19,7 @@ jobs:
         r-version: '4.x'
 
     - name: Install dependencies
-      run: Rscript -e 'install.packages(c("vroom", "dplyr", "stringr", "lubridate", "usethis", "tidyr"), dependencies=TRUE)'
+      run: Rscript -e 'install.packages(c("magrittr", "vroom", "dplyr", "stringr", "lubridate", "usethis", "tidyr"), dependencies=TRUE)'
 
     - name: Run R script
       run: Rscript data-raw/00_source_data.R
