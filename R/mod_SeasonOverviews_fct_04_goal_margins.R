@@ -70,7 +70,7 @@ get_goal_margins <- function(year_range, league_tiers, includePlayOffs, cup_comp
         name = "+4"
       ),
       over_4 = reactable::colDef(
-        name = ">=5"
+        name = "≥5"
       ),
       zero = reactable::colDef(
         name = "0"
@@ -88,7 +88,7 @@ get_goal_margins <- function(year_range, league_tiers, includePlayOffs, cup_comp
         name = "-4"
       ),
       under_4 = reactable::colDef(
-        name = "<=-5"
+        name = "≤-5"
       )
     )
   )
