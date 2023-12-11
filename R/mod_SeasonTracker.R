@@ -133,6 +133,18 @@ mod_SeasonTracker_ui <- function(id){
         bslib::card_body(
           uiOutput(ns("boxed_ssn_scorers"))
         )
+      ),
+
+      # Card containing top scorer charts
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "Top Scorers"
+        ),
+        bslib::card_body(
+          plotOutput(ns("top_scorers"))
+        )
       )
     )
   )
@@ -230,6 +242,10 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
     #######################
     # CARD 5: Top Scorers #
     #######################
+
+    output$top_scorers <- renderPlot({
+      plot_top_scorers(selected_seasons())
+    })
 
     # CARD 5: Output nested cards containing top scorers plots for selected seasons
     output$boxed_ssn_scorers <- renderUI({
