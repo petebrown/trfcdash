@@ -67,13 +67,14 @@ plot_top_scorers <- function(selected_seasons) {
     ) %>%
     dplyr::mutate(
       surname = stringr::str_split_i(player_name, " ", 2),
-      display_name = stringr::str_replace(player_name, "\\s", "\n")
+      display_name = stringr::str_replace(player_name, "\\s", "\n"),
+      ssn_name = paste0(season, " ", display_name)
     ) %>%
     dplyr::arrange(
       season,
       Total,
       League,
-      desc(player_name)
+      desc(surname)
     )
 
   df <- goals_long %>%
@@ -89,9 +90,11 @@ plot_top_scorers <- function(selected_seasons) {
     ) %>%
     dplyr::mutate(
       surname = stringr::str_split_i(player_name, " ", 2),
-      display_name = stringr::str_replace(player_name, "\\s", "\n"),
-
+      # display_name = stringr::str_replace(player_name, "\\s", "\n"),
+      ssn_name = paste0(season, " ", display_name)
     )
+
+  View(df)
 
   df$generic_comp <- factor(df$generic_comp, levels = c("Anglo-Italian Cup", "Associate Members' Cup", "FA Cup", "Full Members' Cup", "League Cup", "League"))
 
@@ -99,7 +102,7 @@ plot_top_scorers <- function(selected_seasons) {
   p <- ggplot2::ggplot(
     data = df,
     ggplot2::aes(
-      x = factor(display_name, levels = ssn_top$display_name),
+      x = factor(ssn_name, levels = unique(ssn_top$ssn_name)),
       y = n_goals,
       fill = generic_comp,
       label = n_goals
@@ -107,7 +110,7 @@ plot_top_scorers <- function(selected_seasons) {
   ) +
     ggplot2::geom_bar(position = "stack", stat = "identity") +
     ggplot2::scale_x_discrete(
-      labels = setNames(df$surname, df$display_name),
+      labels = setNames(df$surname, df$ssn_name),
       expand = c(0, 0)
     ) +
     ggplot2::coord_flip() +
@@ -205,7 +208,7 @@ plot_top_scorers <- function(selected_seasons) {
       )
     ) +
     ggtext::geom_textbox(ggplot2::aes(
-      x = factor(display_name, levels = ssn_top$display_name),
+      x = factor(ssn_name, levels = unique(ssn_top$ssn_name)),
       y = Total,
       label = Total,
       fontface = "plain"
