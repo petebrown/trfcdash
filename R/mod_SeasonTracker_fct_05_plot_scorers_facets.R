@@ -108,7 +108,23 @@ plot_top_scorers <- function(selected_seasons) {
       label = n_goals
     )
   ) +
-    ggplot2::geom_bar(position = "stack", stat = "identity") +
+    ggplot2::geom_bar(
+      position = "stack",
+      stat = "identity"
+    ) +
+    ggplot2::geom_col(
+      data = ssn_top,
+      mapping = ggplot2::aes(
+        x = factor(ssn_name, levels = unique(ssn_name)),
+        y = Total,
+        fill = NULL,
+        label = NULL
+      ),
+      color = "black",
+      fill = NA,
+      legend = FALSE,
+      linewidth = 0.2
+    ) +
     ggplot2::scale_x_discrete(
       labels = setNames(df$surname, df$ssn_name),
       expand = c(0, 0)
