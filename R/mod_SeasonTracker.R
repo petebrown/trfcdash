@@ -124,16 +124,16 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
       # Card containing top scorer charts
-      bslib::card(
-        full_screen = TRUE,
-        bslib::card_header(
-          class = "bg-dark",
-          "Top Scorers"
-        ),
-        bslib::card_body(
-          uiOutput(ns("boxed_ssn_scorers"))
-        )
-      ),
+      # bslib::card(
+      #   full_screen = TRUE,
+      #   bslib::card_header(
+      #     class = "bg-dark",
+      #     "Top Scorers"
+      #   ),
+      #   bslib::card_body(
+      #     uiOutput(ns("boxed_ssn_scorers"))
+      #   )
+      # ),
 
       # Card containing top scorer charts
       bslib::card(
@@ -143,7 +143,8 @@ mod_SeasonTracker_ui <- function(id){
           "Top Scorers"
         ),
         bslib::card_body(
-          plotOutput(ns("top_scorers"))
+          # plotOutput(ns("top_scorers"))
+          uiOutput(ns("top_scorers"))
         )
       )
     )
@@ -243,44 +244,46 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
     # CARD 5: Top Scorers #
     #######################
 
-    output$top_scorers <- renderPlot({
+    output$top_scorers <- renderUI({
+      # renderPlot({
       plot_top_scorers(selected_seasons())
     })
 
+
     # CARD 5: Output nested cards containing top scorers plots for selected seasons
-    output$boxed_ssn_scorers <- renderUI({
-      if (!is.null(selected_seasons())) {
-        # Get selected seasons
-        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
-
-        n_plots <- length(selected_seasons())
-        max_goals <- get_max_goals(selected_seasons())
-
-        # Create a list of scorer charts - one per season
-        ssn_scorer_boxes <- lapply(selected_seasons, function(season) {
-          bslib::card(
-            class = "borderless",
-            bslib::card_title(
-              season
-            ),
-            bslib::card_body(
-              plot_ssn_scorers(season, max_goals, n_plots)
-            )
-          )
-        })
-        # Return all charts - 100% width for one, 33% width for multiples of
-        # three, otherwise 50% width
-        bslib::layout_column_wrap(
-          width = ifelse(length(selected_seasons) == 1, 1,
-                         ifelse(length(selected_seasons) %% 3 == 0, 1/3,
-                                ifelse(length(selected_seasons) %% 2 == 0, 1/2, 1/3))),
-          !!!ssn_scorer_boxes,
-          heights_equal = "all", fixed_width = TRUE, fill = TRUE
-        )
-      } else {
-        p("Please select one or more seasons from the dropdown menu.")
-      }
-    })
+    # output$boxed_ssn_scorers <- renderUI({
+    #   if (!is.null(selected_seasons())) {
+    #     # Get selected seasons
+    #     selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
+    #
+    #     n_plots <- length(selected_seasons())
+    #     max_goals <- get_max_goals(selected_seasons())
+    #
+    #     # Create a list of scorer charts - one per season
+    #     ssn_scorer_boxes <- lapply(selected_seasons, function(season) {
+    #       bslib::card(
+    #         class = "borderless",
+    #         bslib::card_title(
+    #           season
+    #         ),
+    #         bslib::card_body(
+    #           plot_ssn_scorers(season, max_goals, n_plots)
+    #         )
+    #       )
+    #     })
+    #     # Return all charts - 100% width for one, 33% width for multiples of
+    #     # three, otherwise 50% width
+    #     bslib::layout_column_wrap(
+    #       width = ifelse(length(selected_seasons) == 1, 1,
+    #                      ifelse(length(selected_seasons) %% 3 == 0, 1/3,
+    #                             ifelse(length(selected_seasons) %% 2 == 0, 1/2, 1/3))),
+    #       !!!ssn_scorer_boxes,
+    #       heights_equal = "all", fixed_width = TRUE, fill = TRUE
+    #     )
+    #   } else {
+    #     p("Please select one or more seasons from the dropdown menu.")
+    #   }
+    # })
 
     ###############################
     # CARD 6: Appearance heat map #

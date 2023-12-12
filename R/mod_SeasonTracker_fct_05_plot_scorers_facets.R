@@ -94,9 +94,20 @@ plot_top_scorers <- function(selected_seasons) {
       ssn_name = paste0(season, " ", display_name)
     )
 
-  View(df)
-
-  df$generic_comp <- factor(df$generic_comp, levels = c("Anglo-Italian Cup", "Associate Members' Cup", "FA Cup", "Full Members' Cup", "League Cup", "League"))
+  df$generic_comp <- factor(
+    df$generic_comp,
+    levels = c(
+      "FA Trophy",
+      "War League",
+      "Anglo-Italian Cup",
+      "Zenith Data Systems Cup",
+      "Full Members' Cup",
+      "Associate Members' Cup",
+      "League Cup",
+      "FA Cup",
+      "League"
+    )
+  )
 
 
   p <- ggplot2::ggplot(
@@ -104,13 +115,13 @@ plot_top_scorers <- function(selected_seasons) {
     ggplot2::aes(
       x = factor(ssn_name, levels = unique(ssn_top$ssn_name)),
       y = n_goals,
-      fill = generic_comp,
-      label = n_goals
+      fill = generic_comp
     )
   ) +
     ggplot2::geom_bar(
       position = "stack",
-      stat = "identity"
+      stat = "identity",
+      alpha = 0.92
     ) +
     ggplot2::geom_col(
       data = ssn_top,
@@ -122,29 +133,52 @@ plot_top_scorers <- function(selected_seasons) {
       ),
       color = "black",
       fill = NA,
-      legend = FALSE,
       linewidth = 0.2
+    ) +
+    ggtext::geom_textbox(
+      ggplot2::aes(
+        x = factor(ssn_name, levels = unique(ssn_top$ssn_name)),
+        y = Total,
+        label = Total,
+        fontface = "plain"
+      ),
+      size = 4.5,
+      halign = 0,
+      hjust = 0,
+      fill = NA,
+      box.colour = NA,
+      family = "Helvetica Neue"
     ) +
     ggplot2::scale_x_discrete(
       labels = setNames(df$surname, df$ssn_name),
-      expand = c(0, 0)
+      expand = c(0.1, 0.3)
+    ) +
+    ggplot2::scale_y_continuous(
+      expand = ggplot2::expansion(
+        mult = c(0.01, 0),
+        add = c(0, 0)
+      ),
+      breaks = seq(
+        from = 0,
+        to = max(ssn_top$Total),
+        by = ifelse(max(ssn_top$Total) < 20, 5, 10)
+      ),
+      limits = c(0, dplyr::case_when(
+        length(selected_seasons) == 1 ~ max(ssn_top$Total) + 0.25,
+        .default = max(ssn_top$Total) + 3
+        )
+      )
     ) +
     ggplot2::coord_flip() +
     ggplot2::labs(
       x = NULL,
       y = NULL
     ) +
-    ggplot2::scale_y_continuous(
-      # expand = ggplot2::expansion(
-      #   mult = c(0, 0),
-      #   add = c(0.1, 0.1)
-      # ),
-      breaks = seq(
-        from = 0,
-        to = max(ssn_top$Total),
-        by = ifelse(max(ssn_top$Total) < 20, 5, 10)
-      ),
-      limits = c(0, max(ssn_top$Total))
+    ggplot2::facet_wrap(
+      ~ season,
+      ncol = 2,
+      scales = "free_y",
+      strip.position = "top"
     ) +
     ggplot2::theme_classic() +
     ggplot2::theme(
@@ -172,31 +206,46 @@ plot_top_scorers <- function(selected_seasons) {
         rotate_margins = NA,
       ),
       strip.text.x = ggplot2::element_text(
-        hjust = 0.5,
-        face = "bold"
+        hjust = 0,
+        size = 20,
+        color = "#4c668d",
+        face = "bold",
+        margin = ggplot2::margin(
+          t = 0,
+          b = 15,
+          r = 0,
+          l = 0,
+          "pt"
+        )
       ),
       strip.background = ggplot2::element_rect(
-        fill = "white",
-        color="white"
+        fill = "transparent",
+        color="transparent"
       ),
       panel.border = ggplot2::element_blank(),
       panel.spacing = ggplot2::unit(2, "lines"),
       line = ggplot2::element_blank(),
-      axis.text.x = ggplot2::element_blank(),
+      axis.text.x = ggplot2::element_text(
+        color = "lightgrey"
+      ),
       axis.ticks = ggplot2::element_blank(),
       panel.grid = ggplot2:: element_blank(),
-      panel.grid.major.x = ggplot2::element_line(color = "lightgrey",
-                                                 size = 0.1),
-      panel.background = ggplot2::element_rect(fill = "transparent"),
-      plot.background = ggplot2::element_rect(fill = "transparent", color = NA),
-      legend.background = ggplot2::element_rect(
+      panel.grid.major.x = ggplot2::element_line(
+        color = "lightgrey",
+        size = 0.20
+      ),
+      panel.background = ggplot2::element_rect(
         fill = "transparent"
+      ),
+      plot.background = ggplot2::element_rect(
+        fill = "transparent", color = NA
       ),
       legend.box.background = ggplot2::element_rect(
         fill = "transparent",
         color = "transparent",
         linewidth = 0
-      )
+      ),
+      legend.box.spacing = ggplot2::unit(15, "pt")
     ) +
     ggplot2::scale_fill_manual(
       guide = ggplot2::guide_legend(title = NULL),
@@ -205,11 +254,11 @@ plot_top_scorers <- function(selected_seasons) {
         "FA Cup" = "steelblue",
         "League Cup" = "#B8CFEC",
         "Associate Members' Cup" = "#A5DEF2",
-        "Full Members' Cup" = "lightgreen",
-        "Zenith Data Systems Cup" = "lightgreen",
+        "Full Members' Cup" = "grey70",
+        "Zenith Data Systems Cup" = "grey70",
         "Anglo-Italian Cup" = "tomato",
-        "War League" = "yellow",
-        "FA Trophy" = "lightgrey"
+        "War League" = "seashell",
+        "FA Trophy" = "grey89"
       ),
       breaks = c(
         "League",
@@ -222,26 +271,12 @@ plot_top_scorers <- function(selected_seasons) {
         "War League",
         "FA Trophy"
       )
-    ) +
-    ggtext::geom_textbox(ggplot2::aes(
-      x = factor(ssn_name, levels = unique(ssn_top$ssn_name)),
-      y = Total,
-      label = Total,
-      fontface = "plain"
-    ),
-    size = 4.5,
-    halign = 0,
-    hjust = 0,
-    fill = NA,
-    box.colour = NA,
-    family = "Helvetica Neue"
-    ) +
-    ggplot2::facet_wrap(
-      ~ season,
-      scales = "free_y",
-      strip.position = "top"
     )
 
-  p
+  shiny::renderPlot(
+    p,
+    height = ceiling(length(selected_seasons) / 2) * 240,
+    bg = "transparent"
+  )
 
 }
