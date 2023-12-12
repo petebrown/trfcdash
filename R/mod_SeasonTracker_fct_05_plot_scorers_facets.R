@@ -151,7 +151,7 @@ plot_top_scorers <- function(selected_seasons) {
     ) +
     ggplot2::scale_x_discrete(
       labels = setNames(df$surname, df$ssn_name),
-      expand = c(0.1, 0.3)
+      expand = c(0.2, 0.3)
     ) +
     ggplot2::scale_y_continuous(
       expand = ggplot2::expansion(
