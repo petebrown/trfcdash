@@ -37,3 +37,17 @@ get_div_list_by_tier <- function(selected_tiers) {
 
   return (ssn_list$season)
 }
+
+get_comps_by_season <- function(selected_seasons) {
+  comp_list <- results_dataset %>%
+    dplyr::filter(
+      season %in% selected_seasons
+    ) %>%
+    dplyr::select(
+      generic_comp
+    ) %>%
+    dplyr::distinct()
+
+  return (comp_list$generic_comp)
+}
+

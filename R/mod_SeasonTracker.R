@@ -142,8 +142,28 @@ mod_SeasonTracker_ui <- function(id){
           class = "bg-dark",
           "Top Scorers"
         ),
-        bslib::card_body(
-          # plotOutput(ns("top_scorers"))
+        bslib::layout_sidebar(
+          fillable = TRUE,
+          sidebar = bslib::sidebar(
+            open = FALSE,
+            radioButtons(
+              inputId = ns("inc_cup_games"),
+              label = "Include cup games?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            sliderInput(
+              inputId = ns("n_scorers"),
+              label = "No. of top scorers:",
+              min = 1,
+              max = 5,
+              value = 4,
+              sep = "",
+              ticks = FALSE,
+              step = 1
+            )
+          ),
           uiOutput(ns("top_scorers"))
         )
       )
@@ -245,8 +265,10 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
     #######################
 
     output$top_scorers <- renderUI({
-      # renderPlot({
-      plot_top_scorers(selected_seasons())
+      inc_cup_games <- input$inc_cup_games
+      n_scorers <- input$n_scorers
+
+      plot_top_scorers(selected_seasons(), inc_cup_games, n_scorers)
     })
 
 

@@ -1,6 +1,13 @@
-plot_top_scorers <- function(selected_seasons) {
+plot_top_scorers <- function(selected_seasons, inc_cup_games, n_scorers) {
 
   results <- filter_ssn_results(selected_seasons)
+
+  if (inc_cup_games == "No") {
+    results <- results %>%
+      dplyr::filter(
+        game_type == "League"
+      )
+  }
 
   goals_for <- goals %>%
     dplyr::inner_join(
@@ -63,7 +70,7 @@ plot_top_scorers <- function(selected_seasons) {
     dplyr::slice_max(
       order_by = Total,
       by = season,
-      n = 3
+      n = n_scorers
     ) %>%
     dplyr::mutate(
       surname = stringr::str_split_i(player_name, " ", 2),
@@ -256,7 +263,7 @@ plot_top_scorers <- function(selected_seasons) {
         "Associate Members' Cup" = "#A5DEF2",
         "Full Members' Cup" = "grey70",
         "Zenith Data Systems Cup" = "grey70",
-        "Anglo-Italian Cup" = "tomato",
+        "Anglo-Italian Cup" = "lightgreen",
         "War League" = "seashell",
         "FA Trophy" = "grey89"
       ),
@@ -273,9 +280,15 @@ plot_top_scorers <- function(selected_seasons) {
       )
     )
 
+  if (n_scorers == 1) {
+    height_px = 160
+  } else {
+    height_px = 240
+  }
+
   shiny::renderPlot(
     p,
-    height = ceiling(length(selected_seasons) / 2) * 240,
+    height = ceiling(length(selected_seasons) / 2) * height_px,
     bg = "transparent"
   )
 
