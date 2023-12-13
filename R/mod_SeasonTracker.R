@@ -50,6 +50,7 @@ mod_SeasonTracker_ui <- function(id){
         uiOutput(ns("footer_text"))
       ),
 
+
       # Card containing each season's league record
       bslib::card(
         bslib::card_header(
@@ -90,6 +91,7 @@ mod_SeasonTracker_ui <- function(id){
         )
       ),
 
+
       # Card containing player appearance heatmaps
       bslib::card(
         bslib::card_header(
@@ -100,6 +102,7 @@ mod_SeasonTracker_ui <- function(id){
           uiOutput(ns("app_heatmaps"))
         )
       ),
+
 
       # Card containing longest streaks
       bslib::card(
@@ -113,6 +116,7 @@ mod_SeasonTracker_ui <- function(id){
         )
       ),
 
+
       # Card containing season results with drop-down line-ups
       bslib::card(
         full_screen = TRUE,
@@ -123,20 +127,10 @@ mod_SeasonTracker_ui <- function(id){
         uiOutput(ns("ssn_results"))
       ),
 
-      # Card containing top scorer charts
-      # bslib::card(
-      #   full_screen = TRUE,
-      #   bslib::card_header(
-      #     class = "bg-dark",
-      #     "Top Scorers"
-      #   ),
-      #   bslib::card_body(
-      #     uiOutput(ns("boxed_ssn_scorers"))
-      #   )
-      # ),
 
       # Card containing top scorer charts
       bslib::card(
+        class = "top-scorers",
         full_screen = TRUE,
         bslib::card_header(
           class = "bg-dark",
@@ -145,14 +139,10 @@ mod_SeasonTracker_ui <- function(id){
         bslib::layout_sidebar(
           fillable = TRUE,
           sidebar = bslib::sidebar(
+            width = 200,
+            bg = "#4c668d",
+            class = "card-sidebar",
             open = FALSE,
-            radioButtons(
-              inputId = ns("inc_cup_games"),
-              label = "Include cup games?",
-              choices = c("Yes", "No"),
-              selected = "Yes",
-              inline = TRUE
-            ),
             sliderInput(
               inputId = ns("n_scorers"),
               label = "No. of top scorers:",
@@ -162,7 +152,14 @@ mod_SeasonTracker_ui <- function(id){
               sep = "",
               ticks = FALSE,
               step = 1
-            )
+            ),
+            radioButtons(
+              inputId = ns("inc_cup_games"),
+              label = "Include cup games?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
           ),
           uiOutput(ns("top_scorers"))
         )
@@ -177,6 +174,7 @@ mod_SeasonTracker_ui <- function(id){
 mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
 
     ###########################
     # CARD 1: SEASON PROGRESS #
@@ -205,6 +203,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
       }
     })
 
+
     #########################
     # CARD 2: SEASON RECORD #
     #########################
@@ -223,20 +222,59 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
     # CARD 2C: Away league records for selected seasons
     output$season_records_away <- render_ssn_records(venues = "A")
 
+
+    ###############################
+    # CARD 3: Appearance heat map #
+    ###############################
+
+    # CARD 3: Output tabbed heatmaps showing player appearances in selected seasons
+    output$app_heatmaps <- renderUI({
+      req(selected_seasons())
+      if (!is.null(selected_seasons())) {
+        # Sort selected seasons
+        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
+
+        # Create a tab panel of appearance heatmaps for each  season
+        app_tabs <- lapply(selected_seasons, function(season) {
+          tabPanel(
+            title = season,
+            bslib::card(
+              full_screen = TRUE,
+              class = c("borderless", "no_padding"),
+              bslib::card_title(
+                paste0("Appearances, goals and cards in ", season)
+              ),
+              min_height = "880px",
+              renderPlot({
+                output_app_heatmap(season)
+              })
+            )
+          )
+        })
+
+        # Return a tabsetPanel containing season results
+        do.call(tabsetPanel, app_tabs)
+      } else {
+        p("Please select one or more seasons from the dropdown menu.")
+      }
+    })
+
+
     ###########################
-    # CARD 3: LONGEST STREAKS #
+    # CARD 4: LONGEST STREAKS #
     ###########################
 
-    # CARD 3: Longest streaks in selected seasons
+    # CARD 4: Longest streaks in selected seasons
     output$streaks <- reactable::renderReactable(
       render_streaks(selected_seasons())
     )
 
+
     ###################
-    # CARD 4: RESULTS #
+    # CARD 5: RESULTS #
     ###################
 
-    # CARD 4: Output tabbed results for selected seasions
+    # CARD 5: Output tabbed results for selected seasions
     output$ssn_results <- renderUI({
       req(selected_seasons())
       if (!is.null(selected_seasons())) {
@@ -260,8 +298,9 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
       }
     })
 
+
     #######################
-    # CARD 5: Top Scorers #
+    # CARD 6: Top Scorers #
     #######################
 
     output$top_scorers <- renderUI({
@@ -306,42 +345,6 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
     #     p("Please select one or more seasons from the dropdown menu.")
     #   }
     # })
-
-    ###############################
-    # CARD 6: Appearance heat map #
-    ###############################
-
-    # CARD 6: Output tabbed heatmaps showing player appearances in selected seasons
-    output$app_heatmaps <- renderUI({
-      req(selected_seasons())
-      if (!is.null(selected_seasons())) {
-        # Sort selected seasons
-        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
-
-        # Create a tab panel of appearance heatmaps for each  season
-        app_tabs <- lapply(selected_seasons, function(season) {
-          tabPanel(
-            title = season,
-            bslib::card(
-              full_screen = TRUE,
-              class = c("borderless", "no_padding"),
-              bslib::card_title(
-                paste0("Appearances, goals and cards in ", season)
-              ),
-              min_height = "880px",
-              renderPlot({
-                output_app_heatmap(season)
-              })
-            )
-          )
-        })
-
-        # Return a tabsetPanel containing season results
-        do.call(tabsetPanel, app_tabs)
-      } else {
-        p("Please select one or more seasons from the dropdown menu.")
-      }
-    })
 
   })
 }

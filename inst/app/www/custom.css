@@ -10,6 +10,16 @@
   --bs-navbar-brand-margin-end: 0 !important;
 }
 
+.card-sidebar {
+  font-size: smaller;
+  color: white !important;
+}
+
+.top-scorers .collapse-toggle {
+  background-color: white;
+  color: #4c668d;
+}
+
 div[id*="_sidebar_ui_1-"] {
   font-size: smaller;
 }
