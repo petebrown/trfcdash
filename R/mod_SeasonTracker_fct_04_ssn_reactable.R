@@ -48,8 +48,18 @@ get_lge_tables <- function(selected_seasons) {
     )
 }
 
-output_ssn_reactable <- function(selected_seasons, n_fixtures) {
-  top_level <- results_dataset %>%
+output_ssn_reactable <- function(selected_seasons, n_fixtures, inc_cup_games) {
+
+    if (inc_cup_games == "No") {
+    results <- results_dataset %>%
+      dplyr::filter(
+        game_type == "League"
+      )
+  } else {
+    results <- results_dataset
+  }
+
+  top_level <- results %>%
     dplyr::filter(
       season %in% selected_seasons
     ) %>%
@@ -69,6 +79,9 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures) {
     dplyr::arrange(
       season,
       game_no
+    ) %>%
+    dplyr::mutate(
+      game_no = dplyr::row_number()
     )
 
   second_level <- player_apps %>%
