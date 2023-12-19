@@ -138,7 +138,20 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures, inc_cup_games) {
       ),
       opposition = reactable::colDef(
         name = "Opponent",
-        minWidth = 180
+        minWidth = 180,
+        style = function(value, index) {
+          if (top_level$venue[index] == "H") {
+            text_transform = "uppercase"
+            font_weight = "450"
+          } else {
+            text_transform = "normal"
+            font_weight = "300"
+          }
+          list(
+            textTransform = text_transform,
+            fontWeight = font_weight
+          )
+        }
       ),
       outcome = reactable::colDef(
         name = "Res",
@@ -173,7 +186,7 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures, inc_cup_games) {
       if (top_level[index, "venue"] == "H") {
         list(
           # background = "rgb(248, 251, 253)",
-          fontWeight = "500"
+          #fontWeight = "500"
         )
       }
     },

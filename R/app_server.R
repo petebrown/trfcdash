@@ -31,8 +31,7 @@ app_server <- function(input, output, session) {
   # Send user inputs from Season Tracker sidebar to Season Tracker server
   mod_SeasonTracker_server(
     "SeasonTracker_ui_1",
-    selected_seasons = SeasonTracker_inputs[[1]],
-    n_fixtures = SeasonTracker_inputs[[2]]
+    selected_seasons = SeasonTracker_inputs[[1]]
   )
 
   # Receive user inputs from Season Overviews sidebar

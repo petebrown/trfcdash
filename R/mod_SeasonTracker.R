@@ -127,18 +127,28 @@ mod_SeasonTracker_ui <- function(id){
         bslib::layout_sidebar(
           fillable = TRUE,
           sidebar = bslib::sidebar(
-            position = "right",
+            position = "left",
             width = 200,
             bg = "#4c668d",
             class = "card-sidebar",
             open = FALSE,
+            sliderInput(
+              inputId = ns("n_fixtures"),
+              label = "No. of results/page:",
+              min = 1,
+              max = 60,
+              value = 10,
+              ticks = FALSE,
+              step = NULL
+            ),
+            hr(),
             radioButtons(
               inputId = ns("res_inc_cup_games"),
               label = "Include cup games?",
               choices = c("Yes", "No"),
               selected = "Yes",
               inline = TRUE
-            ),
+            )
           ),
           uiOutput(ns("ssn_results"))
         )
@@ -156,7 +166,7 @@ mod_SeasonTracker_ui <- function(id){
         bslib::layout_sidebar(
           fillable = TRUE,
           sidebar = bslib::sidebar(
-            position = "right",
+            position = "left",
             width = 200,
             bg = "#4c668d",
             class = "card-sidebar",
@@ -171,6 +181,7 @@ mod_SeasonTracker_ui <- function(id){
               ticks = FALSE,
               step = 1
             ),
+            hr(),
             radioButtons(
               inputId = ns("inc_cup_games"),
               label = "Include cup games?",
@@ -299,13 +310,14 @@ mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
         # Sort selected seasons
         selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
         inc_cup_games <- input$res_inc_cup_games
+        n_fixtures <- input$n_fixtures
 
         # Create a tab panel of results for each  season
         ssn_tabs <- lapply(selected_seasons, function(season) {
           tabPanel(
             title = season,
             reactable::renderReactable(
-              output_ssn_reactable(season, n_fixtures(), inc_cup_games)
+              output_ssn_reactable(season, n_fixtures, inc_cup_games)
             )
           )
         })
