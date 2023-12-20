@@ -48,7 +48,7 @@ get_lge_tables <- function(selected_seasons) {
     )
 }
 
-output_ssn_reactable <- function(selected_seasons, n_fixtures, inc_cup_games) {
+output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
 
     if (inc_cup_games == "No") {
     results <- results_dataset %>%
@@ -109,7 +109,8 @@ output_ssn_reactable <- function(selected_seasons, n_fixtures, inc_cup_games) {
 
   reactable::reactable(
     data = top_level,
-    defaultPageSize = n_fixtures,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = c(10, 20, length(top_level$season)),
     fullWidth = TRUE,
     compact = TRUE,
     searchable = TRUE,
