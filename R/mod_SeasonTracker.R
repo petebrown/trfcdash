@@ -200,7 +200,7 @@ mod_SeasonTracker_ui <- function(id){
 #' SeasonTracker Server Functions
 #'
 #' @noRd
-mod_SeasonTracker_server <- function(id, selected_seasons, n_fixtures){
+mod_SeasonTracker_server <- function(id, selected_seasons){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 

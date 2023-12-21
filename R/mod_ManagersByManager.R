@@ -28,6 +28,16 @@ mod_ManagersByManager_ui <- function(id){
       bslib::card(
         bslib::card_header(
           class = "bg-dark",
+          "Overall Record by Season"
+        ),
+        bslib::card_body(
+          reactable::reactableOutput(ns("mgr_summary_by_ssn_reactable"))
+        )
+      ),
+
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
           "Overall Record by Competition"
         ),
         bslib::card_body(
@@ -123,6 +133,12 @@ mod_ManagersByManager_server <- function(id, manager_name){
       gt::render_gt(
         expr = get_mgr_summary_by_ssn(manager_name()),
         width = "100%"
+      )
+    }
+
+    output$mgr_summary_by_ssn_reactable <- {
+      reactable::renderReactable(
+        expr = get_mgr_summary_by_ssn_reactable(manager_name())
       )
     }
 

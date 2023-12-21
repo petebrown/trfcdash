@@ -113,3 +113,16 @@ generate_record <- function(df) {
       .groups = "drop"
     )
 }
+
+
+# Javascript function to return the total of a column in a Reactable table
+js_total_col <- function() {
+  reactable::JS("function(colInfo) {
+        var total = 0
+        colInfo.data.forEach(function(row) {
+          total += row[colInfo.column.id]
+        })
+        return total
+      }"
+    )
+}
