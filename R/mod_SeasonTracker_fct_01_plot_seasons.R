@@ -67,9 +67,15 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       breaks = c(0, 1, 2, 3)
     )
   } else if (isTRUE(chosen_plot == "pts" & selected_seasons == "2023/24")) {
+    pts_nearest_10 = floor(max(df$pts/10)) * 10
+
     y_scale_var = ggplot2::scale_y_continuous(
-      limits = c(0, max(df$game_no) * 3),
-      breaks = c(0, max(df$game_no) * 3)
+      limits = c(0, max(df$pts)),
+      breaks = seq(
+        from = 0,
+        to = pts_nearest_10,
+        by = 10
+      )
     )
   } else {
     y_scale_var = ggplot2::scale_y_continuous()

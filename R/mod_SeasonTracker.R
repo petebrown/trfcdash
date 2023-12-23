@@ -110,8 +110,30 @@ mod_SeasonTracker_ui <- function(id){
           class = "bg-dark",
           "Longest Streaks"
         ),
-        bslib::card_body(
+        bslib::layout_sidebar(
           fillable = FALSE,
+          sidebar = bslib::sidebar(
+            position = "left",
+            width = 200,
+            bg = "#4c668d",
+            class = "card-sidebar",
+            open = FALSE,
+            radioButtons(
+              inputId = ns("streaks_inc_cup_games"),
+              label = "Include cup games?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            hr(),
+            radioButtons(
+              inputId = ns("streaks_pens_as_draw"),
+              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            )
+          ),
           reactable::reactableOutput(ns("streaks"))
         )
       ),
@@ -132,16 +154,6 @@ mod_SeasonTracker_ui <- function(id){
             bg = "#4c668d",
             class = "card-sidebar",
             open = FALSE,
-            sliderInput(
-              inputId = ns("n_fixtures"),
-              label = "No. of results/page:",
-              min = 1,
-              max = 60,
-              value = 10,
-              ticks = FALSE,
-              step = NULL
-            ),
-            hr(),
             radioButtons(
               inputId = ns("res_inc_cup_games"),
               label = "Include cup games?",
@@ -293,9 +305,16 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
     # CARD 4: LONGEST STREAKS #
     ###########################
 
+    streaks_inc_cup_games <- reactive({
+      input$streaks_inc_cup_games
+    })
+    streaks_pens_as_draw <- reactive({
+      input$streaks_pens_as_draw
+    })
+
     # CARD 4: Longest streaks in selected seasons
     output$streaks <- reactable::renderReactable(
-      render_streaks(selected_seasons())
+      render_streaks(selected_seasons(), streaks_inc_cup_games(), streaks_pens_as_draw())
     )
 
 

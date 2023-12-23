@@ -14,6 +14,23 @@ format_gd <- function(value) {
     value
 }
 
+
+get_page_nos <- function(n) {
+  i <- 10
+  numbers <- c()
+  while (n >= i) {
+    # add n to list
+    numbers <- c(numbers, i)
+    # increass n by 10
+    i <- i + 10
+  }
+  if (n %% 10 != 0) {
+    numbers <- c(numbers, n)
+  }
+  return(numbers)
+}
+
+
 generate_streaks <- function(df, drop_games_played = TRUE) {
   streaks <- df %>%
     dplyr::mutate(

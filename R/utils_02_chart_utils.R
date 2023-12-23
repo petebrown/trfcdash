@@ -12,20 +12,28 @@ bar_chart <- function(label, width = "100%", height = "1.2rem", fill = "#00bfc4"
     style = list(
       background = fill,
       width = width,
-      height = height)
+      height = height
+    )
   )
 
   chart <- div(
     style = list(
       flexGrow = 1,
       marginLeft = "10%",
-      marginRight = "1.0rem",
+      marginRight = "1.5rem",
       background = background,
       `border-style` = "solid",
       `border-color` = "slategrey",
       `border-width` = "thin"
     ),
     bar
+  )
+
+  label_div <- div(
+    style = list(
+      width = "55px"
+    ),
+    label
   )
 
   # Output div containing chart and label
@@ -35,7 +43,48 @@ bar_chart <- function(label, width = "100%", height = "1.2rem", fill = "#00bfc4"
       alignItems = "center"
     ),
     chart,
-    label
+    label_div
+  )
+}
+
+wdl_chart <- function(win_pc, draw_pc, loss_pc) {
+  bar <- function(value, background_color) {
+    div(
+      style = list(
+        flex = value,
+        `background-color` = background_color,
+        width = value,
+        height = "1.2rem",
+        `text-align` = "center",
+        `border-style` = "solid",
+        `border-color` = "white",
+        `border-width` = "thin"
+      )
+    )
+  }
+
+  chart <- div(
+    style = list(
+      display = "flex",
+      marginLeft = "10%",
+      marginRight = "1.5rem",
+      background = NULL,
+      `border-style` = "solid",
+      `border-color` = "black",
+      `border-width` = "thin"
+    ),
+    bar(win_pc, background_color="darkgreen"),
+    bar(draw_pc, background_color="grey"),
+    bar(loss_pc, background_color="red")
+  )
+
+  # Output div containing chart and label
+  div(
+    style = list(
+      display = "flex",
+      alignItems = "center"
+    ),
+    chart
   )
 }
 
