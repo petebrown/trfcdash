@@ -53,6 +53,17 @@ mod_SeasonOverviews_ui <- function(id){
       bslib::card_body(
         reactable::reactableOutput(ns("player_stats"), height = "auto"),
       )
+    ),
+
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark",
+        "Discipline"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("player_discipline"), height = "auto"),
+      )
     )
 
   )
@@ -92,6 +103,14 @@ mod_SeasonOverviews_server <- function(id, year_range, league_tiers, includePlay
     output$player_stats <- {
       reactable::renderReactable(
         get_season_plr_stats(
+          year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), game_range()
+        )
+      )
+    }
+
+    output$player_discipline <- {
+      reactable::renderReactable(
+        get_season_discipline(
           year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), game_range()
         )
       )
