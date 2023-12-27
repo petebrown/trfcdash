@@ -73,7 +73,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       menu_name = reactable::colDef(
         name = "Player",
         defaultSortOrder = "asc",
-        minWidth = 200,
+        minWidth = 210,
         grouped = reactable::JS("function(cellInfo) {
             return cellInfo.value
           }")
