@@ -110,7 +110,41 @@ mod_SeasonTracker_ui <- function(id){
           class = "bg-dark",
           "Player appearances"
         ),
-        bslib::card_body(
+        bslib::layout_sidebar(
+          fillable = FALSE,
+          sidebar = bslib::sidebar(
+            position = "left",
+            width = 200,
+            bg = "#4c668d",
+            class = "card-sidebar",
+            open = FALSE,
+            radioButtons(
+              inputId = ns("app_tab_inc_cup_games"),
+              label = "Include cup games?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            hr(),
+            radioButtons(
+              inputId = ns("app_tab_pens_as_draw"),
+              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            hr(),
+            sliderInput(
+              inputId = ns("app_tab_min_starts"),
+              label = "Minimum no. of starts:",
+              min = 0,
+              max = 50,
+              value = 0,
+              sep = "",
+              ticks = FALSE,
+              step = 1
+            )
+          ),
           uiOutput(ns("app_table"))
         )
       ),
@@ -318,6 +352,17 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
         # Sort selected seasons
         selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
 
+        apps_inc_cup_games <- reactive({
+          input$app_tab_inc_cup_games
+        })
+        apps_pens_as_draw <- reactive({
+          input$app_tab_pens_as_draw
+        })
+        apps_min_starts <- reactive({
+          input$app_tab_min_starts
+        })
+
+
         # Create a tab panel of appearance heatmaps for each  season
         app_tabs <- lapply(selected_seasons, function(season) {
           tabPanel(
@@ -329,7 +374,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
                 paste0("Appearances, goals and cards in ", season)
               ),
               reactable::renderReactable(
-                output_app_table(season)
+                output_app_table(season, apps_inc_cup_games(), apps_pens_as_draw(), apps_min_starts())
               )
             )
           )

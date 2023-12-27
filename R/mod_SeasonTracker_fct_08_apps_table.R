@@ -1,4 +1,4 @@
-output_app_table <- function(selected_season) {
+output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_starts) {
 
   df <- player_apps %>%
     dplyr::filter(
@@ -11,8 +11,19 @@ output_app_table <- function(selected_season) {
         "game_date",
         "game_no"
       )
-    ) %>%
+    )
+
+  if (inc_cup_games == "No") {
+    df <- df %>%
+      dplyr::filter(game_type == "League")
+  }
+
+  df <- df %>%
     dplyr::mutate(
+      outcome = dplyr::case_when(
+        pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
+        .default = outcome
+      ),
       generic_comp = dplyr::case_when(
         game_type == "League" ~ "League",
         game_type == "Cup" & !generic_comp %in% c("FA Cup", "League Cup") ~ "Other",
@@ -38,10 +49,15 @@ output_app_table <- function(selected_season) {
       mins_played = sum(mins_played),
       mins_per_goal = mins_played / goals,
       games_per_goal = mins_per_goal / 90,
+      winning_starts = sum(role == "starter" & outcome == "W"),
+      win_pc = winning_starts / sum(role == "starter"),
       .groups = "drop"
     ) %>%
     dplyr::select(
       -season
+    ) %>%
+    dplyr::filter(
+      starts >= min_starts
     )
 
   reactable::reactable(
@@ -108,6 +124,11 @@ output_app_table <- function(selected_season) {
         name = "Mins per Goal",
         defaultSortOrder = "asc",
         align = "right",
+        format = reactable::colFormat(
+          separators = TRUE,
+          digits = 1
+        ),
+        na = "-",
         aggregate = reactable::JS("function(values, rows) {
             let mins_played = 0
             let goals = 0
@@ -118,14 +139,12 @@ output_app_table <- function(selected_season) {
             let mins_per_goal = mins_played / goals
 
             if (isFinite(mins_per_goal)) {
-              return Number(mins_per_goal.toFixed(2))
+              return Number(mins_per_goal)
             }
           }"),
         cell = function(value) {
           if (!is.infinite(value)) {
             return (as.integer(round(value, 2)))
-          } else {
-            return ('-')
           }
         }
       ),
@@ -133,6 +152,10 @@ output_app_table <- function(selected_season) {
         name = "Games per Goal",
         defaultSortOrder = "asc",
         align = "right",
+        format = reactable::colFormat(
+          digits = 1
+        ),
+        na = "-",
         aggregate = reactable::JS("function(values, rows) {
             let mins_played = 0
             let goals = 0
@@ -149,10 +172,34 @@ output_app_table <- function(selected_season) {
         cell = function(value) {
           if (!is.infinite(value)) {
             return (round(value, 2))
-          } else {
-            return ('-')
           }
         }
+      ),
+      winning_starts = reactable::colDef(
+        show = FALSE,
+        aggregate = "sum"
+      ),
+      win_pc = reactable::colDef(
+        name = "Win %",
+        align = "right",
+        na = "-",
+        aggregate = reactable::JS("function(values, rows) {
+            let winning_starts = 0
+            let starts = 0
+            rows.forEach(function(row) {
+              winning_starts += row['winning_starts']
+              starts += row['starts']
+            })
+            let win_pc = winning_starts / starts
+
+            if (isFinite(win_pc)) {
+              return Number(win_pc)
+            }
+          }"),
+        format = reactable::colFormat(
+          percent = TRUE,
+          digits = 1
+        )
       )
     )
   )
