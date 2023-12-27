@@ -145,7 +145,11 @@ mod_SeasonTracker_ui <- function(id){
               step = 1
             )
           ),
-          uiOutput(ns("app_table"))
+          uiOutput(ns("app_table")),
+          p(
+            style = "text-align: right; color: lightgrey",
+            "Games per goal based on total minutes played. Win percentage based on games started."
+          )
         )
       ),
 
