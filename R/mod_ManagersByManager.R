@@ -157,7 +157,7 @@ mod_ManagersByManager_server <- function(id, manager_name){
 
     output$mgr_h2h_recs <- {
       reactable::renderReactable(
-        expr = get_mgr_h2h_summary(manager_name()) %>% reactable::reactable()
+        expr = get_mgr_h2h_summary(manager_name())
       )
     }
 

@@ -67,7 +67,10 @@ output_mgr_plr_records <- function(mgr_name) {
 
       mins_played = reactable::colDef(
         name = "Mins Played",
-        show = TRUE
+        show = TRUE,
+        format = reactable::colFormat(
+          separators = TRUE
+        )
       ),
 
       subbed_off = reactable::colDef(

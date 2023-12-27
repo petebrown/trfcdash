@@ -1,3 +1,5 @@
+man_res_ssns <-  min(results_dataset[results_dataset$season == max(results_dataset$season), ]$game_date)
+
 get_season_discipline <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, game_range) {
 
   min_year <- year_range[1]

@@ -104,6 +104,18 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
 
+      # Card containing player appearance table
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Player appearances"
+        ),
+        bslib::card_body(
+          uiOutput(ns("app_table"))
+        )
+      ),
+
+
       # Card containing longest streaks
       bslib::card(
         bslib::card_header(
@@ -289,6 +301,36 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
               renderPlot({
                 output_app_heatmap(season)
               })
+            )
+          )
+        })
+
+        # Return a tabsetPanel containing season results
+        do.call(tabsetPanel, app_tabs)
+      } else {
+        p("Please select one or more seasons from the dropdown menu.")
+      }
+    })
+
+    output$app_table <- renderUI({
+      req(selected_seasons())
+      if (!is.null(selected_seasons())) {
+        # Sort selected seasons
+        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
+
+        # Create a tab panel of appearance heatmaps for each  season
+        app_tabs <- lapply(selected_seasons, function(season) {
+          tabPanel(
+            title = season,
+            bslib::card(
+              full_screen = TRUE,
+              class = c("borderless", "no_padding"),
+              bslib::card_title(
+                paste0("Appearances, goals and cards in ", season)
+              ),
+              reactable::renderReactable(
+                output_app_table(season)
+              )
             )
           )
         })

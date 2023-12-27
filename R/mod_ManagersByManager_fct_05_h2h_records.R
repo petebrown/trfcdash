@@ -1,6 +1,6 @@
 get_mgr_h2h_summary <- function(selected_manager) {
 
-  results_dataset %>%
+  df <- results_dataset %>%
     dplyr::filter(
       manager == selected_manager
     ) %>%
@@ -15,8 +15,28 @@ get_mgr_h2h_summary <- function(selected_manager) {
       GF = sum(goals_for),
       GA = sum(goals_against),
       GD = GF - GA,
-      lge_pts = sum(outcome == "W" & game_type == "League") * 3 + sum(outcome == "D" & game_type == "League"),
+      lge_pts = ifelse(
+        sum(game_type == "League") != 0,
+        sum(outcome == "W" & game_type == "League") * 3 + sum(outcome == "D" & game_type == "League"),
+        NA
+      ),
       lge_ppg = lge_pts / sum(game_type == "League"),
       .groups = "drop"
     )
+
+  reactable::reactable(
+    data = df,
+    columns = list(
+      opposition = reactable::colDef(
+        name = "Opposition",
+        minWidth = 130
+      ),
+      lge_pts = reactable::colDef(
+        name = "League Points"
+      ),
+      lge_ppg = reactable::colDef(
+        name = "League PPG"
+      )
+    ),
+  )
 }

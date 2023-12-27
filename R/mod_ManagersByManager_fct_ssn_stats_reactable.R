@@ -42,7 +42,7 @@ get_mgr_summary_by_ssn_reactable <- function(selected_manager) {
         name = "Season",
         align = "left",
         sticky = "left",
-        minWidth = 30,
+        minWidth = 35,
         grouped = reactable::JS("function(cellInfo) {
           return cellInfo.value
         }")
