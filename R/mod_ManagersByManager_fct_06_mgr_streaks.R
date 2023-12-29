@@ -1,7 +1,5 @@
 output_mgr_streaks <- function(selected_manager, streak_type) {
 
-  print(streak_type)
-
   df <- results_dataset %>%
     dplyr::filter(
       manager == selected_manager
