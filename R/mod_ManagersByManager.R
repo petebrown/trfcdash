@@ -62,7 +62,30 @@ mod_ManagersByManager_ui <- function(id){
           class = "bg-dark",
           "Streaks"
         ),
-        bslib::card_body(
+        bslib::layout_sidebar(
+          fillable = FALSE,
+          sidebar = bslib::sidebar(
+            position = "left",
+            width = 200,
+            bg = "#4c668d",
+            class = "card-sidebar",
+            open = FALSE,
+            radioButtons(
+              inputId = ns("mgr_streaks_inc_cup_games"),
+              label = "Include cup games?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            hr(),
+            radioButtons(
+              inputId = ns("mgr_streaks_pens_as_draw"),
+              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            )
+          ),
           radioButtons(
             inputId = ns("streak_type"),
             label = NULL,
@@ -181,9 +204,16 @@ mod_ManagersByManager_server <- function(id, manager_name){
       input$streak_type
     })
 
+    streaks_inc_cup_games <- reactive({
+      input$mgr_streaks_inc_cup_games
+    })
+    streaks_pens_as_draw <- reactive({
+      input$mgr_streaks_pens_as_draw
+    })
+
     output$mgr_streaks <- {
       reactable::renderReactable(
-        expr = output_mgr_streaks(manager_name(), streak_type())
+        expr = output_mgr_streaks(manager_name(), streak_type(), streaks_inc_cup_games(), streaks_pens_as_draw())
       )
     }
 

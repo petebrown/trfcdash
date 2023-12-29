@@ -18,6 +18,23 @@ format_gd <- function(value) {
 }
 
 
+join_man_by_date <- function(df) {
+
+  df %>%
+    fuzzyjoin::fuzzy_left_join(
+      x = .,
+      y = managers,
+      by = c(
+        "manager" = "manager_name",
+        "game_date" = "date_from",
+        "game_date" = "date_to"
+      ),
+      match_fun = list(`==`, `>=`, `<=`)
+    )
+
+}
+
+
 get_page_nos <- function(n) {
   i <- 10
   numbers <- c()
