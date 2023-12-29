@@ -6,6 +6,9 @@
 #'
 #' @noRd
 
+
+font_style <- "color: black; font-weight: 200; font-size: smaller;"
+
 # Function to add plus sign (+) before positive figures
 format_gd <- function(value) {
   if (value != 0)

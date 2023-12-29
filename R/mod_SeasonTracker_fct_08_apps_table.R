@@ -40,9 +40,9 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       generic_comp
     ) %>%
     dplyr::summarise(
-      apps = dplyr::n(),
       starts = sum(role == "starter"),
       sub_apps = sum(role == "sub"),
+      apps = dplyr::n(),
       goals = sum(goals_scored),
       yellows = sum(yellow_cards),
       reds = sum(red_cards),
@@ -69,19 +69,30 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
     ),
     groupBy = c("menu_name"),
     compact = TRUE,
+    style = list(
+      fontWeight = 400,
+      color = "black"
+    ),
+    rowStyle = function() {
+      list(
+        fontWeight = 300,
+        color = "black"
+      )
+    },
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
         sticky = "left",
         defaultSortOrder = "asc",
-        minWidth = 210,
+        minWidth = 185,
         grouped = reactable::JS("function(cellInfo) {
             return cellInfo.value
           }")
       ),
       generic_comp = reactable::colDef(
         name = "",
-        defaultSortOrder = "asc"
+        defaultSortOrder = "asc",
+        minWidth = 90
       ),
       apps = reactable::colDef(
         name = "Total Apps",
@@ -96,7 +107,15 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       sub_apps = reactable::colDef(
         name = "Sub Apps",
         aggregate = "sum",
-        align = "center"
+        format = reactable::colFormat(
+          prefix = "(",
+          suffix = ")"
+        ),
+        align = "center",
+        cell = function(value) {
+          parens = stringr::str_glue('({value})')
+          return (parens)
+        }
       ),
       goals = reactable::colDef(
         name = "Goals",
@@ -127,7 +146,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         align = "right",
         format = reactable::colFormat(
           separators = TRUE,
-          digits = 1
+          digits = 0
         ),
         na = "-",
         aggregate = reactable::JS("function(values, rows) {
@@ -145,7 +164,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
           }"),
         cell = function(value) {
           if (!is.infinite(value)) {
-            return (as.integer(round(value, 2)))
+            return (value)
           }
         }
       ),

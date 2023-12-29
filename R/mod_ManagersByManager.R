@@ -45,6 +45,7 @@ mod_ManagersByManager_ui <- function(id){
         )
       ),
 
+
       bslib::card(
         bslib::card_header(
           class = "bg-dark",
@@ -54,6 +55,33 @@ mod_ManagersByManager_ui <- function(id){
           gt::gt_output(ns("mgr_summary_by_ssn"))
         )
       ),
+
+
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Streaks"
+        ),
+        bslib::card_body(
+          radioButtons(
+            inputId = ns("streak_type"),
+            label = NULL,
+            choiceNames = list(
+              "Overall",
+              "By season",
+              "By opponent"
+            ),
+            choiceValues = list(
+              "overall",
+              "season",
+              "opposition"
+            ),
+            inline = TRUE
+          ),
+          reactable::reactableOutput(ns("mgr_streaks"))
+        )
+      ),
+
 
       bslib::card(
         bslib::card_header(
@@ -148,6 +176,17 @@ mod_ManagersByManager_server <- function(id, manager_name){
         width = "100%"
       )
     }
+
+    streak_type <- reactive({
+      input$streak_type
+    })
+
+    output$mgr_streaks <- {
+      reactable::renderReactable(
+        expr = output_mgr_streaks(manager_name(), streak_type())
+      )
+    }
+
 
     output$mgr_player_recs <- {
       reactable::renderReactable(

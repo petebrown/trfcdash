@@ -147,7 +147,7 @@ mod_SeasonTracker_ui <- function(id){
           ),
           uiOutput(ns("app_table")),
           p(
-            style = "text-align: right; color: lightgrey",
+            style = "text-align: right; color: grey; font-size: small",
             "Games per goal based on total minutes played. Win percentage based on games started."
           )
         )
@@ -374,6 +374,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
             bslib::card(
               full_screen = TRUE,
               class = c("borderless", "no_padding"),
+              style = "font-size: smaller;",
               bslib::card_title(
                 paste0("Appearances, goals and cards in ", season)
               ),
