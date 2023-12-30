@@ -15,21 +15,11 @@ output_mgr_streaks <- function(selected_manager, streak_type, inc_cup_games, pen
       )
     )
 
-  # if (inc_cup_games == "No") {
-  #   df <- df %>%
-  #     dplyr::filter(game_type == "League")
-  # }
 
-
-  if (streak_type == "season") {
+  if (streak_type %in% c("season", "opposition")) {
     df <- df %>%
       dplyr::group_by(
-        season
-      )
-  } else if (streak_type == "opposition") {
-    df <- df %>%
-      dplyr::group_by(
-        opposition
+        !!(as.name(streak_type))
       )
   }
 
@@ -39,6 +29,17 @@ output_mgr_streaks <- function(selected_manager, streak_type, inc_cup_games, pen
       .fn = ~ stringr::str_to_title(.),
       .cols = dplyr::contains(c("opposition", "season"))
     )
+
+  if (streak_type == "overall") {
+    df <- df %>%
+      dplyr::mutate(
+        Overall = "Overall"
+      ) %>%
+      dplyr::select(
+        Overall,
+        everything()
+      )
+  }
 
   reactable::reactable(
     data = df,

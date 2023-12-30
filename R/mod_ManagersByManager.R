@@ -25,6 +25,58 @@ mod_ManagersByManager_ui <- function(id){
         )
       ),
 
+
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Overall Record"
+        ),
+        bslib::layout_sidebar(
+          fillable = FALSE,
+          sidebar = bslib::sidebar(
+            position = "left",
+            width = 200,
+            bg = "#4c668d",
+            class = "card-sidebar",
+            open = FALSE,
+            radioButtons(
+              inputId = ns("mgr_recs_inc_cup_games"),
+              label = "Include cup games?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            hr(),
+            radioButtons(
+              inputId = ns("mgr_recs_pens_as_draw"),
+              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            )
+          ),
+          radioButtons(
+            inputId = ns("record_type"),
+            label = NULL,
+            choiceNames = list(
+              "Overall",
+              "By season",
+              "By opponent",
+              "By competition"
+            ),
+            choiceValues = list(
+              "overall",
+              "season",
+              "opposition",
+              "competition"
+            ),
+            inline = TRUE
+          ),
+          reactable::reactableOutput(ns("mgr_records"))
+        )
+      ),
+
+
       bslib::card(
         bslib::card_header(
           class = "bg-dark",
@@ -177,6 +229,28 @@ mod_ManagersByManager_server <- function(id, manager_name){
       gt::render_gt(
         expr = get_mgr_summary_overall(manager_name()),
         width = "100%"
+      )
+    }
+
+    record_type <- reactive({
+      input$record_type
+    })
+
+    recs_inc_cup_games <- reactive({
+      input$mgr_recs_inc_cup_games
+    })
+    recs_pens_as_draw <- reactive({
+      input$mgr_recs_pens_as_draw
+    })
+
+    output$mgr_records <- {
+      reactable::renderReactable(
+        expr = output_mgr_records(
+          manager_name(),
+          record_type(),
+          recs_inc_cup_games(),
+          recs_pens_as_draw()
+        )
       )
     }
 

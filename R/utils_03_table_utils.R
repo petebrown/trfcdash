@@ -19,7 +19,6 @@ format_gd <- function(value) {
 
 
 join_man_by_date <- function(df) {
-
   df %>%
     fuzzyjoin::fuzzy_left_join(
       x = .,
@@ -31,7 +30,6 @@ join_man_by_date <- function(df) {
       ),
       match_fun = list(`==`, `>=`, `<=`)
     )
-
 }
 
 
