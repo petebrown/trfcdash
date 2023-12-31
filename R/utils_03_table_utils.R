@@ -18,17 +18,26 @@ format_gd <- function(value) {
 }
 
 
-join_man_by_date <- function(df) {
+get_mgr_role <- function(df) {
+  managers <- managers %>%
+    dplyr::rename(
+      mgr_role = role
+    )
+
   df %>%
-    fuzzyjoin::fuzzy_left_join(
-      x = .,
-      y = managers,
-      by = c(
-        "manager" = "manager_name",
-        "game_date" = "date_from",
-        "game_date" = "date_to"
-      ),
-      match_fun = list(`==`, `>=`, `<=`)
+    dplyr::left_join(
+      managers,
+      dplyr::join_by(
+        "manager" == "manager_name",
+        "game_date" >= "date_from",
+        "game_date" <= "date_to"
+      )
+    ) %>%
+    dplyr::mutate(
+      mgr_role = dplyr::case_when(
+        manager %in% c("Kevin Sheedy & Ray Mathias", "Jason McAteer & John McMahon") ~ "Caretaker",
+        TRUE ~ mgr_role
+      )
     )
 }
 
