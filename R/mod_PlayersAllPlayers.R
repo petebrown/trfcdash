@@ -28,6 +28,27 @@ mod_PlayersAllPlayers_ui <- function(id){
           "Player Streaks"
         ),
         reactable::reactableOutput(ns("player_streaks"))
+      ),
+
+
+      bslib::layout_column_wrap(
+        width = 1/2,
+        bslib::card(
+          full_screen = TRUE,
+          bslib::card_header(
+            class = "bg-dark",
+            "Player Debuts"
+          ),
+          reactable::reactableOutput(ns("player_debuts"))
+        ),
+        bslib::card(
+          full_screen = TRUE,
+          bslib::card_header(
+            class = "bg-dark",
+            "Oldest Players"
+          ),
+          reactable::reactableOutput(ns("oldest_players"))
+        )
       )
     )
   )
@@ -49,6 +70,18 @@ mod_PlayersAllPlayers_server <- function(id, year_range, league_tiers, includePl
     output$player_streaks <- {
       reactable::renderReactable(
         output_all_plr_streaks(year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), min_games())
+      )
+    }
+
+    output$player_debuts <- {
+      reactable::renderReactable(
+        get_pl_debuts()
+      )
+    }
+
+    output$oldest_players <- {
+      reactable::renderReactable(
+        get_oldest_players(n=1)
       )
     }
 

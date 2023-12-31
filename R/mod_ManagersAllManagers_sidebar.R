@@ -124,6 +124,16 @@ mod_ManagersAllManagers_sidebar_ui <- function(id){
 
     hr(),
 
+    radioButtons(
+      inputId = ns("inc_caretakers"),
+      label = h6("Include caretakers?"),
+      choices = c("Yes", "No"),
+      selected = "Yes",
+      inline = TRUE
+    ),
+
+    hr(),
+
     actionButton(
       inputId = ns("reset_input"),
       label = "Reset all"
@@ -217,6 +227,11 @@ mod_ManagersAllManagers_sidebar_server <- function(id){
         inputId = "min_games",
         value = 10
       )
+
+      updateRadioButtons(
+        inputId = "include_caretakers",
+        selected = "Yes"
+      )
     })
 
     managers_all_inputs <- list(
@@ -226,7 +241,8 @@ mod_ManagersAllManagers_sidebar_server <- function(id){
       reactive({input$cup_comps}), #4
       reactive({input$pensAsDraw}), #5
       reactive({input$venue_options}), #6
-      reactive({input$min_games}) #7
+      reactive({input$min_games}), #7
+      reactive({input$inc_caretakers}) #8
     )
     return(managers_all_inputs)
 

@@ -135,6 +135,7 @@ app_server <- function(input, output, session) {
     cup_comps = ManagersAllManagers_inputs[[4]],
     pens_as_draw = ManagersAllManagers_inputs[[5]],
     venue_options = ManagersAllManagers_inputs[[6]],
-    min_games = ManagersAllManagers_inputs[[7]]
+    min_games = ManagersAllManagers_inputs[[7]],
+    inc_caretakers = ManagersAllManagers_inputs[[8]]
   )
 }
