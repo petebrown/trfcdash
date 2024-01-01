@@ -35,9 +35,13 @@ get_season_records <- function(year_range, league_tiers, includePlayOffs, cup_co
 
   reactable::reactable(
     data = df,
+    defaultColDef = reactable::colDef(
+      minWidth = 60
+    ),
     columns = list(
       season = reactable::colDef(
-        name = "Season"
+        name = "Season",
+        minWidth = 90
       ),
       GD = reactable::colDef(
         show = TRUE,

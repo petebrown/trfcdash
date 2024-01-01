@@ -208,10 +208,10 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
             bordered = FALSE,
             borderless = TRUE,
             defaultPageSize = 16,
-            compact    = TRUE,
+            compact = TRUE,
             filterable = FALSE,
-            resizable  = TRUE,
-            columns    = list(
+            resizable = TRUE,
+            columns = list(
               season = reactable::colDef(show = FALSE),
               game_date = reactable::colDef(show = FALSE),
               shirt_no = reactable::colDef(name = "No.", align = "left", width = 60),

@@ -84,8 +84,11 @@ app_ui <- function(request) {
           "OnThisDay_sidebar"
         )
       ),
-      bslib::nav_panel("Season Tracker", mod_SeasonTracker_ui("SeasonTracker_ui_1")),
-      bslib::nav_panel("Season Overviews", mod_SeasonOverviews_ui("SeasonOverviews_ui_1")),
+      bslib::nav_menu(
+        title = "Seasons",
+        bslib::nav_panel("Season Tracker", mod_SeasonTracker_ui("SeasonTracker_ui_1")),
+        bslib::nav_panel("Season Overviews", mod_SeasonOverviews_ui("SeasonOverviews_ui_1"))
+      ),
       bslib::nav_menu(
         title = "Head-to-Head Records",
         bslib::nav_panel("All head-to-head records", mod_Head2HeadAllOpponents_ui("Head2HeadAllOpponents_ui_1")),

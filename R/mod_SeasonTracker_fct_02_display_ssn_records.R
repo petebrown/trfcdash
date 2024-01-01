@@ -21,7 +21,14 @@ output_ssn_records <- function(selected_seasons, selected_venue) {
   tab <- reactable::reactable(
     data = df,
     striped = TRUE,
+    defaultColDef = reactable::colDef(
+      minWidth = 60
+    ),
     columns = list(
+      Season = reactable::colDef(
+        name = "Season",
+        minWidth = 90
+      ),
       GD = reactable::colDef(
         show = TRUE,
         # Function to add plus sign (+) before positive figures
