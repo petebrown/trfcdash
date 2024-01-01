@@ -149,8 +149,8 @@ output_app_heatmap <- function(selected_season) {
         .default = "grey50"
       ),
       linewidth = dplyr::case_when(
-        plot_data$red_cards == 1 ~ 1,
-        plot_data$yellow_cards == 1 ~ 0.4,
+        plot_data$red_cards == 1 ~ 1.5,
+        plot_data$yellow_cards == 1 ~ 0.6,
         .default = 0.15
       )
     ) +

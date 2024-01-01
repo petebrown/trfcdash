@@ -1,6 +1,35 @@
-get_pl_debuts <- function() {
+get_pl_debuts <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games) {
+
+  min_year <- year_range[1]
+  max_year <- year_range[2]
 
   df <- player_apps %>%
+    dplyr::left_join(
+      results_dataset,
+      by = c(
+        "season",
+        "game_date",
+        "game_no"
+      )
+    ) %>%
+    dplyr::mutate(
+      ssn_year = as.numeric(stringr::str_sub(season, end = 4)),
+      game_year = lubridate::year(game_date),
+      outcome = dplyr::case_when(
+        pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
+        .default = outcome,
+      )
+    ) %>%
+    dplyr::filter(
+      ssn_year >= min_year,
+      ssn_year <= max_year,
+      league_tier %in% league_tiers | generic_comp %in% cup_comps,
+      dplyr::case_when(
+        includePlayOffs == "No" ~ !grepl("play-off", competition, ignore.case = TRUE),
+        TRUE ~ TRUE
+      ),
+      venue %in% venue_options
+    ) %>%
     dplyr::filter(
       !is.na(player_dob)
     ) %>%
@@ -10,12 +39,14 @@ get_pl_debuts <- function() {
     dplyr::select(
       menu_name,
       game_date,
+      role,
       plr_game_age_days
     ) %>%
     dplyr::group_by(
       menu_name
     ) %>%
     dplyr::summarise(
+      starts = sum(role == "starter"),
       debut_age = min(plr_game_age_days),
       debut_date = min(game_date)
     ) %>%
@@ -24,6 +55,9 @@ get_pl_debuts <- function() {
       debut_age_days = ceiling(debut_age - (debut_age_yrs * 365.25))
     ) %>%
     dplyr::ungroup() %>%
+    dplyr::filter(
+      starts >= min_games
+    ) %>%
     dplyr::arrange(
       dplyr::desc(debut_age)
     ) %>%

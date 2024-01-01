@@ -75,7 +75,7 @@ mod_PlayersAllPlayers_server <- function(id, year_range, league_tiers, includePl
 
     output$player_debuts <- {
       reactable::renderReactable(
-        get_pl_debuts()
+        get_pl_debuts(year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), min_games())
       )
     }
 

@@ -29,12 +29,27 @@ output_ssn_records <- function(selected_seasons, selected_venue) {
         name = "Season",
         minWidth = 90
       ),
+      P = reactable::colDef(
+        minWidth = 55
+      ),
+      W = reactable::colDef(
+        minWidth = 55
+      ),
+      D = reactable::colDef(
+        minWidth = 55
+      ),
+      L = reactable::colDef(
+        minWidth = 55
+      ),
       GD = reactable::colDef(
         show = TRUE,
         # Function to add plus sign (+) before positive figures
         cell = function(value) {
           sprintf("%+3d", value)
         }
+      ),
+      PPG = reactable::colDef(
+        minWidth = 66
       )
     )
   )
