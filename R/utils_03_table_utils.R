@@ -141,6 +141,21 @@ streaks_reactable <- function(df) {
   )
 }
 
+summarise_results <- function(df) {
+  df %>%
+    dplyr::summarize(
+      P = dplyr::n(),
+      W = sum(outcome == "W"),
+      D = sum(outcome == "D"),
+      L = sum(outcome == "L"),
+      GF = sum(goals_for),
+      GA = sum(goals_against),
+      GD = sum(GF - GA),
+      win_pc = W / P,
+      .groups = "drop"
+    )
+}
+
 generate_record <- function(df) {
   df %>%
     dplyr::summarise(

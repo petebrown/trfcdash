@@ -302,7 +302,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
     # Function to produce season record data tables
     render_ssn_records <- function(venues) {
       reactable::renderReactable(
-        output_ssn_records(selected_seasons(), venues)
+        ssn_recs_reactable(selected_seasons(), venues)
       )
     }
 

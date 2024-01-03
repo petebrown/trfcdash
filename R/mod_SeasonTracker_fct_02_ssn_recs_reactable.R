@@ -1,26 +1,27 @@
-get_mgr_summary_by_ssn_reactable <- function(selected_manager) {
-
+ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = "Yes") {
   df <- results_dataset %>%
     dplyr::filter(
-      manager == selected_manager
+      season %in% selected_seasons,
+      venue %in% selected_venue
+    ) %>%
+    dplyr::mutate(
+      outcome = dplyr::case_when(
+        pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
+        .default = outcome
+      )
     ) %>%
     dplyr::group_by(
       season,
-      competition
+      generic_comp
     ) %>%
-    summarise_results() %>%
-    dplyr::arrange(
-      season,
-      dplyr::desc(P)
-    )
-
+    summarise_results()
 
   reactable::reactable(
     data = df,
-    elementId = "mgrs_by_season",
+    groupBy = c("season"),
+    striped = TRUE,
     defaultPageSize = length(df$season),
     searchable = TRUE,
-    groupBy = c("season"),
     rowStyle = function() {
       list(
         `font-weight` = 300,
@@ -32,24 +33,24 @@ get_mgr_summary_by_ssn_reactable <- function(selected_manager) {
         name = "Season",
         align = "left",
         sticky = "left",
-        minWidth = 35,
+        minWidth = 50,
         grouped = reactable::JS("function(cellInfo) {
-          return cellInfo.value
-        }")
+            return cellInfo.value
+          }")
       ),
-      competition = reactable::colDef(
+      generic_comp = reactable::colDef(
         name = "Competition",
         align = "left",
         sticky = "left",
         minWidth = 80,
         aggregate = reactable::JS("function(values, rows) {
-          let comps = 0
+            let comps = 0
 
-          rows.forEach(function(row) {
-            comps += 1
-          })
-          return 'All competitions (' + comps + ')'
-        }"),
+            rows.forEach(function(row) {
+              comps += 1
+            })
+            return 'All competitions (' + comps + ')'
+          }"),
       ),
       P = reactable::colDef(
         name = "P",
@@ -104,14 +105,14 @@ get_mgr_summary_by_ssn_reactable <- function(selected_manager) {
         name = "Win %",
         align = "right",
         aggregate = reactable::JS("function(values, rows) {
-          let games_played = 0
-          let wins = 0
-          rows.forEach(function(row) {
-            games_played += row['P']
-            wins += row['W']
-          })
-          return wins / games_played
-        }"),
+            let games_played = 0
+            let wins = 0
+            rows.forEach(function(row) {
+              games_played += row['P']
+              wins += row['W']
+            })
+            return wins / games_played
+          }"),
         format = reactable::colFormat(
           percent = TRUE,
           digits = 1
@@ -125,25 +126,7 @@ get_mgr_summary_by_ssn_reactable <- function(selected_manager) {
             fill = "lightblue",
             background = "#F2F2F2"
           )
-        },
-        footer = reactable::JS("function(colInfo) {
-          const formatter = Intl.NumberFormat('en-US', {
-            style: 'percent',
-            maximumFractionDigits: 1,
-          })
-
-          let games_played = 0
-          let wins = 0
-
-          colInfo.data.forEach(function(row) {
-            games_played += row['P']
-            wins += row['W']
-          })
-
-          let win_pc = wins / games_played
-
-          return formatter.format(win_pc)
-        }")
+        }
       )
     )
   )
