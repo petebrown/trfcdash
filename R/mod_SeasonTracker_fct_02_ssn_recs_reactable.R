@@ -14,18 +14,32 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = 
       season,
       generic_comp
     ) %>%
-    summarise_results()
+    generate_record() %>%
+    dplyr::arrange(
+      season,
+      dplyr::desc(P)
+    ) %>%
+    dplyr::relocate(
+      win_pc,
+      .after = PPG
+    )
 
   reactable::reactable(
     data = df,
     groupBy = c("season"),
-    striped = TRUE,
+    striped = FALSE,
     defaultPageSize = length(df$season),
-    searchable = TRUE,
+    compact = TRUE,
+    style = list(
+      fontSize = "smaller",
+      fontWeight = 400,
+      color = "black"
+    ),
     rowStyle = function() {
       list(
-        `font-weight` = 300,
-        `background` = "#f8fdff91"
+        # fontSize = "smaller",
+        fontWeight = 300,
+        color = "black"
       )
     },
     columns = list(
@@ -33,7 +47,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = 
         name = "Season",
         align = "left",
         sticky = "left",
-        minWidth = 50,
+        minWidth = 90,
         grouped = reactable::JS("function(cellInfo) {
             return cellInfo.value
           }")
@@ -42,14 +56,14 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = 
         name = "Competition",
         align = "left",
         sticky = "left",
-        minWidth = 80,
+        minWidth = 110,
         aggregate = reactable::JS("function(values, rows) {
             let comps = 0
 
             rows.forEach(function(row) {
               comps += 1
             })
-            return 'All competitions (' + comps + ')'
+            return 'All comps (' + comps + ')'
           }"),
       ),
       P = reactable::colDef(
@@ -63,46 +77,63 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = 
         name = "W",
         aggregate = "sum",
         align = "center",
-        minWidth = 30,
+        minWidth = 35,
         footer = js_total_col()
       ),
       D = reactable::colDef(
         name = "D",
         aggregate = "sum",
         align = "center",
-        minWidth = 30,
+        minWidth = 35,
         footer = js_total_col()
       ),
       L = reactable::colDef(
         name = "L",
         aggregate = "sum",
         align = "center",
-        minWidth = 30,
+        minWidth = 35,
         footer = js_total_col()
       ),
       GF = reactable::colDef(
         name = "GF",
         aggregate = "sum",
         align = "center",
-        minWidth = 30,
+        minWidth = 50,
         footer = js_total_col()
       ),
       GA = reactable::colDef(
         name = "GA",
         aggregate = "sum",
         align = "center",
-        minWidth = 30,
+        minWidth = 50,
         footer = js_total_col()
       ),
       GD = reactable::colDef(
         name = "GD",
         aggregate = "sum",
         align = "center",
-        minWidth = 30,
+        minWidth = 50,
         footer = js_total_col()
+      ),
+      Pts = reactable::colDef(
+        name = "Pts",
+        aggregate = "sum",
+        align = "right",
+        minWidth = 50,
+        footer = js_total_col()
+      ),
+      PPG = reactable::colDef(
+        name = "PPG",
+        aggregate = "sum",
+        align = "right",
+        minWidth = 50,
+        format = reactable::colFormat(
+          digits = 2
+        )
       ),
       win_pc = reactable::colDef(
         name = "Win %",
+        minWidth = 70,
         align = "right",
         aggregate = reactable::JS("function(values, rows) {
             let games_played = 0
@@ -117,16 +148,16 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = 
           percent = TRUE,
           digits = 1
         ),
-        cell = function(value) {
-          # Format as percentages with 1 decimal place
-          value <- paste0(format(round(value * 100, 1), nsmall = 1), "%")
-          bar_chart(
-            value,
-            width = value,
-            fill = "lightblue",
-            background = "#F2F2F2"
-          )
-        }
+        # cell = function(value) {
+        #   # Format as percentages with 1 decimal place
+        #   value <- paste0(format(round(value * 100, 1), nsmall = 1), "%")
+        #   bar_chart(
+        #     value,
+        #     width = value,
+        #     fill = "lightblue",
+        #     background = "#F2F2F2"
+        #   )
+        # }
       )
     )
   )

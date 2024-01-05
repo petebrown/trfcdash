@@ -367,7 +367,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
         })
 
 
-        # Create a tab panel of appearance heatmaps for each  season
+        # Create a tab panel of appearance tables for each  season
         app_tabs <- lapply(selected_seasons, function(season) {
           tabPanel(
             title = season,
