@@ -167,7 +167,10 @@ generate_record <- function(df) {
       GA = sum(goals_against),
       GD = sum(goals_for) - sum(goals_against),
       win_pc = W / P,
-      Pts = (sum(game_type == "League" & outcome == "W") * 3) + sum(game_type == "League" & outcome == "D"),
+      Pts = dplyr::case_when(
+        sum(game_type == "League") > 0 ~ (sum(game_type == "League" & outcome == "W") * 3) + sum(game_type == "League" & outcome == "D"),
+        TRUE ~ NA
+      ),
       PPG = Pts / sum(game_type == "League"),
       .groups = "drop"
     )

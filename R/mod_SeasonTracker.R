@@ -57,35 +57,62 @@ mod_SeasonTracker_ui <- function(id){
           class = "bg-dark",
           "Season Record"
         ),
-        bslib::card(
-          class = "borderless",
-          bslib::card_title(
-            "Overall League Record"
+        bslib::layout_sidebar(
+          fillable = TRUE,
+          sidebar = bslib::sidebar(
+            position = "left",
+            width = 200,
+            bg = "#4c668d",
+            class = "card-sidebar",
+            open = FALSE,
+            radioButtons(
+              inputId = ns("rec_inc_cup_games"),
+              label = "Include cup games?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            hr(),
+            radioButtons(
+              inputId = ns("rec_pens_as_draw"),
+              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
           ),
-          bslib::card_body(
-            fillable = FALSE,
-            reactable::reactableOutput(ns("season_records"))
-          )
-        ),
-        hr(style = "width:30%; margin: 1.5rem auto;"),
-        bslib::layout_column_wrap(
-          width = 1/2,
           bslib::card(
+            class = "borderless",
             bslib::card_title(
-              "Home League Record"
+              "Overall Record"
             ),
             bslib::card_body(
               fillable = FALSE,
-              reactable::reactableOutput(ns("season_records_home"))
+              reactable::reactableOutput(ns("season_records"))
             )
           ),
-          bslib::card(
-            bslib::card_title(
-              "Away League Record"
+          hr(style = "width:30%; margin: 1.5rem auto;"),
+          bslib::layout_column_wrap(
+            width = 1/2,
+            bslib::card(
+              class = "no-growth",
+              bslib::card_title(
+                "Home Record"
+              ),
+              bslib::card_body(
+                fillable = FALSE,
+                reactable::reactableOutput(ns("season_records_home"))
+              )
             ),
-            bslib::card_body(
-              fillable = FALSE,
-              reactable::reactableOutput(ns("season_records_away"))
+            bslib::card(
+              class = "no-growth",
+              bslib::card_title(
+                "Away Record"
+              ),
+              bslib::card_body(
+                fillable = FALSE,
+                reactable::reactableOutput(ns("season_records_away"))
+              )
             )
           )
         )
@@ -301,8 +328,16 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
 
     # Function to produce season record data tables
     render_ssn_records <- function(venues) {
+      rec_inc_cup_games <- reactive({
+        input$rec_inc_cup_games
+      })
+
+      rec_pens_as_draw <- reactive({
+        input$rec_pens_as_draw
+      })
+
       reactable::renderReactable(
-        ssn_recs_reactable(selected_seasons(), venues)
+        ssn_recs_reactable(selected_seasons(), venues, rec_inc_cup_games(), rec_pens_as_draw())
       )
     }
 

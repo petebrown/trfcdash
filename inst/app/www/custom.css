@@ -6,6 +6,11 @@
   border: 0;
 }
 
+/* Stop the Home/Away record title cards expanding */
+.no-growth {
+  flex: 0 0 auto !important;
+}
+
 .navbar {
   --bs-navbar-brand-margin-end: 0 !important;
 }

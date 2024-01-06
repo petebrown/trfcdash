@@ -1,8 +1,13 @@
-ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = "Yes") {
+ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, pens_as_draw) {
+
   df <- results_dataset %>%
     dplyr::filter(
       season %in% selected_seasons,
-      venue %in% selected_venue
+      venue %in% selected_venue,
+      dplyr::case_when(
+        inc_cup_games == "No" ~ game_type == "League",
+        TRUE ~ TRUE
+      )
     ) %>%
     dplyr::mutate(
       outcome = dplyr::case_when(
@@ -24,9 +29,13 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = 
       .after = PPG
     )
 
+  n_seasons = length(selected_seasons)
+
   reactable::reactable(
     data = df,
-    groupBy = c("season"),
+    groupBy = if (inc_cup_games == "Yes") {
+      c("season")
+    },
     striped = FALSE,
     defaultPageSize = length(df$season),
     compact = TRUE,
@@ -35,12 +44,13 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = 
       fontWeight = 400,
       color = "black"
     ),
-    rowStyle = function() {
-      list(
-        # fontSize = "smaller",
-        fontWeight = 300,
-        color = "black"
-      )
+    rowStyle = if (inc_cup_games == "Yes") {
+      function() {
+        list(
+          fontWeight = 300,
+          color = "black"
+        )
+      }
     },
     columns = list(
       season = reactable::colDef(
@@ -48,94 +58,172 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = 
         align = "left",
         sticky = "left",
         minWidth = 90,
-        grouped = reactable::JS("function(cellInfo) {
+        grouped = if (inc_cup_games == "Yes") {
+          reactable::JS("function(cellInfo) {
             return cellInfo.value
           }")
+        }
       ),
       generic_comp = reactable::colDef(
         name = "Competition",
         align = "left",
         sticky = "left",
         minWidth = 110,
-        aggregate = reactable::JS("function(values, rows) {
+        aggregate = if (inc_cup_games == "Yes") {
+          reactable::JS("function(values, rows) {
             let comps = 0
 
             rows.forEach(function(row) {
               comps += 1
             })
             return 'All comps (' + comps + ')'
-          }"),
+          }")
+        }
       ),
       P = reactable::colDef(
         name = "P",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+          },
         align = "center",
         minWidth = 50,
-        footer = js_total_col()
+        footer = function(values) {
+          games = sum(values)
+          av_games = games / n_seasons
+
+          sprintf("%.0f", av_games)
+        }
       ),
       W = reactable::colDef(
         name = "W",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+          },
         align = "center",
         minWidth = 35,
-        footer = js_total_col()
+        footer = function(values) {
+          games = sum(values)
+          av_games = games / n_seasons
+
+          sprintf("%.0f", av_games)
+        }
       ),
       D = reactable::colDef(
         name = "D",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+          },
         align = "center",
         minWidth = 35,
-        footer = js_total_col()
+        footer = function(values) {
+          games = sum(values)
+          av_games = games / n_seasons
+
+          sprintf("%.0f", av_games)
+        }
       ),
       L = reactable::colDef(
         name = "L",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+          },
         align = "center",
         minWidth = 35,
-        footer = js_total_col()
+        footer = function(values) {
+          games = sum(values)
+          av_games = games / n_seasons
+
+          sprintf("%.0f", av_games)
+        }
       ),
       GF = reactable::colDef(
         name = "GF",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+          },
         align = "center",
         minWidth = 50,
-        footer = js_total_col()
+        footer = function(values) {
+          games = sum(values)
+          av_games = games / n_seasons
+
+          sprintf("%.0f", av_games)
+        }
       ),
       GA = reactable::colDef(
         name = "GA",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        },
         align = "center",
         minWidth = 50,
-        footer = js_total_col()
+        footer = function(values) {
+          games = sum(values)
+          av_games = games / n_seasons
+
+          sprintf("%.0f", av_games)
+        }
       ),
       GD = reactable::colDef(
         name = "GD",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        },
         align = "center",
         minWidth = 50,
-        footer = js_total_col()
+        footer = function(values) {
+          games = sum(values)
+          av_games = games / n_seasons
+          sprintf("%.0f", av_games) # formatted av_games
+        }
       ),
       Pts = reactable::colDef(
-        name = "Pts",
-        aggregate = "sum",
-        align = "right",
+        name = "Lge Pts",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+          },
+        align = "center",
         minWidth = 50,
-        footer = js_total_col()
+        footer = reactable::JS("function(colInfo) {
+          let total_pts = 0
+          let ssns = 0
+          colInfo.data.forEach(function(row) {
+              total_pts += row[colInfo.column.id]
+              ssns += 1
+          })
+          av_pts = total_pts / ssns
+          return Number(av_pts.toFixed(0))
+        }"
+        )
       ),
       PPG = reactable::colDef(
-        name = "PPG",
-        aggregate = "sum",
+        name = "Lge PPG",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+          },
         align = "right",
-        minWidth = 50,
+        minWidth = 60,
         format = reactable::colFormat(
           digits = 2
+        ),
+        footer = reactable::JS("function(colInfo) {
+          let total_ppg = 0
+          let ssns = 0
+          colInfo.data.forEach(function(row) {
+              total_ppg += row[colInfo.column.id]
+              ssns += 1
+          })
+          av_ppg = total_ppg / ssns
+          return Number(av_ppg.toFixed(2))
+        }"
         )
       ),
       win_pc = reactable::colDef(
         name = "Win %",
         minWidth = 70,
         align = "right",
-        aggregate = reactable::JS("function(values, rows) {
+        aggregate = if (inc_cup_games == "Yes") {
+          reactable::JS("function(values, rows) {
             let games_played = 0
             let wins = 0
             rows.forEach(function(row) {
@@ -143,21 +231,30 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, pens_as_draw = 
               wins += row['W']
             })
             return wins / games_played
-          }"),
+          }")
+        },
         format = reactable::colFormat(
           percent = TRUE,
           digits = 1
         ),
-        # cell = function(value) {
-        #   # Format as percentages with 1 decimal place
-        #   value <- paste0(format(round(value * 100, 1), nsmall = 1), "%")
-        #   bar_chart(
-        #     value,
-        #     width = value,
-        #     fill = "lightblue",
-        #     background = "#F2F2F2"
-        #   )
-        # }
+        footer = reactable::JS("function(colInfo) {
+          const formatter = Intl.NumberFormat('en-US', {
+            style: 'percent',
+            maximumFractionDigits: 1,
+          })
+
+          let games_played = 0
+          let wins = 0
+
+          colInfo.data.forEach(function(row) {
+            games_played += row['P']
+            wins += row['W']
+          })
+
+          let win_pc = wins / games_played
+
+          return formatter.format(win_pc)
+        }")
       )
     )
   )

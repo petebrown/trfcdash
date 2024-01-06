@@ -67,17 +67,21 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
     defaultColDef = reactable::colDef(
       sortNALast = TRUE
     ),
-    groupBy = c("menu_name"),
+    groupBy = if (inc_cup_games == "Yes") {
+      c("menu_name")
+    },
     compact = TRUE,
     style = list(
       fontWeight = 400,
       color = "black"
     ),
-    rowStyle = function() {
-      list(
-        fontWeight = 300,
-        color = "black"
-      )
+    rowStyle = if (inc_cup_games == "Yes") {
+        function() {
+        list(
+          fontWeight = 300,
+          color = "black"
+        )
+      }
     },
     columns = list(
       menu_name = reactable::colDef(
@@ -96,17 +100,23 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       ),
       apps = reactable::colDef(
         name = "Total Apps",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        },
         align = "center"
       ),
       starts = reactable::colDef(
         name = "Starts",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        },
         align = "center"
       ),
       sub_apps = reactable::colDef(
         name = "Sub Apps",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        },
         format = reactable::colFormat(
           prefix = "(",
           suffix = ")"
@@ -119,22 +129,30 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       ),
       goals = reactable::colDef(
         name = "Goals",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        },
         align = "center"
       ),
       yellows = reactable::colDef(
         name = "Yellow Cards",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        },
         align = "center"
       ),
       reds = reactable::colDef(
         name = "Red Cards",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        },
         align = "center"
       ),
       mins_played = reactable::colDef(
         name = "Mins Played",
-        aggregate = "sum",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        },
         format = reactable::colFormat(
           separators = TRUE
         ),
@@ -149,7 +167,8 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
           digits = 0
         ),
         na = "-",
-        aggregate = reactable::JS("function(values, rows) {
+        aggregate = if (inc_cup_games == "Yes") {
+          reactable::JS("function(values, rows) {
             let mins_played = 0
             let goals = 0
             rows.forEach(function(row) {
@@ -161,7 +180,8 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
             if (isFinite(mins_per_goal)) {
               return Number(mins_per_goal)
             }
-          }"),
+          }")
+        },
         cell = function(value) {
           if (!is.infinite(value)) {
             return (value)
@@ -176,7 +196,8 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
           digits = 1
         ),
         na = "-",
-        aggregate = reactable::JS("function(values, rows) {
+        aggregate = if (inc_cup_games == "Yes") {
+          reactable::JS("function(values, rows) {
             let mins_played = 0
             let goals = 0
             rows.forEach(function(row) {
@@ -188,7 +209,8 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
             if (isFinite(games_per_goal)) {
               return Number(games_per_goal.toFixed(2))
             }
-          }"),
+          }")
+        },
         cell = function(value) {
           if (!is.infinite(value)) {
             return (round(value, 2))
@@ -197,13 +219,16 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       ),
       winning_starts = reactable::colDef(
         show = FALSE,
-        aggregate = "sum"
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        }
       ),
       win_pc = reactable::colDef(
         name = "Win %",
         align = "right",
         na = "-",
-        aggregate = reactable::JS("function(values, rows) {
+        aggregate = if (inc_cup_games == "Yes") {
+          reactable::JS("function(values, rows) {
             let winning_starts = 0
             let starts = 0
             rows.forEach(function(row) {
@@ -215,7 +240,8 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
             if (isFinite(win_pc)) {
               return Number(win_pc)
             }
-          }"),
+          }")
+        },
         format = reactable::colFormat(
           percent = TRUE,
           digits = 1
