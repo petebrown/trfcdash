@@ -176,6 +176,26 @@ generate_record <- function(df) {
     )
 }
 
+mutate_pens_as_draw <- function(df, pens_as_draw) {
+  df %>%
+    dplyr::mutate(
+      outcome = dplyr::case_when(
+        pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
+        .default = outcome
+      )
+    )
+}
+
+filter_inc_cup_games <- function(df, inc_cup_games) {
+  df %>%
+    dplyr::filter(
+      dplyr::case_when(
+        inc_cup_games == "No" ~ game_type == "League",
+        TRUE ~ TRUE
+      )
+    )
+}
+
 
 # Javascript function to return the total of a column in a Reactable table
 js_total_col <- function() {
@@ -188,3 +208,10 @@ js_total_col <- function() {
       }"
     )
 }
+
+make_color_pal <- function(colors, bias = 1) {
+  get_color <- grDevices::colorRamp(colors, bias = bias)
+  function(x) grDevices::rgb(get_color(x), maxColorValue = 255)
+}
+
+green_pal <- make_color_pal(c("grey85", "#f2fbd2", "#c9ecb4", "#93d3ab", "#35b0ab"), bias = 0.7)

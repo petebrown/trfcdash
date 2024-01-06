@@ -53,6 +53,7 @@ mod_SeasonTracker_ui <- function(id){
 
       # Card containing each season's league record
       bslib::card(
+        full_screen = TRUE,
         bslib::card_header(
           class = "bg-dark",
           "Season Record"
@@ -93,7 +94,7 @@ mod_SeasonTracker_ui <- function(id){
           ),
           hr(style = "width:30%; margin: 1.5rem auto;"),
           bslib::layout_column_wrap(
-            width = 1/2,
+            width = "715px",
             bslib::card(
               class = "no-growth",
               bslib::card_title(
@@ -173,6 +174,55 @@ mod_SeasonTracker_ui <- function(id){
             )
           ),
           uiOutput(ns("app_table")),
+          p(
+            style = "text-align: right; color: grey; font-size: small",
+            "Games per goal based on total minutes played. Win percentage based on games started."
+          )
+        )
+      ),
+
+      # Card containing player appearance table
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Player appearances"
+        ),
+        bslib::layout_sidebar(
+          fillable = FALSE,
+          sidebar = bslib::sidebar(
+            position = "left",
+            width = 200,
+            bg = "#4c668d",
+            class = "card-sidebar",
+            open = FALSE,
+            radioButtons(
+              inputId = ns("app_react_inc_cup_games"),
+              label = "Include cup games?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            hr(),
+            radioButtons(
+              inputId = ns("app_react_pens_as_draw"),
+              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            hr(),
+            sliderInput(
+              inputId = ns("app_react_min_starts"),
+              label = "Minimum no. of starts:",
+              min = 0,
+              max = 50,
+              value = 0,
+              sep = "",
+              ticks = FALSE,
+              step = 1
+            )
+          ),
+          uiOutput(ns("app_reactable")),
           p(
             style = "text-align: right; color: grey; font-size: small",
             "Games per goal based on total minutes played. Win percentage based on games started."
@@ -385,6 +435,49 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
       }
     })
 
+    output$app_reactable <- renderUI({
+      req(selected_seasons())
+      if (!is.null(selected_seasons())) {
+        # Sort selected seasons
+        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
+
+        apps2_inc_cup_games <- reactive({
+          input$app_react_inc_cup_games
+        })
+        apps2_pens_as_draw <- reactive({
+          input$app_react_pens_as_draw
+        })
+        apps2_min_starts <- reactive({
+          input$app_react_min_starts
+        })
+
+
+        # Create a tab panel of appearance tables for each  season
+        app_tabs <- lapply(selected_seasons, function(season) {
+          tabPanel(
+            title = season,
+            bslib::card(
+              full_screen = TRUE,
+              class = c("borderless", "no_padding"),
+              style = "font-size: small;",
+              bslib::card_title(
+                paste0("Appearances, goals and cards in ", season)
+              ),
+              reactable::renderReactable(
+                heatmap_reactable(season, apps2_inc_cup_games(), apps2_pens_as_draw(), apps2_min_starts())
+              )
+            )
+          )
+        })
+
+        # Return a tabsetPanel containing season results
+        do.call(tabsetPanel, app_tabs)
+      } else {
+        p("Please select one or more seasons from the dropdown menu.")
+      }
+    })
+
+
     output$app_table <- renderUI({
       req(selected_seasons())
       if (!is.null(selected_seasons())) {
@@ -409,7 +502,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
             bslib::card(
               full_screen = TRUE,
               class = c("borderless", "no_padding"),
-              style = "font-size: smaller;",
+              style = "font-size: small;",
               bslib::card_title(
                 paste0("Appearances, goals and cards in ", season)
               ),
