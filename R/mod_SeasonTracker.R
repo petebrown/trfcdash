@@ -459,7 +459,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
             bslib::card(
               full_screen = TRUE,
               class = c("borderless", "no_padding"),
-              style = "font-size: small;",
+              style = "font-size: small; color: black;",
               bslib::card_title(
                 paste0("Appearances, goals and cards in ", season)
               ),
