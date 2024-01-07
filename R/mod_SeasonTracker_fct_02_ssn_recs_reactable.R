@@ -23,11 +23,11 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
     dplyr::arrange(
       season,
       dplyr::desc(P)
-    ) %>%
-    dplyr::relocate(
-      win_pc,
-      .after = PPG
-    )
+    ) # %>%
+#   dplyr::relocate(
+#     win_pc,
+#     .after = PPG
+#   )
 
   n_seasons = length(selected_seasons)
 

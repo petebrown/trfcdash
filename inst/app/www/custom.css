@@ -75,3 +75,11 @@ div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
 .opponent-title {
   margin-bottom: 1.5rem;
 }
+
+.apps-reactable {
+  color: black;
+}
+
+#SeasonTracker_ui_1-summary_stats > div > label:not(:first-child) > input[type=checkbox] {
+  margin-left: 0.5rem;
+}

@@ -220,7 +220,54 @@ mod_SeasonTracker_ui <- function(id){
               sep = "",
               ticks = FALSE,
               step = 1
+            ),
+            hr(),
+            radioButtons(
+              inputId = ns("starters_only"),
+              label = "Show starters only? ",
+              choices = c(
+                "Yes",
+                "No"
+              ),
+              selected = "No",
+              inline = TRUE
             )
+          ),
+          radioButtons(
+            inputId = ns("selected_stat"),
+            label = tags$b("Focus on: "),
+            choiceNames = c(
+              "Mins played",
+              "Goals"
+            ),
+            choiceValues = c(
+              "mins_played",
+              "goals_scored"
+            ),
+            inline = TRUE
+          ),
+          checkboxGroupInput(
+            inputId = ns("summary_stats"),
+            label = tags$b("Summary stats: "),
+            choiceNames = c(
+              "Appearances",
+              "Goals",
+              "Minutes played",
+              "Cards",
+              "Win %",
+              "Games per goal",
+              "Points per game (League)"
+            ),
+            choiceValues = c(
+              "apps",
+              "goals",
+              "mins_played",
+              "cards",
+              "win_pc",
+              "games_per_goal",
+              "ppg"
+            ),
+            inline = TRUE
           ),
           uiOutput(ns("app_reactable")),
           p(
@@ -450,6 +497,15 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
         apps2_min_starts <- reactive({
           input$app_react_min_starts
         })
+        summary_stats <- reactive({
+          input$summary_stats
+        })
+        selected_stat <- reactive({
+          input$selected_stat
+        })
+        starters_only <- reactive({
+          input$starters_only
+        })
 
 
         # Create a tab panel of appearance tables for each  season
@@ -459,12 +515,12 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
             bslib::card(
               full_screen = TRUE,
               class = c("borderless", "no_padding"),
-              style = "font-size: small; color: black;",
+              style = "font-size: small",
               bslib::card_title(
                 paste0("Appearances, goals and cards in ", season)
               ),
               reactable::renderReactable(
-                heatmap_reactable(season, apps2_inc_cup_games(), apps2_pens_as_draw(), apps2_min_starts())
+                heatmap_reactable(season, apps2_inc_cup_games(), apps2_pens_as_draw(), apps2_min_starts(), summary_stats(), selected_stat(), starters_only())
               )
             )
           )
