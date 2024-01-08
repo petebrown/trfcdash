@@ -28,20 +28,28 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
       by = c(
         "game_date"
       )
-    ) %>%
-    dplyr::select(
-      game_no,
-      menu_name,
-      (!!selected_stat)
-    ) %>%
-    tidyr::pivot_wider(
-      names_from = game_no,
-      values_from = (!!selected_stat),
-      values_fill = NA
-    ) %>%
-    dplyr::arrange(
-      menu_name
     )
+
+  pivot_df <- function(df, selected_stat) {
+    df %>%
+      dplyr::select(
+        game_no,
+        menu_name,
+        (!!selected_stat)
+      ) %>%
+      tidyr::pivot_wider(
+        names_from = game_no,
+        values_from = (!!selected_stat),
+        values_fill = NA
+      ) %>%
+      dplyr::arrange(
+        menu_name
+      )
+  }
+
+  by_mins_played <- pivot_df(df, "mins_played")
+  by_goals_scored <- pivot_df(df, "goals_scored")
+  df <- pivot_df(df, selected_stat)
 
   stats <- player_apps %>%
     dplyr::inner_join(
@@ -77,7 +85,6 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
     dplyr::filter(
       starts >= min_starts
     )
-
 
   reactable::reactable(
     df,
@@ -162,7 +169,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           FALSE
         ),
         sticky = "right",
-        minWidth = 40,
+        minWidth = 45,
         style = list(
           background = "yellow"
         )
@@ -175,7 +182,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           FALSE
         ),
         sticky = "right",
-        minWidth = 40,
+        minWidth = 45,
         style = list(
           background = "tomato"
         )
@@ -241,24 +248,27 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
       minWidth = 32,
       align = "center",
       defaultSortOrder = "desc",
-      style = function(value, index) {
-        if (is.na(value)) {
+      style = function(index, column, value) {
+        mins_played <- by_mins_played[[column, value]]
+        goals_scored <- by_goals_scored[[column, value]]
+        if (is.na(mins_played)) {
           # If player didn't play in game, set background to grey
           bg_color = "#f4f1f5"
-        } else if (selected_stat == "mins_played") {
-          normalized <- ifelse(value > 90, 90 / 90, value / 90) # logic for AET games
-          bg_color <- green_pal(normalized)
-        } else if (selected_stat == "goals_scored") {
-          mins_stat <- df$mins_played[index]
-          normalized <- ifelse(mins_stat > 90, 90 / 90, mins_stat / 90) # logic for AET games
+        } else {
+          normalized <- ifelse(
+            mins_played > 90,  # logic for AET games
+            90 / 90,
+            mins_played / 90
+          )
           bg_color <- green_pal(normalized)
         }
         list(
           background = bg_color,
-          fontSize = "x-small",
+          fontWeight = "400",
+          fontSize = ifelse(selected_stat == "mins_played" & mins_played >= 100, "x-small", "small"),
           border = "solid white",
           borderWidth = "thin",
-          color = ifelse(selected_stat == "goals_scored" & value == 0, bg_color, "black")
+          color = ifelse(selected_stat == "goals_scored" & goals_scored == 0, bg_color, "black")
         )
       }
     )
