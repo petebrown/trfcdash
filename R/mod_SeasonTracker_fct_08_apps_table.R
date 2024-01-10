@@ -47,7 +47,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       yellows = sum(yellow_cards),
       reds = sum(red_cards),
       mins_played = sum(mins_played),
-      mins_per_goal = mins_played / goals,
+      mins_per_goal = ifelse(mins_played > 0, mins_played / goals, NA),
       games_per_goal = mins_per_goal / 90,
       winning_starts = sum(role == "starter" & outcome == "W"),
       win_pc = winning_starts / sum(role == "starter"),
@@ -183,8 +183,8 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
           }")
         },
         cell = function(value) {
-          if (!is.infinite(value)) {
-            return (value)
+          if (!is.infinite(value) && !is.na(value)) {
+            return (round(value, 0))
           }
         }
       ),
@@ -212,7 +212,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
           }")
         },
         cell = function(value) {
-          if (!is.infinite(value)) {
+          if (!is.infinite(value) && !is.na(value)) {
             return (round(value, 2))
           }
         }

@@ -235,7 +235,7 @@ mod_SeasonTracker_ui <- function(id){
           ),
           radioButtons(
             inputId = ns("selected_stat"),
-            label = tags$b("Focus on: "),
+            label = tags$b("Display: "),
             choiceNames = c(
               "Mins played",
               "Goals"
