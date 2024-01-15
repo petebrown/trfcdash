@@ -81,7 +81,7 @@ app_ui <- function(request) {
         # On This Day
         shiny::conditionalPanel(
           "input.nav === 'On this day'",
-          "OnThisDay_sidebar"
+          OnThisDay_sidebar()
         )
       ),
       bslib::nav_menu(

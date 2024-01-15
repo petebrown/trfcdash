@@ -56,7 +56,7 @@ get_season_plr_stats <- function(year_range, league_tiers, includePlayOffs, cup_
     dplyr::ungroup()
 
   df <- res %>%
-    dplyr::left_join(
+    dplyr::inner_join(
       player_apps %>% dplyr::select(!game_no),
       by = c("season", "game_date")
     ) %>%

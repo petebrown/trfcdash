@@ -9,7 +9,6 @@ app_server <- function(input, output, session) {
   # bslib::bs_themer()
 
   mod_SeasonTracker_server("SeasonTracker_ui_1")
-
   mod_SeasonOverviews_server("SeasonOverviews_ui_1")
 
   mod_Head2HeadByOpponent_server("Head2HeadByOpponent_ui_1")
@@ -137,5 +136,14 @@ app_server <- function(input, output, session) {
     venue_options = ManagersAllManagers_inputs[[6]],
     min_games = ManagersAllManagers_inputs[[7]],
     inc_caretakers = ManagersAllManagers_inputs[[8]]
+  )
+
+  # Receive user inputs from On This Day sidebar
+  OnThisDay_inputs <- mod_OnThisDay_sidebar_server("OnThisDay_sidebar_ui_1")
+  # Send user inputs from On This Day sidebar to On This Day server
+  mod_OnThisDay_server(
+    "OnThisDay_ui_1",
+    otd_date = OnThisDay_inputs[[1]],
+    otd_inc_year = OnThisDay_inputs[[2]]
   )
 }
