@@ -80,7 +80,7 @@ app_ui <- function(request) {
         ),
         # On This Day
         shiny::conditionalPanel(
-          "input.nav === 'On this day'",
+          "input.nav === 'On This Day'",
           OnThisDay_sidebar()
         )
       ),
@@ -109,7 +109,7 @@ app_ui <- function(request) {
         bslib::nav_panel("Overall attendance stats", mod_AttendancesOverview_ui("mod_AttendancesOverview_ui_1")),
         bslib::nav_panel("Attendance stats by season", mod_AttendancesBySeason_ui("AttendancesBySeason_ui_1"))
       ),
-      bslib::nav_panel("On this day", mod_OnThisDay_ui("OnThisDay_ui_1"))
+      bslib::nav_panel("On This Day", mod_OnThisDay_ui("OnThisDay_ui_1"))
     )
   )
 }

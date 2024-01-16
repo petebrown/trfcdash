@@ -14,7 +14,7 @@ mod_OnThisDay_sidebar_ui <- function(id){
       inputId = ns("otd_date"),
       label = "Select date:",
       min = min(player_info$player_dob, na.rm = TRUE),
-      max = lubridate::now("GMT"),
+      # max = lubridate::now("GMT"),
       format = "dd/mm/yyyy",
       startview = "month",
       # language = "en-GB",

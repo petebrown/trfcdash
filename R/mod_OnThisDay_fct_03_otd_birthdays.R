@@ -1,6 +1,6 @@
 get_otd_birthdays <- function(otd_date, inc_year = "No") {
 
-  player_info %>%
+  df <- player_info %>%
     dplyr::group_by(
       pl_index
     ) %>%
@@ -15,17 +15,32 @@ get_otd_birthdays <- function(otd_date, inc_year = "No") {
         TRUE ~ TRUE
       )
     ) %>%
+    dplyr::arrange(
+      dplyr::desc(player_dob)
+    ) %>%
     dplyr::select(
       player_name,
       player_dob,
       pl_index
-    ) %>%
-    reactable::reactable(
-      columns = list(
-        pl_index = reactable::colDef(
-          show = FALSE
+    )
+
+
+  reactable::reactable(
+    data = df,
+    columns = list(
+      player_name = reactable::colDef(
+        name = "Player"
+      ),
+      player_dob = reactable::colDef(
+        name = "Date of Birth",
+        format = reactable::colFormat(
+          date = TRUE
         )
+      ),
+      pl_index = reactable::colDef(
+        show = FALSE
       )
     )
+  )
 
 }

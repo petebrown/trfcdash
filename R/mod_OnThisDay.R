@@ -12,6 +12,12 @@ mod_OnThisDay_ui <- function(id){
   tagList(
     tagList(
       bslib::page_fluid(
+
+        div(
+          style = "margin-bottom: 1.5rem;",
+          h1(textOutput(ns("otd_string")))
+        ),
+
         bslib::card(
           full_screen = TRUE,
           bslib::card_header(
@@ -58,6 +64,21 @@ mod_OnThisDay_ui <- function(id){
 mod_OnThisDay_server <- function(id, otd_date, otd_inc_year){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    otd_day <- reactive({
+      format(otd_date(), "%d")
+    })
+    otd_month <- reactive({
+      lubridate::month(otd_date(), label = TRUE, abbr = FALSE)
+    })
+    otd_year <- reactive({
+      lubridate::year(otd_date())
+    })
+    output$otd_string <- renderText({
+      paste("Results, birthdays and debuts on", otd_day(), otd_month(), ifelse(otd_inc_year() == "Yes", otd_year(), ""))
+    })
+
+
 
     output$otd_results <- {
       reactable::renderReactable(
