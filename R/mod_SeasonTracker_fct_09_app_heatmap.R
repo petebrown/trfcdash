@@ -86,6 +86,15 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
       starts >= min_starts
     )
 
+  by_mins_played <- by_mins_played %>%
+    dplyr::filter(
+      menu_name %in% df$menu_name
+    )
+  by_goals_scored <- by_goals_scored %>%
+    dplyr::filter(
+      menu_name %in% df$menu_name
+    )
+
   reactable::reactable(
     df,
     class = "apps-reactable",
@@ -145,7 +154,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       mins_played = reactable:: colDef(
-        name = "M",
+        name = "Mins",
         show = ifelse(
           "mins_played" %in% summary_stats,
           TRUE,
@@ -215,7 +224,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         ),
         sticky = "right",
         defaultSortOrder = "asc",
-        minWidth = 55,
+        minWidth = 56,
         format = reactable::colFormat(
           digits = 1
         ),

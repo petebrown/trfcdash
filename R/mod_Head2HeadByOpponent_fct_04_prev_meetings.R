@@ -168,71 +168,75 @@ get_h2h_meetings <- function(opponent, year_range, league_tiers, includePlayOffs
             }
           )
         ),
-        div(
-          class = "reactable-details",
-          bslib::card_title("As It Stood"),
-          reactable::reactable(
-            data = lge_tab,
-            class = "reactable-text",
-            defaultPageSize = 24,
-            compact    = TRUE,
-            bordered = FALSE,
-            borderless = TRUE,
-            outlined = FALSE,
-            filterable = FALSE,
-            searchable = FALSE,
-            resizable  = TRUE,
-            columns    = list(
-              season = reactable::colDef(show = FALSE),
-              game_no = reactable::colDef(show = FALSE),
-              game_date = reactable::colDef(show = FALSE),
-              pos = reactable::colDef(name = "Pos", align = "left", width = 52),
-              Team = reactable::colDef(width = 145),
-              Pld = reactable::colDef(width = 50),
-              W = reactable::colDef(width = 40),
-              D = reactable::colDef(width = 40),
-              L = reactable::colDef(width = 40),
-              GF = reactable::colDef(width = 50),
-              GA = reactable::colDef(width = 50),
-              GD = reactable::colDef(width = 50,
-                                     # Function to add plus sign (+) before positive figures
-                                     cell = function(value) {
-                                       format_gd(value)
-                                     }
+        if (!is.na(top_level[index, "league_tier"])) {
+          div(
+            class = "reactable-details",
+            bslib::card_title("As It Stood"),
+            reactable::reactable(
+              data = lge_tab,
+              class = "reactable-text",
+              defaultPageSize = 24,
+              compact    = TRUE,
+              bordered = FALSE,
+              borderless = TRUE,
+              outlined = FALSE,
+              filterable = FALSE,
+              searchable = FALSE,
+              resizable  = TRUE,
+              columns    = list(
+                season = reactable::colDef(show = FALSE),
+                game_no = reactable::colDef(show = FALSE),
+                game_date = reactable::colDef(show = FALSE),
+                pos = reactable::colDef(name = "Pos", align = "left", width = 52),
+                Team = reactable::colDef(width = 145),
+                Pld = reactable::colDef(width = 50),
+                W = reactable::colDef(width = 40),
+                D = reactable::colDef(width = 40),
+                L = reactable::colDef(width = 40),
+                GF = reactable::colDef(width = 50),
+                GA = reactable::colDef(width = 50),
+                GD = reactable::colDef(width = 50,
+                                       # Function to add plus sign (+) before positive figures
+                                       cell = function(value) {
+                                         format_gd(value)
+                                       }
+                ),
+                Pts = reactable::colDef(width = 50),
+                league_tier = reactable::colDef(show = FALSE)
               ),
-              Pts = reactable::colDef(width = 50),
-              league_tier = reactable::colDef(show = FALSE)
-            ),
-            rowStyle = function(index) {
-              tier = lge_tab[index, "league_tier"]
-              season = lge_tab[index, "season"]
-              pos = lge_tab[index, "pos"]
-              team = lge_tab[index, "Team"]
+              rowStyle = function(index) {
+                tier = lge_tab[index, "league_tier"]
+                season = lge_tab[index, "season"]
+                pos = lge_tab[index, "pos"]
+                team = lge_tab[index, "Team"]
 
-              styles = list()
-              if (team == "Tranmere Rovers") {
-                styles = c(styles, fontWeight = "bold")
+                styles = list()
+                if (team == "Tranmere Rovers") {
+                  styles = c(styles, fontWeight = "bold")
+                }
+
+                if (
+                  tier %in% c(2, 3, 5) & pos >= 21 |
+                  tier == 4 & pos >= 23
+                ) {
+                  styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
+                }
+
+                if (
+                  tier %in% c(2, 3) & (pos %in% c(2, 6)) |
+                  tier == 4 & (pos %in% c(3, 7)) |
+                  tier == 5 & (pos %in% c(1, 3, 7))
+                ) {
+                  styles = c(styles, borderBottom = "1px solid rgba(0, 0, 0, 0.1)")
+                }
+
+                return(styles)
               }
-
-              if (
-                tier %in% c(2, 3, 5) & pos >= 21 |
-                tier == 4 & pos >= 23
-              ) {
-                styles = c(styles, background = "rgba(0, 0, 0, 0.03)")
-              }
-
-              if (
-                tier %in% c(2, 3) & (pos %in% c(2, 6)) |
-                tier == 4 & (pos %in% c(3, 7)) |
-                tier == 5 & (pos %in% c(1, 3, 7))
-              ) {
-                styles = c(styles, borderBottom = "1px solid rgba(0, 0, 0, 0.1)")
-              }
-
-              return(styles)
-            }
+            )
           )
-        )
+        } else {
+          div()
+        }
       )
     }
   )
