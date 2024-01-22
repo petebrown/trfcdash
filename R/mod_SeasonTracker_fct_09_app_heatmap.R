@@ -1,4 +1,4 @@
-heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_draw = "Yes", min_starts = 0, summary_stats, selected_stat = "mins_played", starters_only) {
+heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_draw = "Yes", min_starts = 0, summary_stats, selected_stat = "mins_played", player_roles) {
 
   res <- filter_ssn_results(selected_season) %>%
     filter_inc_cup_games(., inc_cup_games) %>%
@@ -18,9 +18,14 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
     ) %>%
     dplyr::filter(
       game_date %in% res$game_date,
-      dplyr::case_when(
-        starters_only == "Yes" ~ role == "starter",
-        TRUE ~ TRUE
+      role %in% player_roles
+    ) %>%
+    dplyr::mutate(
+      cards = dplyr::case_when(
+        yellow_cards == 1 & red_cards == 0 ~ "Y",
+        yellow_cards == 0 & red_cards == 1 ~ "R",
+        yellow_cards == 1 & red_cards == 1 ~ "YR",
+        TRUE ~ ""
       )
     ) %>%
     dplyr::left_join(
@@ -49,6 +54,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
 
   by_mins_played <- pivot_df(df, "mins_played")
   by_goals_scored <- pivot_df(df, "goals_scored")
+  by_cards <- pivot_df(df, "cards")
   df <- pivot_df(df, selected_stat)
 
   stats <- player_apps %>%
@@ -94,6 +100,10 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
     dplyr::filter(
       menu_name %in% df$menu_name
     )
+  by_cards <- by_cards %>%
+    dplyr::filter(
+      menu_name %in% df$menu_name
+    )
 
   reactable::reactable(
     df,
@@ -127,7 +137,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
       sub_apps = reactable:: colDef(
         name = "S",
         show = ifelse(
-          "apps" %in% summary_stats & starters_only != "Yes",
+          "apps" %in% summary_stats & "sub" %in% player_roles,
           TRUE,
           FALSE
         ),
@@ -161,7 +171,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           FALSE
         ),
         sticky = "right",
-        minWidth = 55,
+        minWidth = 60,
         align = "right",
         format = reactable::colFormat(
           separators = TRUE
@@ -178,7 +188,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           FALSE
         ),
         sticky = "right",
-        minWidth = 45,
+        minWidth = 50,
         style = list(
           background = "yellow"
         )
@@ -191,7 +201,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           FALSE
         ),
         sticky = "right",
-        minWidth = 45,
+        minWidth = 50,
         style = list(
           background = "tomato"
         )

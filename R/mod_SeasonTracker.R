@@ -184,20 +184,30 @@ mod_SeasonTracker_ui <- function(id){
       # Card containing player appearance table
       bslib::card(
         bslib::card_header(
-          class = "bg-dark",
-          "Player appearances"
-        ),
-        bslib::layout_sidebar(
-          fillable = FALSE,
-          sidebar = bslib::sidebar(
-            position = "left",
-            width = 200,
-            bg = "#4c668d",
-            class = "card-sidebar",
-            open = FALSE,
+          class = "bg-dark d-flex justify-content-between",
+          "Player appearances",
+          bslib::popover(
+            title = "Display Options",
+            bsicons::bs_icon("gear"),
+            radioButtons(
+              inputId = ns("selected_stat"),
+              label = tags$b("Matchday Stat:"),
+              choiceNames = c(
+                "Mins played",
+                "Goals",
+                "Cards"
+              ),
+              choiceValues = c(
+                "mins_played",
+                "goals_scored",
+                "cards"
+              ),
+              inline = TRUE
+            ),
+            hr(),
             radioButtons(
               inputId = ns("app_react_inc_cup_games"),
-              label = "Include cup games?",
+              label = tags$b("Include cup games?"),
               choices = c("Yes", "No"),
               selected = "Yes",
               inline = TRUE
@@ -205,7 +215,7 @@ mod_SeasonTracker_ui <- function(id){
             hr(),
             radioButtons(
               inputId = ns("app_react_pens_as_draw"),
-              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+              label = tags$b("Treat one-off cup games decided by penalty shoot-out as draws?"),
               choices = c("Yes", "No"),
               selected = "Yes",
               inline = TRUE
@@ -213,7 +223,7 @@ mod_SeasonTracker_ui <- function(id){
             hr(),
             sliderInput(
               inputId = ns("app_react_min_starts"),
-              label = "Minimum no. of starts:",
+              label = tags$b("Minimum no. of starts:"),
               min = 0,
               max = 50,
               value = 0,
@@ -222,61 +232,63 @@ mod_SeasonTracker_ui <- function(id){
               step = 1
             ),
             hr(),
-            radioButtons(
-              inputId = ns("starters_only"),
-              label = "Show starters only? ",
-              choices = c(
-                "Yes",
-                "No"
+            checkboxGroupInput(
+              inputId = ns("player_roles"),
+              label = tags$b("Show: "),
+              choiceNames = c(
+                "Starters",
+                "Subs"
               ),
-              selected = "No",
+              choiceValues = c(
+                "starter",
+                "sub"
+              ),
+              selected = c(
+                "starter",
+                "sub"
+              ),
               inline = TRUE
+            ),
+          )
+        ),
+        bslib::card_body(
+          uiOutput(ns("app_reactable")),
+          div(
+            class = "d-flex justify-content-center",
+            style = "font-size: small; color: black;",
+            div(
+              style = "margin: 0 1rem; background: #f7f7f7; padding: 0.5rem 0.5rem 0; border: #C3CCD9; border-style: solid; border-width: thin;",
+              checkboxGroupInput(
+                inputId = ns("summary_stats"),
+                label = tags$b("Summary stats: "),
+                choiceNames = c(
+                  "Appearances",
+                  "Goals",
+                  "Minutes played",
+                  "Cards",
+                  "Win %",
+                  "Games per goal",
+                  "Points per game (League)"
+                ),
+                choiceValues = c(
+                  "apps",
+                  "goals",
+                  "mins_played",
+                  "cards",
+                  "win_pc",
+                  "games_per_goal",
+                  "ppg"
+                ),
+                inline = TRUE
+              )
             )
           ),
-          radioButtons(
-            inputId = ns("selected_stat"),
-            label = tags$b("Display: "),
-            choiceNames = c(
-              "Mins played",
-              "Goals"
-            ),
-            choiceValues = c(
-              "mins_played",
-              "goals_scored"
-            ),
-            inline = TRUE
-          ),
-          checkboxGroupInput(
-            inputId = ns("summary_stats"),
-            label = tags$b("Summary stats: "),
-            choiceNames = c(
-              "Appearances",
-              "Goals",
-              "Minutes played",
-              "Cards",
-              "Win %",
-              "Games per goal",
-              "Points per game (League)"
-            ),
-            choiceValues = c(
-              "apps",
-              "goals",
-              "mins_played",
-              "cards",
-              "win_pc",
-              "games_per_goal",
-              "ppg"
-            ),
-            inline = TRUE
-          ),
-          uiOutput(ns("app_reactable")),
           p(
             style = "text-align: right; color: grey; font-size: small",
             "Games per goal based on total minutes played. Win percentage based on games started."
           )
         )
       ),
-
 
       # Card containing longest streaks
       bslib::card(
@@ -503,8 +515,8 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
         selected_stat <- reactive({
           input$selected_stat
         })
-        starters_only <- reactive({
-          input$starters_only
+        player_roles <- reactive({
+          input$player_roles
         })
 
 
@@ -520,7 +532,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
                 paste0("Appearances, goals and cards in ", season)
               ),
               reactable::renderReactable(
-                heatmap_reactable(season, apps2_inc_cup_games(), apps2_pens_as_draw(), apps2_min_starts(), summary_stats(), selected_stat(), starters_only())
+                heatmap_reactable(season, apps2_inc_cup_games(), apps2_pens_as_draw(), apps2_min_starts(), summary_stats(), selected_stat(), player_roles())
               )
             )
           )
