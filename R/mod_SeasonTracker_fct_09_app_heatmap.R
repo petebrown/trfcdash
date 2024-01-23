@@ -298,14 +298,17 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           background = bg_color,
           fontWeight = "400",
           fontSize = ifelse(selected_stat == "mins_played" & mins_played >= 100, "x-small", "small"),
-          border = if (is.na(cards) | cards == "") {
-            "solid white"
+          borderColor = if (is.na(cards) | cards == "") {
+            "white"
           } else if (cards == "Y") {
-            "solid gold"
-          } else if (cards %in% c("R", "YR")) {
+            "gold"
+          } else if (cards == "R") {
             "solid red"
+          } else if (cards == "YR") {
+            "gold red red gold"
           },
           borderWidth = "1.5px",
+          borderStyle = "solid",
           color = ifelse(selected_stat == "goals_scored" & goals_scored == 0, bg_color, "black"),
           margin = "1px"
         )
