@@ -110,9 +110,13 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
     class = "apps-reactable",
     compact = TRUE,
     pagination = FALSE,
+    defaultSorted = c("menu_name"),
+    defaultSortOrder = "asc",
+    showSortIcon = FALSE,
     columns = list(
       menu_name = reactable::colDef(
-        name = "Player",
+        header = "Player",
+        defaultSortOrder = "asc",
         sticky = "left",
         align = "left",
         minWidth = 155,
@@ -121,7 +125,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       starts = reactable:: colDef(
-        name = "A",
+        header = with_tooltip("A", "Starts"),
         show = ifelse(
           "apps" %in% summary_stats,
           TRUE,
@@ -135,7 +139,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       sub_apps = reactable:: colDef(
-        name = "S",
+        header = with_tooltip("S", "Substitute Appearances"),
         show = ifelse(
           "apps" %in% summary_stats & "sub" %in% player_roles,
           TRUE,
@@ -150,7 +154,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       goals = reactable:: colDef(
-        name = "G",
+        header = with_tooltip("G", "Goals"),
         show = ifelse(
           "goals" %in% summary_stats,
           TRUE,
@@ -164,7 +168,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       mins_played = reactable:: colDef(
-        name = "Mins",
+        header = with_tooltip("Mins", "Minutes played"),
         show = ifelse(
           "mins_played" %in% summary_stats,
           TRUE,
@@ -181,7 +185,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       yc = reactable:: colDef(
-        name = "YC",
+        header = with_tooltip("YC", "Yellow Cards"),
         show = ifelse(
           "cards" %in% summary_stats,
           TRUE,
@@ -194,7 +198,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       rc = reactable:: colDef(
-        name = "RC",
+        header = with_tooltip("RC", "Red Cards"),
         show = ifelse(
           "cards" %in% summary_stats,
           TRUE,
@@ -207,7 +211,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       win_pc = reactable:: colDef(
-        name = "Win %",
+        header = with_tooltip("Win %", "Win %<br>(Starts only)"),
         show = ifelse(
           "win_pc" %in% summary_stats,
           TRUE,
@@ -226,7 +230,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         }
       ),
       games_per_goal = reactable:: colDef(
-        name = "GPG",
+        header = with_tooltip("GPG", "Games-per-goal"),
         show = ifelse(
           "games_per_goal" %in% summary_stats,
           TRUE,
@@ -245,7 +249,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         }
       ),
       ppg = reactable:: colDef(
-        name = "PPG",
+        header = with_tooltip("PPG", "Points-per-game (League)"),
         show = ifelse(
           "ppg" %in% summary_stats,
           TRUE,
@@ -264,12 +268,21 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
       )
     ),
     defaultColDef = reactable::colDef(
-      minWidth = 32,
+      header = function(index, column, value) {
+        game_df <- res %>% dplyr::filter(game_no == column)
+
+        matchday_tooltip(game_df)
+      },
+      headerVAlign = "bottom",
+      headerStyle = "margin: 1px;",
+      minWidth = 33,
       align = "center",
       defaultSortOrder = "desc",
+      sortNALast = TRUE,
       style = function(index, column, value) {
         mins_played <- by_mins_played[[column, value]]
         goals_scored <- by_goals_scored[[column, value]]
+        cards <- by_cards[[column, value]]
         if (is.na(mins_played)) {
           # If player didn't play in game, set background to grey
           bg_color = "#f4f1f5"
@@ -285,9 +298,16 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           background = bg_color,
           fontWeight = "400",
           fontSize = ifelse(selected_stat == "mins_played" & mins_played >= 100, "x-small", "small"),
-          border = "solid white",
-          borderWidth = "thin",
-          color = ifelse(selected_stat == "goals_scored" & goals_scored == 0, bg_color, "black")
+          border = if (is.na(cards) | cards == "") {
+            "solid white"
+          } else if (cards == "Y") {
+            "solid gold"
+          } else if (cards %in% c("R", "YR")) {
+            "solid red"
+          },
+          borderWidth = "1.5px",
+          color = ifelse(selected_stat == "goals_scored" & goals_scored == 0, bg_color, "black"),
+          margin = "1px"
         )
       }
     )

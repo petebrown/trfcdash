@@ -120,67 +120,6 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
 
-      # Card containing player appearance heatmaps
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Player appearances"
-        ),
-        bslib::card_body(
-          uiOutput(ns("app_heatmaps"))
-        )
-      ),
-
-
-      # Card containing player appearance table
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Player appearances"
-        ),
-        bslib::layout_sidebar(
-          fillable = FALSE,
-          sidebar = bslib::sidebar(
-            position = "left",
-            width = 200,
-            bg = "#4c668d",
-            class = "card-sidebar",
-            open = FALSE,
-            radioButtons(
-              inputId = ns("app_tab_inc_cup_games"),
-              label = "Include cup games?",
-              choices = c("Yes", "No"),
-              selected = "Yes",
-              inline = TRUE
-            ),
-            hr(),
-            radioButtons(
-              inputId = ns("app_tab_pens_as_draw"),
-              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
-              choices = c("Yes", "No"),
-              selected = "Yes",
-              inline = TRUE
-            ),
-            hr(),
-            sliderInput(
-              inputId = ns("app_tab_min_starts"),
-              label = "Minimum no. of starts:",
-              min = 0,
-              max = 50,
-              value = 0,
-              sep = "",
-              ticks = FALSE,
-              step = 1
-            )
-          ),
-          uiOutput(ns("app_table")),
-          p(
-            style = "text-align: right; color: grey; font-size: small",
-            "Games per goal based on total minutes played. Win percentage based on games started."
-          )
-        )
-      ),
-
       # Card containing player appearance table
       bslib::card(
         bslib::card_header(
@@ -289,6 +228,69 @@ mod_SeasonTracker_ui <- function(id){
           )
         )
       ),
+
+
+      # Card containing player appearance table
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Player appearances"
+        ),
+        bslib::layout_sidebar(
+          fillable = FALSE,
+          sidebar = bslib::sidebar(
+            position = "left",
+            width = 200,
+            bg = "#4c668d",
+            class = "card-sidebar",
+            open = FALSE,
+            radioButtons(
+              inputId = ns("app_tab_inc_cup_games"),
+              label = "Include cup games?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            hr(),
+            radioButtons(
+              inputId = ns("app_tab_pens_as_draw"),
+              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+              choices = c("Yes", "No"),
+              selected = "Yes",
+              inline = TRUE
+            ),
+            hr(),
+            sliderInput(
+              inputId = ns("app_tab_min_starts"),
+              label = "Minimum no. of starts:",
+              min = 0,
+              max = 50,
+              value = 0,
+              sep = "",
+              ticks = FALSE,
+              step = 1
+            )
+          ),
+          uiOutput(ns("app_table")),
+          p(
+            style = "text-align: right; color: grey; font-size: small",
+            "Games per goal based on total minutes played. Win percentage based on games started."
+          )
+        )
+      ),
+
+
+      # Card containing player appearance heatmaps
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Player appearances"
+        ),
+        bslib::card_body(
+          uiOutput(ns("app_heatmaps"))
+        )
+      ),
+
 
       # Card containing longest streaks
       bslib::card(

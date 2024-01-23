@@ -215,3 +215,44 @@ make_color_pal <- function(colors, bias = 1) {
 }
 
 green_pal <- make_color_pal(c("grey85", "#f2fbd2", "#c9ecb4", "#93d3ab", "#35b0ab"), bias = 0.7)
+
+
+with_tooltip <- function(value, tooltip, ...) {
+  div(style = "text-decoration: underline; text-decoration-style: dotted; cursor: help",
+      tippy::tippy(value, tooltip, ...))
+}
+
+matchday_tooltip <- function(game_df) {
+  game_no = game_df %>% dplyr::pull(game_no)
+  date = game_df %>% dplyr::pull(game_date)
+  opposition = game_df %>% dplyr::pull(opposition)
+  venue = game_df %>% dplyr::pull(venue)
+  outcome_desc = game_df %>% dplyr::pull(outcome_desc)
+  competition = game_df %>% dplyr::pull(competition)
+  score = game_df %>% dplyr::pull(score)
+  goals_for = game_df %>% dplyr::pull(goals_for)
+  scorers = game_df %>% dplyr::pull(scorers)
+  attendance = game_df %>% dplyr::pull(attendance)
+  manager = game_df %>% dplyr::pull(manager)
+
+  theme_col = ifelse(venue == "H", "light", "material")
+
+  tooltip = paste0(
+    "<b>", format(lubridate::ymd(date), "%e %b %Y"), "</b><br>",
+    "<b>", competition, "</b><br>",
+    "<b>", opposition, " (", venue, ")</b><br>",
+    "<b>", score, ifelse(!is.na(outcome_desc), paste0(" (", outcome_desc, ")"), ""), "</b><br>",
+    "<b>", format(attendance, big.mark = ","), "</b><br>",
+    "<b>", manager, "</b>"
+  )
+
+  div(
+    style = "text-decoration: underline; text-decoration-style: dotted; cursor: help;",
+      tippy::tippy(
+        game_no,
+        tooltip,
+        theme = theme_col,
+        duration = c(300, 250)
+      )
+    )
+}
