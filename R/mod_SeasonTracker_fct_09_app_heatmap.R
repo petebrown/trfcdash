@@ -207,7 +207,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         sticky = "right",
         minWidth = 50,
         style = list(
-          background = "tomato"
+          background = "red"
         )
       ),
       win_pc = reactable:: colDef(
@@ -303,7 +303,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           } else if (cards == "Y") {
             "gold"
           } else if (cards == "R") {
-            "solid red"
+            "red"
           } else if (cards == "YR") {
             "gold red red gold"
           },
