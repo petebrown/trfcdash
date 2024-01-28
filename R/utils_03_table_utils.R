@@ -237,11 +237,18 @@ matchday_tooltip <- function(game_df) {
 
   theme_col = ifelse(venue == "H", "light", "material")
 
+  if (!is.na(scorers)) {
+    scorers = paste0("<b>", scorers, "</b><br>")
+  }
+
   tooltip = paste0(
     "<b>", format(lubridate::ymd(date), "%e %b %Y"), "</b><br>",
     "<b>", competition, "</b><br>",
     "<b>", opposition, " (", venue, ")</b><br>",
-    "<b>", score, ifelse(!is.na(outcome_desc), paste0(" (", outcome_desc, ")"), ""), "</b><br>",
+    "<b>", score, "</b>", ifelse(!is.na(outcome_desc), paste0(" (", outcome_desc, ")"), ""), "<br>",
+    if (!is.na(scorers)) {
+      scorers
+    },
     "<b>", format(attendance, big.mark = ","), "</b><br>",
     "<b>", manager, "</b>"
   )
