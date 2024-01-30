@@ -146,4 +146,14 @@ app_server <- function(input, output, session) {
     otd_date = OnThisDay_inputs[[1]],
     otd_inc_year = OnThisDay_inputs[[2]]
   )
+
+
+  # Receive user inputs from AttendancesOverview sidebar
+  AttendancesOverview_inputs <- mod_AttendancesOverview_sidebar_server("AttendancesOverview_sidebar_ui_1")
+  # Send user inputs from AttendancesOverview sidebar to AttendancesOverview server
+  mod_AttendancesOverview_server(
+    "AttendancesOverview_ui_1",
+    year_range = AttendancesOverview_inputs[[1]]
+  )
+
 }

@@ -194,7 +194,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         sticky = "right",
         minWidth = 50,
         style = list(
-          background = "yellow"
+          background = "rgba(255, 240, 0)"
         )
       ),
       rc = reactable:: colDef(
