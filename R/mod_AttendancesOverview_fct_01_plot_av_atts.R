@@ -8,14 +8,13 @@ plot_av_attendances <- function(year_range) {
       venue == "H",
       game_type == "League",
       ssn_year >= min_year,
-      ssn_year <= max_year,
-      !is.na(attendance)
+      ssn_year <= max_year
     ) %>%
     dplyr::group_by(
       season
     ) %>%
     dplyr::summarize(
-      av_att = mean(attendance)
+      av_att = mean(attendance, na.rm = TRUE)
     )
 
   p <- ggplot2::ggplot(

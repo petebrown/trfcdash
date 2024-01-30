@@ -44,25 +44,28 @@ mod_SeasonOverviews_ui <- function(id){
       )
     ),
 
-    bslib::card(
-      full_screen = TRUE,
-      bslib::card_header(
-        class = "bg-dark",
-        "Players Used"
+    bslib::layout_column_wrap(
+      width = 1/2,
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "Players Used"
+        ),
+        bslib::card_body(
+          reactable::reactableOutput(ns("player_stats"), height = "auto"),
+        )
       ),
-      bslib::card_body(
-        reactable::reactableOutput(ns("player_stats"), height = "auto"),
-      )
-    ),
 
-    bslib::card(
-      full_screen = TRUE,
-      bslib::card_header(
-        class = "bg-dark",
-        "Discipline"
-      ),
-      bslib::card_body(
-        reactable::reactableOutput(ns("player_discipline"), height = "auto"),
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "Discipline"
+        ),
+        bslib::card_body(
+          reactable::reactableOutput(ns("player_discipline"), height = "auto"),
+        )
       )
     )
 

@@ -11,7 +11,8 @@ mod_SeasonTracker_ui <- function(id){
   ns <- NS(id)
   tagList(
     bslib::page_fluid(
-      # Card containing main season progress chart
+
+      # UI: Season progress charts ----
       bslib::card(
         bslib::card_header(
           class = "bg-dark",
@@ -30,6 +31,7 @@ mod_SeasonTracker_ui <- function(id){
         ),
         bslib::layout_column_wrap(
           width = 1/2,
+          # UI: Point accumulation plot ----
           bslib::card(
             class = "borderless",
             full_screen = TRUE,
@@ -38,6 +40,7 @@ mod_SeasonTracker_ui <- function(id){
             ),
             plotly::plotlyOutput(ns("pts_plot"))
           ),
+          # UI: Points-per-game plot ----
           bslib::card(
             class = "borderless",
             full_screen = TRUE,
@@ -51,7 +54,7 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
 
-      # Card containing each season's league record
+      # UI: Seasonal league records ----
       bslib::card(
         full_screen = TRUE,
         bslib::card_header(

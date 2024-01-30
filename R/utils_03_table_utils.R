@@ -150,7 +150,7 @@ summarise_results <- function(df) {
       L = sum(outcome == "L"),
       GF = sum(goals_for),
       GA = sum(goals_against),
-      GD = sum(GF - GA),
+      GD = GF - GA,
       win_pc = W / P,
       .groups = "drop"
     )
@@ -238,19 +238,19 @@ matchday_tooltip <- function(game_df) {
   theme_col = ifelse(venue == "H", "light", "material")
 
   if (!is.na(scorers)) {
-    scorers = paste0("<b>", scorers, "</b><br>")
+    scorers = paste0("<i>", scorers, "</i><br>")
   }
 
   tooltip = paste0(
     "<b>", format(lubridate::ymd(date), "%e %b %Y"), "</b><br>",
-    "<b>", competition, "</b><br>",
-    "<b>", opposition, " (", venue, ")</b><br>",
-    "<b>", score, "</b>", ifelse(!is.na(outcome_desc), paste0(" (", outcome_desc, ")"), ""), "<br>",
+    competition, "<br>",
+    opposition, " (", venue, ")<br>",
+    score, ifelse(!is.na(outcome_desc), paste0(" (", outcome_desc, ")"), ""), "<br>",
     if (!is.na(scorers)) {
       scorers
     },
-    "<b>", format(attendance, big.mark = ","), "</b><br>",
-    "<b>", manager, "</b>"
+    format(attendance, big.mark = ","), "<br>",
+    manager
   )
 
   div(
