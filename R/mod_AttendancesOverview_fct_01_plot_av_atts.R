@@ -24,13 +24,24 @@ plot_av_attendances <- function(year_range) {
       y = av_att
     )
   ) +
-    ggplot2::geom_col() +
+    ggplot2::geom_col(
+      fill = "lightblue",
+      color = "navy",
+      linewidth = 0.2
+    ) +
     ggplot2::geom_hline(
       yintercept = mean(df$av_att),
       linetype = "dashed",
       linewidth = 0.2
     ) +
-    ggplot2::theme_minimal()
+    ggplot2::theme_minimal() +
+    ggplot2::scale_x_discrete(
+      breaks = df$season[c(T,F,F,F,F)]
+    ) +
+    ggplot2::theme(
+      axis.text.x = ggplot2::element_text(angle = 45, vjust = 1)
+    )
+
 
   return(plotly::ggplotly(p))
 
