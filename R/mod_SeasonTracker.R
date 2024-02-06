@@ -123,75 +123,13 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
 
-      # Card containing player appearance table
+      # UI: Player appearance heatmap reactable ----
       bslib::card(
         bslib::card_header(
           class = "bg-dark d-flex justify-content-between",
           "Player appearances",
-          bslib::popover(
-            title = "Display Options",
-            bsicons::bs_icon("gear"),
-            radioButtons(
-              inputId = ns("selected_stat"),
-              label = tags$b("Matchday Stat:"),
-              choiceNames = c(
-                "Mins played",
-                "Goals",
-                "Cards"
-              ),
-              choiceValues = c(
-                "mins_played",
-                "goals_scored",
-                "cards"
-              ),
-              inline = TRUE
-            ),
-            hr(),
-            radioButtons(
-              inputId = ns("app_react_inc_cup_games"),
-              label = tags$b("Include cup games?"),
-              choices = c("Yes", "No"),
-              selected = "Yes",
-              inline = TRUE
-            ),
-            hr(),
-            radioButtons(
-              inputId = ns("app_react_pens_as_draw"),
-              label = tags$b("Treat one-off cup games decided by penalty shoot-out as draws?"),
-              choices = c("Yes", "No"),
-              selected = "Yes",
-              inline = TRUE
-            ),
-            hr(),
-            sliderInput(
-              inputId = ns("app_react_min_starts"),
-              label = tags$b("Minimum no. of starts:"),
-              min = 0,
-              max = 50,
-              value = 0,
-              sep = "",
-              ticks = FALSE,
-              step = 1
-            ),
-            hr(),
-            checkboxGroupInput(
-              inputId = ns("player_roles"),
-              label = tags$b("Show: "),
-              choiceNames = c(
-                "Starters",
-                "Subs"
-              ),
-              choiceValues = c(
-                "starter",
-                "sub"
-              ),
-              selected = c(
-                "starter",
-                "sub"
-              ),
-              inline = TRUE
-            ),
-          )
+          # Heatmap options ----
+          popover_options(ns)
         ),
         bslib::card_body(
           uiOutput(ns("app_reactable")),
@@ -233,7 +171,7 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
 
-      # Card containing player appearance table
+      # UI: Player appearance table ----
       bslib::card(
         bslib::card_header(
           class = "bg-dark",
@@ -283,7 +221,7 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
 
-      # Card containing player appearance heatmaps
+      # UI: Player appearance heatmap graphic ----
       bslib::card(
         bslib::card_header(
           class = "bg-dark",
@@ -295,7 +233,7 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
 
-      # Card containing longest streaks
+      # UI: Streaks ----
       bslib::card(
         bslib::card_header(
           class = "bg-dark",
@@ -330,7 +268,7 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
 
-      # Card containing season results with drop-down line-ups
+      # UI: Results, line-ups and league tables ----
       bslib::card(
         full_screen = TRUE,
         bslib::card_header(
@@ -358,7 +296,7 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
 
-      # Card containing top scorer charts
+      # UI: Goalscorer charts ----
       bslib::card(
         class = "top-scorers",
         full_screen = TRUE,

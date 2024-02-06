@@ -153,7 +153,18 @@ app_server <- function(input, output, session) {
   # Send user inputs from AttendancesOverview sidebar to AttendancesOverview server
   mod_AttendancesOverview_server(
     "AttendancesOverview_ui_1",
-    year_range = AttendancesOverview_inputs[[1]]
+    year_range = AttendancesOverview_inputs[[1]],
+    cup_comps = AttendancesOverview_inputs[[2]]
+  )
+
+
+  # Receive user inputs from AttendancesBySeason sidebar
+  AttendancesBySeason_inputs <- mod_AttendancesBySeason_sidebar_server("AttendancesBySeason_sidebar_ui_1")
+  # Send user inputs from AttendancesBySeason sidebar to AttendancesBySeason server
+  mod_AttendancesBySeason_server(
+    "AttendancesBySeason_ui_1",
+    selected_seasons = AttendancesBySeason_inputs[[1]],
+    cup_comps = AttendancesBySeason_inputs[[2]]
   )
 
 }

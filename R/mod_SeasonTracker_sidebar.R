@@ -9,7 +9,7 @@
 #' @importFrom shiny NS tagList
 mod_SeasonTracker_sidebar_ui <- function(id){
   ns <- NS(id)
-  # Input for selecting season(s) for analysis
+  # Input for selecting season(s) for analysis ----
   tagList(
     selectInput(
       inputId = ns("selected_seasons"),
@@ -18,8 +18,10 @@ mod_SeasonTracker_sidebar_ui <- function(id){
       selected = max(get_season_list()),
       multiple = TRUE
     ),
+
     hr(),
-    # Check boxes for selecting league tiers
+
+    # Check boxes for selecting league tiers ----
     checkboxGroupInput(
       inputId = ns("control_tiers"),
       label = h6("Limit seasons by league tier:"),

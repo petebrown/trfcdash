@@ -10,13 +10,15 @@
 mod_AttendancesBySeason_sidebar_ui <- function(id){
   ns <- NS(id)
   tagList(
-    bslib::accordion(
-      bslib::accordion_panel(
-        "Dates",
-        icon = bsicons::bs_icon("menu-app")
-      )
-    )
-
+    opts_select_seasons(ns, "atts_by_season"),
+    # selectInput(
+    #   inputId = ns("atts_by_season_selected_seasons"),
+    #   label = h6("Select seasons:"),
+    #   choices = get_season_list(),
+    #   selected = max(get_season_list()),
+    #   multiple = TRUE
+    # ),
+    opts_filter_comps(ns, "atts_by_season")
   )
 }
 
@@ -27,11 +29,11 @@ mod_AttendancesBySeason_sidebar_server <- function(id){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    AttendancesBySeason_inputs <- list(
+      reactive({input$atts_by_season_selected_seasons}), #1
+      reactive({input$atts_by_season_cup_comps}) #2
+    )
+
+    return(AttendancesBySeason_inputs)
   })
 }
-
-## To be copied in the UI
-# mod_AttendancesBySeason_sidebar_ui("AttendancesBySeason_sidebar_1")
-
-## To be copied in the server
-# mod_AttendancesBySeason_sidebar_server("AttendancesBySeason_sidebar_1")

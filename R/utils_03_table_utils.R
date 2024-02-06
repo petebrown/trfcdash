@@ -263,3 +263,126 @@ matchday_tooltip <- function(game_df) {
       )
     )
 }
+
+
+opts_select_seasons <- function(ns, name) {
+  selectInput(
+    inputId = ns(paste(name, "selected_seasons", sep="_")),
+    label = h6("Select seasons:"),
+    choices = get_season_list(),
+    selected = max(get_season_list()),
+    multiple = TRUE
+  )
+}
+
+opts_filter_years <- function(ns, name){
+  sliderInput(
+    inputId = ns(paste(name, "year_range", sep="_")),
+    label = h6("Select season range:"),
+    min = min(results_dataset$ssn_year),
+    max = max(results_dataset$ssn_year),
+    sep = "",
+    ticks = FALSE,
+    step = 1,
+    value = c(
+      min(results_dataset$ssn_year),
+      max(results_dataset$ssn_year)
+    )
+  )
+}
+
+opts_filter_comps <- function(ns, name) {
+  checkboxGroupInput(
+    inputId = ns(paste(name, "cup_comps", sep="_")),
+    label = h6("Cup competitions:"),
+    choices = list(
+      "Anglo-Italian Cup" = "Anglo-Italian Cup",
+      "Associate Members' Cup" = "Associate Members\' Cup",
+      "FA Cup" = "FA Cup",
+      "FA Trophy" = "FA Trophy",
+      "Full Members' Cup" = "Full Members\' Cup",
+      "League Cup" = "League Cup",
+      "War League" = "War League"
+    ),
+    selected = c(
+      "Anglo-Italian Cup",
+      "Associate Members\' Cup",
+      "FA Cup",
+      "FA Trophy",
+      "Full Members\' Cup",
+      "League Cup",
+      "War League"
+    )
+  )
+}
+
+opts_inc_cup_games <- function(ns, name) {
+  radioButtons(
+    inputId = ns(paste(name, "inc_cup_games", sep = "_")),
+    label = tags$b("Include cup games?"),
+    choices = c("Yes", "No"),
+    selected = "Yes",
+    inline = TRUE
+  )
+}
+
+popover_options <- function(ns) {
+  bslib::popover(
+    title = "Display Options",
+    bsicons::bs_icon("gear"),
+    radioButtons(
+      inputId = ns("selected_stat"),
+      label = tags$b("Matchday Stat:"),
+      choiceNames = c(
+        "Mins played",
+        "Goals",
+        "Cards"
+      ),
+      choiceValues = c(
+        "mins_played",
+        "goals_scored",
+        "cards"
+      ),
+      inline = TRUE
+    ),
+    hr(),
+    opts_inc_cup_games(ns, "app_react"),
+    hr(),
+    radioButtons(
+      inputId = ns("app_react_pens_as_draw"),
+      label = tags$b("Treat one-off cup games decided by penalty shoot-out as draws?"),
+      choices = c("Yes", "No"),
+      selected = "Yes",
+      inline = TRUE
+    ),
+    hr(),
+    sliderInput(
+      inputId = ns("app_react_min_starts"),
+      label = tags$b("Minimum no. of starts:"),
+      min = 0,
+      max = 50,
+      value = 0,
+      sep = "",
+      ticks = FALSE,
+      step = 1
+    ),
+    hr(),
+    checkboxGroupInput(
+      inputId = ns("player_roles"),
+      label = tags$b("Show: "),
+      choiceNames = c(
+        "Starters",
+        "Subs"
+      ),
+      choiceValues = c(
+        "starter",
+        "sub"
+      ),
+      selected = c(
+        "starter",
+        "sub"
+      ),
+      inline = TRUE
+    ),
+  )
+}

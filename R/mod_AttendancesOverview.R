@@ -19,19 +19,19 @@ mod_AttendancesOverview_ui <- function(id){
 #' AttendancesOverview Server Functions
 #'
 #' @noRd
-mod_AttendancesOverview_server <- function(id, year_range){
+mod_AttendancesOverview_server <- function(id, year_range, cup_comps){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
     output$plot_av_atts <- plotly::renderPlotly(
-      plot_av_attendances(year_range())
+      plot_av_attendances(year_range(), cup_comps())
     )
 
     output$top_atts_by_ssn <- reactable::renderReactable(
       top_n_attendances(
         year_range(),
+        cup_comps(),
         n = 1,
-        comps = c("League", "FA Cup", "League Cup"),
         venues = "H"
       )
     )

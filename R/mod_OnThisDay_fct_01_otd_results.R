@@ -44,7 +44,7 @@ get_otd_results <- function(otd_date, inc_year = "No", as_reactable = "Yes") {
       years_ago = reactable::colDef(
         name = "",
         align = "left",
-        width = 100,
+        width = 110,
         format = reactable::colFormat(
           suffix = " years ago",
         ),
@@ -60,7 +60,7 @@ get_otd_results <- function(otd_date, inc_year = "No", as_reactable = "Yes") {
       game_date = reactable::colDef(
         name = "Date",
         align = "left",
-        width = 85,
+        width = 90,
         format = reactable::colFormat(
           date = TRUE,
           locales = "en-GB"

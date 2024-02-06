@@ -6,6 +6,76 @@
 #'
 #' @noRd
 
+facet_wrap_theme <- function() {
+  ggplot2::theme(
+    legend.position = "bottom",
+    text = ggtext::element_markdown(
+      family = "Helvetica Neue",
+      face = "plain",
+      size = 16,
+      colour = NULL,
+      fill = NA,
+      box.colour = NA,
+      linetype = NA,
+      linewidth = NA,
+      hjust = NULL,
+      vjust = NULL,
+      halign = "right",
+      valign = NA,
+      angle = NULL,
+      lineheight = NULL,
+      margin = NULL,
+      padding = NA,
+      r = NA,
+      align_widths = NA,
+      align_heights = NA,
+      rotate_margins = NA,
+    ),
+    strip.text.x = ggplot2::element_text(
+      hjust = 0,
+      size = 20,
+      color = "#4c668d",
+      face = "bold",
+      margin = ggplot2::margin(
+        t = 0,
+        b = 15,
+        r = 0,
+        l = 0,
+        "pt"
+      )
+    ),
+    strip.background = ggplot2::element_rect(
+      fill = "transparent",
+      color="transparent"
+    ),
+    panel.border = ggplot2::element_blank(),
+    panel.spacing = ggplot2::unit(2, "lines"),
+    line = ggplot2::element_blank(),
+    axis.text.x = ggplot2::element_text(
+      color = "lightgrey"
+    ),
+    axis.ticks = ggplot2::element_blank(),
+    panel.grid = ggplot2:: element_blank(),
+    panel.grid.major.x = ggplot2::element_line(
+      color = "lightgrey",
+      size = 0.20
+    ),
+    panel.background = ggplot2::element_rect(
+      fill = "transparent"
+    ),
+    plot.background = ggplot2::element_rect(
+      fill = "transparent", color = NA
+    ),
+    legend.box.background = ggplot2::element_rect(
+      fill = "transparent",
+      color = "transparent",
+      linewidth = 0
+    ),
+    legend.box.spacing = ggplot2::unit(15, "pt")
+  )
+}
+
+
 # Render a bar chart with a label on the left
 bar_chart <- function(label, width = "100%", height = "1.2rem", fill = "#00bfc4", background = NULL) {
   bar <- div(

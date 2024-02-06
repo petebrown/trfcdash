@@ -1,4 +1,4 @@
-plot_av_attendances <- function(year_range) {
+plot_av_attendances <- function(year_range, cup_comps) {
 
   min_year <- year_range[1]
   max_year <- year_range[2]
@@ -6,9 +6,9 @@ plot_av_attendances <- function(year_range) {
   df <- results_dataset %>%
     dplyr::filter(
       venue == "H",
-      game_type == "League",
       ssn_year >= min_year,
-      ssn_year <= max_year
+      ssn_year <= max_year,
+      generic_comp %in% c("Football League", "Non-League", cup_comps)
     ) %>%
     dplyr::group_by(
       season

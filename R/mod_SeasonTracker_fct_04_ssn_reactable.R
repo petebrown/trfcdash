@@ -111,7 +111,10 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
 
   reactable::reactable(
     data = top_level,
+    class = "reactable-text",
+    style = "font-size: smaller",
     showPageSizeOptions = TRUE,
+    defaultPageSize = length(top_level$season),
     pageSizeOptions = get_page_nos(length(top_level$season)),
     fullWidth = TRUE,
     compact = TRUE,
@@ -158,7 +161,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
       ),
       outcome = reactable::colDef(
         name = "Res",
-        align = "left",
+        align = "center",
         minWidth = 45
       ),
       score = reactable::colDef(

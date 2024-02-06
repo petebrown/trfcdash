@@ -10,19 +10,12 @@
 mod_AttendancesOverview_sidebar_ui <- function(id){
   ns <- NS(id)
   tagList(
-    sliderInput(
-      inputId = ns("year_range"),
-      label = h6("Select season range:"),
-      min = min(results_dataset$ssn_year),
-      max = max(results_dataset$ssn_year),
-      sep = "",
-      ticks = FALSE,
-      step = 1,
-      value = c(
-        min(results_dataset$ssn_year),
-        max(results_dataset$ssn_year)
-      )
-    )
+    opts_filter_years(ns, "atts_overview"),
+
+    hr(),
+
+
+    opts_filter_comps(ns, "atts_overview")
   )
 }
 
@@ -34,7 +27,8 @@ mod_AttendancesOverview_sidebar_server <- function(id){
     ns <- session$ns
 
     AttendancesOverview_inputs <- list(
-      reactive({input$year_range}) #1
+      reactive({input$atts_overview_year_range}), #1
+      reactive({input$atts_overview_cup_comps}) #2
     )
     return(AttendancesOverview_inputs)
 
