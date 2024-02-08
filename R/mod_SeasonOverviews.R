@@ -44,6 +44,17 @@ mod_SeasonOverviews_ui <- function(id){
       )
     ),
 
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark",
+        "Attack and Defence"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("att_and_def"), height = "auto"),
+      )
+    ),
+
     bslib::layout_column_wrap(
       width = 1/2,
       bslib::card(
@@ -98,6 +109,14 @@ mod_SeasonOverviews_server <- function(id, year_range, league_tiers, includePlay
     output$goal_margins <- {
       reactable::renderReactable(
         get_goal_margins(
+          year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), game_range()
+        )
+      )
+    }
+
+    output$att_and_def <- {
+      reactable::renderReactable(
+        get_attack_and_defend(
           year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), game_range()
         )
       )

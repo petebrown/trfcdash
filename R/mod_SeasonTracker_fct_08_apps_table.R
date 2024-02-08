@@ -26,12 +26,13 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       ),
       generic_comp = dplyr::case_when(
         game_type == "League" ~ "League",
+        stringr::str_detect(game_type, "League Play") ~ "League Play-Off",
         game_type == "Cup" & !generic_comp %in% c("FA Cup", "League Cup") ~ "Other",
         TRUE ~ generic_comp
       ),
       generic_comp = factor(
         generic_comp,
-        levels = c("League", "FA Cup", "League Cup", "Other")
+        levels = c("League", "League Play-Off", "FA Cup", "League Cup", "Other")
       )
     ) %>%
     dplyr::group_by(
@@ -76,7 +77,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       color = "black"
     ),
     rowStyle = if (inc_cup_games == "Yes") {
-        function() {
+      function() {
         list(
           fontWeight = 300,
           color = "black"
