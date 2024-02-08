@@ -6,6 +6,7 @@
 #'
 #' @noRd
 
+# ggplot theme for facet_wrap charts ----
 facet_wrap_theme <- function() {
   ggplot2::theme(
     legend.position = "bottom",
@@ -76,7 +77,7 @@ facet_wrap_theme <- function() {
 }
 
 
-# Render a bar chart with a label on the left
+# Render a bar chart with a label on the left ----
 bar_chart <- function(label, width = "100%", height = "1.2rem", fill = "#00bfc4", background = NULL) {
   bar <- div(
     style = list(
@@ -158,7 +159,7 @@ wdl_chart <- function(win_pc, draw_pc, loss_pc) {
   )
 }
 
-# Render a Reactable table with an image
+# Render a Reactable table with an image ----
 mgr_img_table <- function(df, col_sort="P") {
   reactable::reactable(
     data = df,
