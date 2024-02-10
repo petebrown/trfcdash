@@ -249,7 +249,9 @@ matchday_tooltip <- function(game_df) {
     if (!is.na(scorers)) {
       scorers
     },
-    format(attendance, big.mark = ","), "<br>",
+    if (!is.na(attendance)) {
+      paste0(format(attendance, big.mark = ","), "<br>")
+    },
     manager
   )
 

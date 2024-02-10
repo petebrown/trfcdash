@@ -114,7 +114,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
     class = "reactable-text",
     style = "font-size: smaller",
     showPageSizeOptions = TRUE,
-    defaultPageSize = length(top_level$season),
+    defaultPageSize = 10,
     pageSizeOptions = get_page_nos(length(top_level$season)),
     fullWidth = TRUE,
     compact = TRUE,
@@ -145,16 +145,21 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
       opposition = reactable::colDef(
         name = "Opponent",
         minWidth = 180,
+        cell = function(value, index) {
+          venue <- top_level$venue[index]
+          if (venue == "H") {
+            toupper(value)
+          } else {
+            value
+          }
+        },
         style = function(value, index) {
           if (top_level$venue[index] == "H") {
-            text_transform = "uppercase"
             font_weight = "450"
           } else {
-            text_transform = "normal"
             font_weight = "300"
           }
           list(
-            textTransform = text_transform,
             fontWeight = font_weight
           )
         }
@@ -188,14 +193,6 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
       )
     ),
     rowClass = "results-row",
-    rowStyle = function(index) {
-      if (top_level[index, "venue"] == "H") {
-        list(
-          # background = "rgb(248, 251, 253)",
-          #fontWeight = "500"
-        )
-      }
-    },
     details = function(index) {
       line_up = second_level[second_level$game_date == top_level$game_date[index], ]
       lge_tab = lge_tabs[lge_tabs$game_date == top_level$game_date[index], ]
