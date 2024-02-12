@@ -221,18 +221,6 @@ mod_SeasonTracker_ui <- function(id){
       ),
 
 
-      # UI: Player appearance heatmap graphic ----
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Player appearances"
-        ),
-        bslib::card_body(
-          uiOutput(ns("app_heatmaps"))
-        )
-      ),
-
-
       # UI: Streaks ----
       bslib::card(
         bslib::card_header(
@@ -332,6 +320,18 @@ mod_SeasonTracker_ui <- function(id){
             ),
           ),
           uiOutput(ns("top_scorers"))
+        )
+      ),
+
+
+      # UI: Player appearance heatmap graphic ----
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Player appearances"
+        ),
+        bslib::card_body(
+          uiOutput(ns("app_heatmaps"))
         )
       )
     )

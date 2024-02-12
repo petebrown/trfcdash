@@ -22,7 +22,7 @@ mod_PlayersByPlayer_ui <- function(id){
           class = "bg-dark",
           "Summary"
         ),
-        DT::dataTableOutput(ns("pl_summary"), height = "100%", fill = FALSE)
+        reactable::reactableOutput(ns("pl_summary"))
       )
     ),
     bslib::page_fluid(
@@ -108,18 +108,8 @@ mod_PlayersByPlayer_server <- function(id, player_name){
     })
 
     output$pl_summary <- {
-      DT::renderDT(
-        output_player_summary(player_name()),
-        rownames = FALSE,
-        options = list(
-          dom = 'tip',
-          info = FALSE,
-          paging = FALSE,
-          fillContainer = TRUE,
-          columnDefs = list(
-            list(targets = c(6, 7), className = 'dt-right')
-          )
-        )
+      reactable::renderReactable(
+        output_player_summary(player_name())
       )
     }
 

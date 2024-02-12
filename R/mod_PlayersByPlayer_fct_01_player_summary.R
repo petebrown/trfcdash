@@ -71,5 +71,6 @@ output_player_summary <- function(inp_player_name) {
       "Mins played" = mins_played,
       "Yellow cards" = yellow_cards,
       "Red cards" = red_cards
-    )
+    ) %>%
+    reactable::reactable()
 }
