@@ -52,7 +52,7 @@ mod_PlayersByPlayer_ui <- function(id){
           class = "bg-dark",
           "By League Tier"
         ),
-        DT::dataTableOutput(ns("pl_summary_by_tier"), height = "100%", fill = FALSE)
+        reactable::reactableOutput(ns("pl_summary_by_tier"))
       )
     ),
     bslib::page_fluid(
@@ -122,20 +122,8 @@ mod_PlayersByPlayer_server <- function(id, player_name){
     }
 
     output$pl_summary_by_tier <- {
-      DT::renderDT(
-        output_pl_summary_by_tier(player_name()),
-        rownames = FALSE,
-        options = list(
-          dom = 'tip',
-          info = FALSE,
-          paging = FALSE,
-          fillContainer = TRUE,
-          columnDefs = list(
-            list(
-              targets = c(1, 2, 3, 4, 5), className = 'dt-center'
-            )
-          )
-        )
+      reactable::renderReactable(
+        output_pl_summary_by_tier(player_name())
       )
     }
 

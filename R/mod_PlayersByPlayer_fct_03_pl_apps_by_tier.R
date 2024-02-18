@@ -1,5 +1,5 @@
 output_pl_summary_by_tier <- function(inp_player_name) {
-  player_apps %>%
+  df <- player_apps %>%
     dplyr::filter(
       menu_name == inp_player_name
     ) %>%
@@ -14,13 +14,14 @@ output_pl_summary_by_tier <- function(inp_player_name) {
     ) %>%
     dplyr::left_join(
       results_dataset,
-      by = "game_date"
+      by = c("game_date", "game_no", "season")
     ) %>%
     dplyr::filter(
       game_type == "League"
     ) %>%
     dplyr::group_by(
-      league_tier
+      league_tier,
+      season
     ) %>%
     dplyr::summarise(
       P = dplyr::n(),
@@ -40,22 +41,22 @@ output_pl_summary_by_tier <- function(inp_player_name) {
         4 ~ "4 - League Two",
         5 ~ "5 - National League"
       ),
-      app_sums = stringr::str_glue("{starts} ({sub_apps})"),
       mins_per_gl = dplyr::case_when(
         mins_played / Goals != Inf ~ mins_played / Goals,
         TRUE ~ NA
       ),
-      games_per_gl = round(mins_per_gl / 90, 2),
-      mins_per_gl = round(mins_per_gl, 2),
-      win_pc = round((W / P) * 100, 1)
+      games_per_gl = mins_per_gl / 90,
+      win_pc = W / P
     ) %>%
     dplyr::arrange(
-      dplyr::desc(P)
+      league_tier
     ) %>%
     dplyr::select(
       league_tier,
+      season,
       P,
-      app_sums,
+      starts,
+      sub_apps,
       W,
       D,
       L,
@@ -65,17 +66,64 @@ output_pl_summary_by_tier <- function(inp_player_name) {
       mins_per_gl,
       games_per_gl
     ) %>%
-    dplyr::rename(
-      "League Tier" = league_tier,
-      "Starts\n(sub)" = app_sums,
-      "Win %" = win_pc,
-      "Mins\nplayed" = mins_played,
-      "Mins\nper goal" = mins_per_gl,
-      "Games\nper goal" = games_per_gl
-    ) %>%
     dplyr::select(
       where(
         ~sum(!is.na(.x)) > 0
       )
     )
+
+  reactable::reactable(
+    data = df,
+    pagination = FALSE,
+    groupBy = c("league_tier"),
+    defaultColDef = reactable::colDef(
+      aggregate = "sum"
+    ),
+    columns = list(
+      win_pc = reactable::colDef(
+        name = "Win %",
+        format = reactable::colFormat(
+          percent = TRUE,
+          digits = 1
+        ),
+        aggregate = reactable::JS("function(values, rows) {
+            let games_played = 0
+            let wins = 0
+            rows.forEach(function(row) {
+              games_played += row['P']
+              wins += row['W']
+            })
+            return wins / games_played
+        }")
+      ),
+      mins_per_gl = reactable::colDef(
+        format = reactable::colFormat(
+          digits = 0
+        ),
+        aggregate = reactable::JS("function(values, rows) {
+          let mins_played = 0
+          let goals = 0
+          rows.forEach(function(row) {
+            mins_played += row['mins_played']
+            goals += row['Goals']
+          })
+          return mins_played / goals
+        }")
+      ),
+      games_per_gl = reactable::colDef(
+        format = reactable::colFormat(
+          digits = 1
+        ),
+        aggregate = reactable::JS("function(values, rows) {
+          let mins_played = 0
+          let goals = 0
+          rows.forEach(function(row) {
+            mins_played += row['mins_played']
+            goals += row['Goals']
+          })
+          return mins_played / goals / 90
+        }")
+      )
+    )
+  )
 }
