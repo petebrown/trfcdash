@@ -75,11 +75,85 @@ output_pl_summary_by_tier <- function(inp_player_name) {
   reactable::reactable(
     data = df,
     pagination = FALSE,
+    compact = TRUE,
+    style = list(
+      fontSize = "smaller",
+      fontWeight = 400,
+      color = "black"
+    ),
+    rowStyle = function() {
+      list(
+        fontWeight = 300,
+        color = "black"
+      )
+    },
     groupBy = c("league_tier"),
     defaultColDef = reactable::colDef(
       aggregate = "sum"
     ),
     columns = list(
+      league_tier = reactable::colDef(
+        name = "Tier",
+        minWidth = 160,
+        format = reactable::colFormat(
+          prefix = "Tier "
+        ),
+        grouped = reactable::JS("function(cellInfo) {
+          return cellInfo.value
+        }"),
+        footer = NULL
+      ),
+      season = reactable::colDef(
+        name = "Season",
+        minWidth = 70,
+        aggregate = reactable::JS("function(values, rows) {
+          let seasons = 0
+
+          rows.forEach(function(row) {
+            seasons += 1
+          })
+          return 'All seasons (' + seasons + ')'
+        }"),
+        footer = "Total"
+      ),
+      P = reactable::colDef(
+        name = "Apps",
+        footer = function(values) {
+          sum(values)
+        }
+      ),
+      starts = reactable::colDef(
+        name = "Starts",
+        footer = function(values) {
+          sum(values)
+        }
+      ),
+      sub_apps = reactable::colDef(
+        name = "Sub apps",
+        format = reactable::colFormat(
+          prefix = "(",
+          suffix = ")"
+        ),
+        footer = function(values) {
+          total = sum(values)
+          paste0("(", total, ")")
+        }
+      ),
+      W = reactable::colDef(
+        footer = function(values) {
+          sum(values)
+        }
+      ),
+      D = reactable::colDef(
+        footer = function(values) {
+          sum(values)
+        }
+      ),
+      L = reactable::colDef(
+        footer = function(values) {
+          sum(values)
+        }
+      ),
       win_pc = reactable::colDef(
         name = "Win %",
         format = reactable::colFormat(
@@ -87,16 +161,26 @@ output_pl_summary_by_tier <- function(inp_player_name) {
           digits = 1
         ),
         aggregate = reactable::JS("function(values, rows) {
-            let games_played = 0
-            let wins = 0
-            rows.forEach(function(row) {
-              games_played += row['P']
-              wins += row['W']
-            })
-            return wins / games_played
+          let games_played = 0
+          let wins = 0
+          rows.forEach(function(row) {
+            games_played += row['P']
+            wins += row['W']
+          })
+          return wins / games_played
         }")
       ),
+      mins_played = reactable::colDef(
+        name = "Mins played",
+        format = reactable::colFormat(
+          separators = TRUE
+        ),
+        footer = function(values) {
+          sum(values)
+        }
+      ),
       mins_per_gl = reactable::colDef(
+        name = "Mins per goal",
         format = reactable::colFormat(
           digits = 0
         ),
@@ -110,7 +194,13 @@ output_pl_summary_by_tier <- function(inp_player_name) {
           return mins_played / goals
         }")
       ),
+      Goals = reactable::colDef(
+        footer = function(values) {
+          sum(values)
+        }
+      ),
       games_per_gl = reactable::colDef(
+        name = "Games per goal",
         format = reactable::colFormat(
           digits = 1
         ),

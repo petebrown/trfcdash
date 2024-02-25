@@ -42,12 +42,10 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
       color = "black"
     ),
     rowStyle = if (inc_cup_games == "Yes") {
-      function() {
-        list(
-          fontWeight = 300,
-          color = "black"
-        )
-      }
+      list(
+        fontWeight = 300,
+        color = "black"
+      )
     },
     columns = list(
       season = reactable::colDef(
@@ -84,7 +82,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         name = "P",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
-          },
+        },
         align = "center",
         minWidth = 50,
         footer = if (n_seasons > 1) {
@@ -100,7 +98,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         name = "W",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
-          },
+        },
         align = "center",
         minWidth = 35,
         footer = if (n_seasons > 1) {
@@ -116,7 +114,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         name = "D",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
-          },
+        },
         align = "center",
         minWidth = 35,
         footer = if (n_seasons > 1) {
@@ -132,7 +130,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         name = "L",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
-          },
+        },
         align = "center",
         minWidth = 35,
         footer = if (n_seasons > 1) {
@@ -148,7 +146,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         name = "GF",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
-          },
+        },
         align = "center",
         minWidth = 50,
         footer = if (n_seasons > 1) {
@@ -195,7 +193,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         name = "Lge Pts",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
-          },
+        },
         align = "center",
         minWidth = 50,
         footer = if (n_seasons > 1) {
@@ -216,7 +214,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         name = "Lge PPG",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
-          },
+        },
         align = "right",
         minWidth = 60,
         format = reactable::colFormat(

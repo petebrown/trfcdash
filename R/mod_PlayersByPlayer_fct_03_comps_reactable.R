@@ -18,7 +18,8 @@ output_plr_comps_reactable <- function(inp_player_name) {
     ) %>%
     dplyr::mutate(
       generic_comp = factor(
-        generic_comp, levels = c(
+        generic_comp,
+        levels = c(
           "Football League",
           "Non-League",
           "War League",
