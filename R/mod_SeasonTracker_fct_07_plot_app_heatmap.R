@@ -259,23 +259,10 @@ output_app_heatmap <- function(selected_season) {
         r = NA,
         align_widths = NA,
         align_heights = NA,
-        rotate_margins = NA,
+        rotate_margins = NA
       ),
       legend.key = ggplot2::element_rect(fill = "white", colour = "black")
     ) +
     ggplot2::coord_cartesian(expand = FALSE)
-
-  # plotly::ggplotly(p, tooltip = "text", height = 800) %>%
-  #   plotly::layout(
-  #     font = list(
-  #       family = "Helvetica Neue"
-  #     ),
-  #     legend = list(
-  #       x = 0,
-  #       xanchor = 'left',
-  #       yanchor = 'bottom',
-  #       orientation = 'h'
-  #     )
-  #   )
   p
 }

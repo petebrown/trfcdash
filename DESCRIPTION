@@ -11,7 +11,7 @@ Imports:
     crosstalk,
     dplyr,
     DT,
-    ggplot2,
+    ggplot2 (== 3.4.4),
     ggtext,
     glue,
     golem (>= 0.4.0),
