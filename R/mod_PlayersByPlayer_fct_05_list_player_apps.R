@@ -11,7 +11,7 @@ get_match_basics <- function() {
   }
 
 output_player_apps <- function(inp_player_name) {
-  player_apps %>%
+  df <- player_apps %>%
     dplyr::filter(
       menu_name == inp_player_name
     ) %>%
@@ -60,6 +60,10 @@ output_player_apps <- function(inp_player_name) {
       YC = yellow_cards,
       RC = red_cards
     )
+
+  reactable::reactable(
+    df
+  )
 }
 
 

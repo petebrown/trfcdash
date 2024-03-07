@@ -62,7 +62,7 @@ mod_PlayersByPlayer_ui <- function(id){
           class = "bg-dark",
           "By Opponent"
         ),
-        DT::dataTableOutput(ns("pl_summary_by_oppo"), height = "100%", fill = FALSE)
+        reactable::reactableOutput(ns("pl_summary_by_oppo"))
       )
     ),
     bslib::page_fluid(
@@ -72,7 +72,7 @@ mod_PlayersByPlayer_ui <- function(id){
           class = "bg-dark",
           "Appearances"
         ),
-        DT::dataTableOutput(ns("player_apps"), height = "100%", fill = FALSE)
+        reactable::reactableOutput(ns("player_apps"))
       )
     ),
     bslib::page_fluid(
@@ -82,7 +82,7 @@ mod_PlayersByPlayer_ui <- function(id){
           class = "bg-dark",
           "By Manager"
         ),
-        DT::dataTableOutput(ns("pl_summary_by_mgr"), height = "100%", fill = FALSE)
+        reactable::reactableOutput(ns("pl_summary_by_mgr"))
       )
     )
   )
@@ -128,58 +128,20 @@ mod_PlayersByPlayer_server <- function(id, player_name){
     }
 
     output$pl_summary_by_oppo <- {
-      DT::renderDT(
-        output_pl_summary_by_opp(player_name()),
-        rownames = FALSE,
-        options = list(
-          dom = 'tip',
-          info = TRUE,
-          paging = TRUE,
-          pageLength = 10,
-          fillContainer = TRUE,
-          columnDefs = list(
-            list(
-              targets = c(1, 2, 3, 4, 5), className = 'dt-center'
-            )
-          )
-        )
+      reactable::renderReactable(
+        output_pl_summary_by_opp(player_name())
       )
     }
 
     output$player_apps <- {
-      DT::renderDT(
-        output_player_apps(player_name()),
-        selection = 'single',
-        filter = 'bottom',
-        fillContainer = FALSE,
-        options = list(
-          fillContainer = TRUE,
-          paging = TRUE,
-          info = TRUE,
-          scrollX = TRUE,
-          columnDefs = list(
-            list(orderData = 1, targets = 3),
-            list(visible = FALSE, targets = c(0))
-          )
-        )
+      reactable::renderReactable(
+        output_player_apps(player_name())
       )
     }
 
     output$pl_summary_by_mgr <- {
-      DT::renderDT(
-        output_pl_summary_by_mgr(player_name()),
-        rownames = FALSE,
-        options = list(
-          dom = 'tip',
-          info = FALSE,
-          paging = FALSE,
-          fillContainer = TRUE,
-          columnDefs = list(
-            list(
-              targets = c(1, 2, 3, 4, 5), className = 'dt-center'
-            )
-          )
-        )
+      reactable::renderReactable(
+        output_pl_summary_by_mgr(player_name())
       )
     }
 

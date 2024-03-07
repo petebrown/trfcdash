@@ -1,5 +1,5 @@
 output_pl_summary_by_opp <- function(inp_player_name) {
-  player_apps %>%
+  df <- player_apps %>%
     dplyr::filter(
       menu_name == inp_player_name
     ) %>%
@@ -68,4 +68,8 @@ output_pl_summary_by_opp <- function(inp_player_name) {
         ~sum(!is.na(.x)) > 0
       )
     )
+
+  reactable::reactable(
+    df
+  )
 }

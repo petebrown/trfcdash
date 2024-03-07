@@ -10,7 +10,25 @@
 mod_AttendancesOverview_ui <- function(id){
   ns <- NS(id)
   tagList(
-    plotly::plotlyOutput(ns("plot_av_atts")),
+
+    bslib::card(
+      bslib::card_header(
+        class = "bg-dark",
+
+        "Average attendance by season"
+      ),
+      bslib::card_body(
+        min_height = "600px",
+        bslib::card(
+          full_screen = TRUE,
+          class = "borderless",
+          bslib::card_title(
+            "Average attendance by season"
+          ),
+          plotly::plotlyOutput(ns("plot_av_atts"))
+        )
+      )
+    ),
 
     reactable::reactableOutput(ns("top_atts_by_ssn"))
   )
