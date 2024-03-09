@@ -15,9 +15,59 @@ top_n_attendances <- function(year_range, cup_comps, n=1, venues="H") {
     ) %>%
     dplyr::arrange(
       desc(attendance)
+    ) %>%
+    dplyr::select(
+      season,
+      game_date,
+      opposition,
+      venue,
+      score,
+      outcome,
+      competition,
+      attendance,
+      manager
     )
 
   reactable::reactable(
-    data = df
+    data = df,
+    class = "reactable-text",
+    style = "font-size: smaller",
+    columns = list(
+      season = reactable::colDef(
+        name = "Season"
+      ),
+      game_date = reactable::colDef(
+        name = "Date",
+        format = reactable::colFormat(
+          date = TRUE,
+          locales = "en-GB"
+        )
+      ),
+      opposition = reactable::colDef(
+        name = "Opponent"
+      ),
+      venue = reactable::colDef(
+        name = "Venue"
+      ),
+      score = reactable::colDef(
+        name = "Score"
+      ),
+      outcome = reactable::colDef(
+        name = "Res"
+      ),
+      competition = reactable::colDef(
+        name = "Competition"
+      ),
+      attendance = reactable::colDef(
+        name = "Att",
+        format = reactable::colFormat(
+          digits = 0,
+          separators = TRUE
+        )
+      ),
+      manager = reactable::colDef(
+        name = "Manager"
+      )
+    )
   )
 }

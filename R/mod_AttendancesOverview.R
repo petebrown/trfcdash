@@ -30,7 +30,16 @@ mod_AttendancesOverview_ui <- function(id){
       )
     ),
 
-    reactable::reactableOutput(ns("top_atts_by_ssn"))
+    bslib::card(
+      bslib::card_header(
+        class = "bg-dark",
+        "Highest attendances"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("top_atts_by_ssn"))
+      )
+    )
+
   )
 }
 
