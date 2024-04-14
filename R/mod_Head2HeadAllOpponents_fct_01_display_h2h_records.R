@@ -47,10 +47,16 @@ output_h2h_records <- function(year_range, league_tiers, includePlayOffs, cup_co
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = "win_pc",
+    defaultColDef = reactable::colDef(
+      vAlign = "center"
+    ),
     columns = list(
       opposition = reactable::colDef(
         name = "Opposition",
-        minWidth = 130
+        minWidth = 130,
+        cell = function(value) {
+          club_and_crest(value)
+        }
       ),
       P = reactable::colDef(
         minWidth = 50

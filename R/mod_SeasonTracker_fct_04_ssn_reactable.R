@@ -113,6 +113,9 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
     data = top_level,
     class = "reactable-text",
     style = "font-size: smaller",
+    defaultColDef = reactable::colDef(
+      vAlign = "center"
+    ),
     showPageSizeOptions = TRUE,
     defaultPageSize = 10,
     pageSizeOptions = get_page_nos(length(top_level$season)),
@@ -125,33 +128,30 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
     columns = list(
       season = reactable::colDef(
         name = "Season",
-        minWidth = 100
+        width = 100
       ),
       game_no = reactable::colDef(
         name = "Game\nNo.",
         align = "left",
-        minWidth = 65
+        width = 70
       ),
       game_date = reactable::colDef(
         name = "Date",
-        minWidth = 105,
+        width = 105,
         format = reactable::colFormat(date = TRUE, locales = "en-GB")
       ),
       venue = reactable::colDef(
         name = "Venue",
-        minWidth = 65,
+        width = 70,
         align = "center"
       ),
       opposition = reactable::colDef(
         name = "Opponent",
-        minWidth = 180,
+        minWidth = 200,
         cell = function(value, index) {
           venue <- top_level$venue[index]
-          if (venue == "H") {
-            toupper(value)
-          } else {
-            value
-          }
+
+          club_and_crest(value, venue)
         },
         style = function(value, index) {
           if (top_level$venue[index] == "H") {
@@ -176,7 +176,11 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
       ),
       competition = reactable::colDef(
         name = "Competition",
-        minWidth = 110
+        minWidth = 200,
+        vAlign = "center",
+        cell = function(value) {
+          generic_comp_logo(value)
+        }
       ),
       attendance = reactable::colDef(
         name = "Att.",

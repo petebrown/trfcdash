@@ -69,6 +69,9 @@ get_h2h_meetings <- function(opponent, year_range, league_tiers, includePlayOffs
     borderless = TRUE,
     filterable = FALSE,
     resizable = TRUE,
+    defaultColDef = reactable::colDef(
+      vAlign = "center"
+    ),
     columns = list(
       season = reactable::colDef(
         name = "Season",
@@ -105,7 +108,10 @@ get_h2h_meetings <- function(opponent, year_range, league_tiers, includePlayOffs
       ),
       competition = reactable::colDef(
         name = "Competition",
-        minWidth = 110
+        minWidth = 180,
+        cell = function(value) {
+          generic_comp_logo(value)
+        }
       ),
       attendance = reactable::colDef(
         name = "Att.",

@@ -19,3 +19,32 @@ filter_ssn_results <- function(selected_seasons) {
   return (results_df)
 }
 
+
+map_club_to_crest <- function(club_name) {
+
+  img_path <- clubs_crests %>%
+    dplyr::filter(club == club_name) %>%
+    dplyr::pull(file_path)
+
+  return (img_path)
+}
+
+map_competition_to_generic_logo <- function(comp) {
+  df <- results_dataset %>%
+    dplyr::select(
+      competition,
+      generic_comp
+    ) %>%
+    unique() %>%
+    dplyr::arrange(competition) %>%
+    dplyr::left_join(
+      comp_logos,
+      by = "generic_comp"
+    )
+
+  logo_path <- df %>%
+    dplyr::filter(competition == comp) %>%
+    dplyr::pull(file_path)
+
+  return (logo_path)
+}

@@ -41,11 +41,20 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = "wins",
+    defaultColDef = reactable::colDef(
+      vAlign = "center"
+    ),
     columns = c(
       list(
         opposition = reactable::colDef(
           name = "Opposition",
-          minWidth = 130
+          minWidth = 175,
+          cell = function(value) {
+            club_and_crest(value)
+          }
+        ),
+        P = reactable::colDef(
+          show = FALSE
         )
       ),
       format_streak_cols()

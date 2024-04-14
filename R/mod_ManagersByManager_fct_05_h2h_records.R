@@ -26,10 +26,16 @@ get_mgr_h2h_summary <- function(selected_manager) {
 
   reactable::reactable(
     data = df,
+    defaultColDef = reactable::colDef(
+      vAlign = "center"
+    ),
     columns = list(
       opposition = reactable::colDef(
         name = "Opposition",
-        minWidth = 130
+        minWidth = 180,
+        cell = function(value) {
+          club_and_crest(value)
+        }
       ),
       lge_pts = reactable::colDef(
         name = "League Points"

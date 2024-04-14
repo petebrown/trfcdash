@@ -11,6 +11,8 @@ mod_Head2HeadByOpponent_ui <- function(id){
   ns <- NS(id)
   tagList(
 
+    uiOutput(ns("club_crest")),
+
     h1(textOutput(ns("opponent")), class = "opponent-title"),
 
     bslib::card(
@@ -68,6 +70,16 @@ mod_Head2HeadByOpponent_ui <- function(id){
 mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    output$club_crest <- renderUI({
+      file_path <- map_club_to_crest(opponent())
+
+      img(
+        src = file_path,
+        height = 150,
+        alt = opponent()
+      )
+    })
 
     output$opponent <- renderText({
       opponent()

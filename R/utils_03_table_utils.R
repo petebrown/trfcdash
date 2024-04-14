@@ -388,3 +388,39 @@ popover_options <- function(ns) {
     ),
   )
 }
+
+club_and_crest <- function(value, venue="A") {
+  image <- img(
+    src = map_club_to_crest(value),
+    style = "height: 32px; margin: 2px;",
+    alt = value
+  )
+
+  if (venue == "H") {
+    text = toupper(value)
+  } else {
+    text = value
+  }
+
+  tagList(
+    div(style="display: flex",
+        div(style = "display:flex; justify-content: center; width:40px;", image),
+        div(style = "display: flex; text-align: left; margin: 10px;", text)
+    )
+  )
+}
+
+generic_comp_logo <- function(competition) {
+  image <- img(
+    src = map_competition_to_generic_logo(competition),
+    style = "height: 32px; margin: 2px;",
+    alt = competition
+  )
+
+  tagList(
+    div(style="display: flex",
+        div(style = "display:flex; justify-content: center; width:40px;", image),
+        div(style = "display: flex; text-align: left; margin: 10px;", competition)
+    )
+  )
+}
