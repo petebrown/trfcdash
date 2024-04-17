@@ -41,7 +41,10 @@ get_mgr_h2h_summary <- function(selected_manager) {
         name = "League Points"
       ),
       lge_ppg = reactable::colDef(
-        name = "League PPG"
+        name = "League PPG",
+        format = reactable::colFormat(
+          digits = 2
+        )
       )
     ),
   )

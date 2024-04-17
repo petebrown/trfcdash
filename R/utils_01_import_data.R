@@ -48,3 +48,15 @@ map_competition_to_generic_logo <- function(comp) {
 
   return (logo_path)
 }
+
+map_competition_to_specific_logo <- function(comp, ssn) {
+
+  logo_path <- spec_comp_logos %>%
+    dplyr::filter(
+      season == ssn,
+      competition == comp
+    ) %>%
+    dplyr::pull(file_path_2)
+
+  return (logo_path)
+}

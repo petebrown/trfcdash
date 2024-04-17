@@ -48,7 +48,29 @@ comp_logos <- data.frame(
     )
   )
 
+spec_comp_logos <- results_dataset %>%
+  dplyr::select(
+    season,
+    generic_comp,
+    competition
+  ) %>%
+  unique() %>%
+  dplyr::left_join(
+    comp_logos,
+    by = "generic_comp"
+  ) %>%
+  dplyr::mutate(
+    file_path_2 = dplyr::case_when(
+      generic_comp == "Football League" & season < 1988 ~ "./www/images/competitions/football-league-1.png",
+      generic_comp == "Football League" & season < 2004 ~ "./www/images/competitions/football-league-2.svg",
+      generic_comp == "Football League" & season < 2016 ~ "./www/images/competitions/football-league-3.png",
+      generic_comp == "Football League" & season > 2016 ~ "./www/images/competitions/football-league.svg",
+      TRUE ~ file_path
+    )
+  )
+
 usethis::use_data(
   comp_logos,
+  spec_comp_logos,
   overwrite = TRUE
 )

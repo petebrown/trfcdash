@@ -424,3 +424,19 @@ generic_comp_logo <- function(competition) {
     )
   )
 }
+
+
+specific_comp_logo <- function(competition, season) {
+  image <- img(
+    src = map_competition_to_specific_logo(competition, season),
+    style = "height: 32px; margin: 2px;",
+    alt = competition
+  )
+
+  tagList(
+    div(style="display: flex",
+        div(style = "display:flex; justify-content: center; width:40px;", image),
+        div(style = "display: flex; text-align: left; margin: 10px;", competition)
+    )
+  )
+}

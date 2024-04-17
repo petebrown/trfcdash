@@ -178,8 +178,11 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
         name = "Competition",
         minWidth = 200,
         vAlign = "center",
-        cell = function(value) {
-          generic_comp_logo(value)
+        cell = function(value, index) {
+          # generic_comp_logo(value)
+
+          season <- top_level$season[index]
+          specific_comp_logo(value, season)
         }
       ),
       attendance = reactable::colDef(
