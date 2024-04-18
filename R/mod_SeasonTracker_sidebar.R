@@ -24,7 +24,7 @@ mod_SeasonTracker_sidebar_ui <- function(id){
     # Check boxes for selecting league tiers ----
     checkboxGroupInput(
       inputId = ns("control_tiers"),
-      label = h6("Limit seasons by league tier:"),
+      label = h6("Filter seasons by league tier:"),
       choices = list(
         "2: Championship" = 2,
         "3: League One" = 3,

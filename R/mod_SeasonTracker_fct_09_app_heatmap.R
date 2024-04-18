@@ -194,7 +194,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         sticky = "right",
         minWidth = 50,
         style = list(
-          background = "rgba(255, 240, 0)"
+          background = "#fdfd96"
         )
       ),
       rc = reactable:: colDef(
@@ -207,7 +207,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         sticky = "right",
         minWidth = 50,
         style = list(
-          background = "red"
+          background = "#FF5733"
         )
       ),
       win_pc = reactable:: colDef(

@@ -472,7 +472,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
               class = c("borderless", "no_padding"),
               style = "font-size: small",
               bslib::card_title(
-                paste0("Appearances, goals and cards in ", season)
+                paste0("Minutes played, goals and cards in ", season)
               ),
               reactable::renderReactable(
                 heatmap_reactable(season, apps2_inc_cup_games(), apps2_pens_as_draw(), apps2_min_starts(), summary_stats(), selected_stat(), player_roles())
