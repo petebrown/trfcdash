@@ -10,10 +10,13 @@
 mod_PlayersByPlayer_ui <- function(id){
   ns <- NS(id)
   tagList(
+
+    uiOutput(ns("pl_quick_facts")),
+
     h1(textOutput(ns("pl_name"))),
     p(textOutput(ns("pl_dob"))),
 
-    uiOutput(ns("pl_quick_facts")),
+    uiOutput(ns("pl_image")),
 
     bslib::page_fluid(
       bslib::card(
@@ -94,6 +97,16 @@ mod_PlayersByPlayer_ui <- function(id){
 mod_PlayersByPlayer_server <- function(id, player_name){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    output$pl_image <- renderUI({
+      file_path <- map_plr_to_img(player_name())
+
+      img(
+        src = file_path,
+        height = 150,
+        alt = player_name()
+      )
+    })
 
 
     output$pl_name <- renderText({

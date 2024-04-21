@@ -81,12 +81,17 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
     data = df,
     defaultSortOrder = "desc",
     defaultSorted = list("total_apps" = "desc"),
-
+    defaultColDef = reactable::colDef(
+      vAlign = "center"
+    ),
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
         show = TRUE,
         minWidth = 150,
+        cell = function(value) {
+            plr_name_and_img(value)
+          }
       ),
       total_apps = reactable::colDef(
         name = "Apps",

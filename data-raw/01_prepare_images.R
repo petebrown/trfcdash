@@ -74,3 +74,38 @@ usethis::use_data(
   spec_comp_logos,
   overwrite = TRUE
 )
+
+#########################
+# PREPARE PLAYER IMAGES #
+#########################
+
+menu_names <- player_info %>%
+  dplyr::select(
+    player_name,
+    pl_index
+  ) %>%
+  unique()
+
+player_imgs <- data.frame(
+  player_name = sort(unique(player_apps$player_name))
+) %>%
+  dplyr::left_join(
+    menu_names,
+    by = c("player_name")
+  ) %>%
+  dplyr::mutate(
+    img = stringr::str_to_lower(player_name) %>%
+      stringr::str_replace_all(" ", "-") %>%
+      stringr::str_replace_all("'", ""),
+    file_path = dplyr::case_when(
+      file.exists(paste0("./inst/app/www/images/players/", img, ".png")) ~ paste0("./www/images/players/", img, ".png"),
+      file.exists(paste0("./inst/app/www/images/players/", img, ".jpg")) ~ paste0("./www/images/players/", img, ".jpg"),
+      TRUE ~ "./www/images/clubs/placeholder.svg"
+    )
+  )
+
+
+usethis::use_data(
+  player_imgs,
+  overwrite = TRUE
+)

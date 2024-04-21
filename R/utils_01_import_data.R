@@ -60,3 +60,12 @@ map_competition_to_specific_logo <- function(comp, ssn) {
 
   return (logo_path)
 }
+
+map_plr_to_img <- function(player) {
+
+  img_path <- player_imgs %>%
+    dplyr::filter(pl_index == player) %>%
+    dplyr::pull(file_path)
+
+  return (img_path)
+}
