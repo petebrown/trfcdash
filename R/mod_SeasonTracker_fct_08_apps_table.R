@@ -97,7 +97,10 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       generic_comp = reactable::colDef(
         name = "",
         defaultSortOrder = "asc",
-        minWidth = 90
+        minWidth = 90,
+        cell = function(value, index) {
+          generic_comp_logo(value, from_generic=TRUE)
+        }
       ),
       apps = reactable::colDef(
         name = "Total Apps",

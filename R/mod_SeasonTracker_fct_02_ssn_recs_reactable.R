@@ -47,6 +47,9 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         color = "black"
       )
     },
+    defaultColDef = reactable::colDef(
+      vAlign = "center"
+    ),
     columns = list(
       season = reactable::colDef(
         name = "Season",
@@ -73,6 +76,9 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
             })
             return 'All comps (' + comps + ')'
           }")
+        },
+        cell = function(value, index) {
+          generic_comp_logo(value, from_generic=TRUE)
         },
         footer = if (n_seasons > 1) {
           "Average"

@@ -21,9 +21,16 @@ filter_ssn_results <- function(selected_seasons) {
 
 
 map_club_to_crest <- function(club_name) {
-
   img_path <- clubs_crests %>%
     dplyr::filter(club == club_name) %>%
+    dplyr::pull(file_path)
+
+  return (img_path)
+}
+
+map_generic_comp_logo <- function(gen_comp) {
+  img_path <- comp_logos %>%
+    dplyr::filter(generic_comp == gen_comp) %>%
     dplyr::pull(file_path)
 
   return (img_path)
@@ -66,6 +73,15 @@ map_plr_to_img <- function(player) {
   img_path <- player_imgs %>%
     dplyr::filter(pl_index == player) %>%
     dplyr::pull(file_path)
+
+  return (img_path)
+}
+
+map_plr_to_headshot <- function(player) {
+
+  img_path <- player_imgs %>%
+    dplyr::filter(pl_index == player) %>%
+    dplyr::pull(headshot_file_path)
 
   return (img_path)
 }

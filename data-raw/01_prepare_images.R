@@ -101,6 +101,11 @@ player_imgs <- data.frame(
       file.exists(paste0("./inst/app/www/images/players/", img, ".png")) ~ paste0("./www/images/players/", img, ".png"),
       file.exists(paste0("./inst/app/www/images/players/", img, ".jpg")) ~ paste0("./www/images/players/", img, ".jpg"),
       TRUE ~ "./www/images/clubs/placeholder.svg"
+    ),
+    headshot_file_path = dplyr::case_when(
+      file.exists(paste0("./inst/app/www/images/headshots/", img, ".png")) ~ paste0("./www/images/headshots/", img, ".png"),
+      file.exists(paste0("./inst/app/www/images/headshots/", img, ".jpg")) ~ paste0("./www/images/headshots/", img, ".jpg"),
+      TRUE ~ "./www/images/clubs/placeholder.svg"
     )
   )
 
