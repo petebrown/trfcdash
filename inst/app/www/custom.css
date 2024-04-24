@@ -83,3 +83,11 @@ div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
 #SeasonTracker_ui_1-summary_stats > div > label:not(:first-child) > input[type=checkbox] {
   margin-left: 0.5rem;
 }
+
+.apps_table_with_images {
+  /* Hide the arrow on the expand/collapse button on player appearance table */
+  /* Only applies if images are being dispaly */
+  .rt-expander-button {
+    display: none;
+  }
+}

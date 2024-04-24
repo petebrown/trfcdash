@@ -1,4 +1,4 @@
-output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_starts) {
+output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_starts, show_images='Yes') {
 
   df <- player_apps %>%
     dplyr::filter(
@@ -61,12 +61,35 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       starts >= min_starts
     )
 
+  if (show_images == 'Yes') {
+    df <- df %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(
+        menu_name = stringr::str_glue("
+        <div style='display: flex;'>
+          <div style='display:flex; justify-content: center; width:50px;'>
+            <img src='{map_plr_to_headshot(menu_name)}' style='height: 45px; margin: 2px;'>
+          </div>
+          <div style='padding-left: 10px; width: 100%; margin: auto;'>
+            {menu_name}
+          </div>
+       </div>
+      ")
+      )
+  }
+
   reactable::reactable(
     data = df,
+    class = if (show_images == "Yes") {
+      "apps_table_with_images"
+    },
     defaultPageSize = length(df$menu_name),
     defaultSortOrder = "desc",
     defaultColDef = reactable::colDef(
-      sortNALast = TRUE
+      minWidth = 70,
+      sortNALast = TRUE,
+      vAlign = "center",
+      headerVAlign = "center"
     ),
     groupBy = if (inc_cup_games == "Yes") {
       c("menu_name")
@@ -90,9 +113,23 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         sticky = "left",
         defaultSortOrder = "asc",
         minWidth = 185,
-        grouped = reactable::JS("function(cellInfo) {
+        grouped = if (show_images=='Yes') {
+          reactable::JS("function(cellInfo) {
+            const src = cellInfo.row['menu_name']
+            return `
+              <div>
+                ${src}
+              </div>
+            `
+          }")
+        } else {
+          reactable::JS("function(cellInfo) {
             return cellInfo.value
           }")
+        },
+        html = if (show_images=='Yes') {
+          TRUE
+        }
       ),
       generic_comp = reactable::colDef(
         name = "",
