@@ -96,72 +96,52 @@ output_all_plr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
     data = df,
     defaultSortOrder = "desc",
     defaultSorted = list("wins" = "desc"),
-
+    defaultColDef = reactable::colDef(
+      vAlign = "center"
+    ),
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
-        show = TRUE,
         minWidth = 150,
-        vAlign = "center"
+        cell = function(value) {
+          plr_name_and_headshot(value)
+        }
       ),
       starts = reactable::colDef(
-        name = "Total Starts",
-        show = TRUE,
-        vAlign = "center"
+        name = "Total Starts"
       ),
       wins = reactable::colDef(
-        name = "Wins",
-        show = TRUE,
-        vAlign = "center"
+        name = "Wins"
       ),
       goals = reactable::colDef(
-        name = "Goals",
-        show = TRUE,
-        vAlign = "center"
+        name = "Goals"
       ),
       yel_cards = reactable::colDef(
-        name = "Yellow Cards",
-        show = TRUE,
-        vAlign = "center"
+        name = "Yellow Cards"
       ),
       red_cards = reactable::colDef(
-        name = "Red Cards",
-        show = TRUE,
-        vAlign = "center"
+        name = "Red Cards"
       ),
       unbeaten = reactable::colDef(
-        name = "Unbeaten",
-        show = TRUE,
-        vAlign = "center"
+        name = "Unbeaten"
       ),
       losses = reactable::colDef(
-        name = "Losses",
-        show = TRUE,
-        vAlign = "center"
+        name = "Losses"
       ),
       winless = reactable::colDef(
-        name = "Winless",
-        show = TRUE,
-        vAlign = "center"
+        name = "Winless"
       ),
       draws = reactable::colDef(
-        name = "Draws",
-        show = TRUE,
-        vAlign = "center"
+        name = "Draws"
       ),
       clean_sheets = reactable::colDef(
-        name = "Clean Sheets",
-        show = TRUE,
-        vAlign = "center"
+        name = "Clean Sheets"
       ),
       wins_to_0 = reactable::colDef(
-        name = "Wins to nil",
-        show = TRUE,
-        vAlign = "center"
+        name = "Wins to nil"
       )
     )
   )
 
   return(output_tab)
-
 }

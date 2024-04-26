@@ -90,7 +90,7 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
         show = TRUE,
         minWidth = 150,
         cell = function(value) {
-            plr_name_and_img(value)
+            plr_name_and_headshot(value)
           }
       ),
       total_apps = reactable::colDef(
