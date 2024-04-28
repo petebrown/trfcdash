@@ -84,7 +84,10 @@ menu_names <- player_info %>%
     player_name,
     pl_index
   ) %>%
-  unique()
+  unique() %>%
+  dplyr::mutate(
+    yob = stringr::str_match(pl_index, "\\d{4}")[, 1]
+  )
 
 player_imgs <- data.frame(
   player_name = sort(unique(player_apps$player_name))
@@ -97,6 +100,10 @@ player_imgs <- data.frame(
     img = stringr::str_to_lower(player_name) %>%
       stringr::str_replace_all(" ", "-") %>%
       stringr::str_replace_all("'", ""),
+    img = dplyr::case_when(
+      !is.na(yob) ~ paste0(img, "-", yob),
+      TRUE ~ img
+    ),
     file_path = dplyr::case_when(
       file.exists(paste0("./inst/app/www/images/players/", img, ".png")) ~ paste0("./www/images/players/", img, ".png"),
       file.exists(paste0("./inst/app/www/images/players/", img, ".jpg")) ~ paste0("./www/images/players/", img, ".jpg"),
