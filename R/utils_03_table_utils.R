@@ -453,24 +453,24 @@ plr_name_and_img <- function(value) {
 
   tagList(
     div(style="display: flex",
-        div(style = "display:flex; justify-content: center; width:40px;", image),
+        div(style = "display:flex; justify-content: center; width:50px;", image),
         div(style = "display: flex; text-align: left; margin: 10px;", value)
     )
   )
 }
 
 
-plr_name_and_headshot <- function(value) {
+plr_name_and_headshot <- function(value, img_size=45) {
 
   image <- img(
     src = map_plr_to_headshot(value),
-    style = "height: 45px; margin: 2px;",
+    style = stringr::str_glue("height: {img_size}px; margin: 2px;"),
     alt = value
   )
 
   tagList(
     div(style="display: flex",
-        div(style = "display:flex; justify-content: center; width:40px;", image),
+        div(style = stringr::str_glue("display:flex; justify-content: center; width:{img_size+5}px;"), image),
         div(style = "display: flex; text-align: left; margin: 10px;", value)
     )
   )

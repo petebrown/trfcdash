@@ -99,7 +99,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
       season,
       game_date,
       shirt_no,
-      player_name,
+      menu_name,
       role,
       mins_played,
       goals_scored,
@@ -205,12 +205,17 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
       lge_tab = lge_tabs[lge_tabs$game_date == top_level$game_date[index], ]
       bslib::layout_column_wrap(
         width = 1/2,
+        fill=FALSE,
+        fillable=FALSE,
         div(
           class = "reactable-details",
           bslib::card_title("Line-up"),
           reactable::reactable(
             data = line_up,
             class = "reactable-text",
+            defaultColDef = reactable::colDef(
+              vAlign = "center"
+            ),
             outlined = FALSE,
             bordered = FALSE,
             borderless = TRUE,
@@ -222,8 +227,20 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
               season = reactable::colDef(show = FALSE),
               game_date = reactable::colDef(show = FALSE),
               shirt_no = reactable::colDef(name = "No.", align = "left", width = 60),
-              player_name = reactable::colDef(name = "Player", width = 180),
-              role = reactable::colDef(name = "Role", width = 60),
+              menu_name = reactable::colDef(
+                name = "Player",
+                minWidth = 190,
+                cell = function(value) {
+                  plr_name_and_headshot(value, img_size=30)
+                }
+              ),
+              role = reactable::colDef(
+                name="Role",
+                width=60,
+                cell = function(value) {
+                  stringr::str_to_title(value)
+                }
+                ),
               mins_played = reactable::colDef(name = "Mins", width = 60),
               goals_scored = reactable::colDef(name = "Goals", width = 50),
               yellow_cards = reactable::colDef(name = "YC", width = 40),
