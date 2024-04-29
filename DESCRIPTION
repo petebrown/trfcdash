@@ -24,7 +24,6 @@ Imports:
     plotly,
     reactable,
     readr,
-    shinipsum,
     shiny (>= 1.7.4),
     stringr,
     svglite,
@@ -33,6 +32,7 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.1
 Suggests: 
+    shinipsum,
     spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
