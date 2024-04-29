@@ -214,8 +214,10 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
             data = line_up,
             class = "reactable-text",
             defaultColDef = reactable::colDef(
-              vAlign = "center"
+              vAlign = "center",
+              headerClass = "bar-sort-header"
             ),
+            showSortIcon = FALSE,
             outlined = FALSE,
             bordered = FALSE,
             borderless = TRUE,
@@ -226,25 +228,46 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
             columns = list(
               season = reactable::colDef(show = FALSE),
               game_date = reactable::colDef(show = FALSE),
-              shirt_no = reactable::colDef(name = "No.", align = "left", width = 60),
+              shirt_no = reactable::colDef(
+                name = "No.",
+                align = "center",
+                min_Width = 35
+              ),
               menu_name = reactable::colDef(
                 name = "Player",
-                minWidth = 190,
+                minWidth = 200,
                 cell = function(value) {
                   plr_name_and_headshot(value, img_size=30)
                 }
               ),
               role = reactable::colDef(
                 name="Role",
-                width=60,
+                align = "left",
+                minWidth=75,
                 cell = function(value) {
                   stringr::str_to_title(value)
                 }
                 ),
-              mins_played = reactable::colDef(name = "Mins", width = 60),
-              goals_scored = reactable::colDef(name = "Goals", width = 50),
-              yellow_cards = reactable::colDef(name = "YC", width = 40),
-              red_cards = reactable::colDef(name = "RC", width = 40)
+              mins_played = reactable::colDef(
+                name = "Mins",
+                align="center",
+                minWidth = 50
+              ),
+              goals_scored = reactable::colDef(
+                name = "Goals",
+                align="center",
+                minWidth = 50
+              ),
+              yellow_cards = reactable::colDef(
+                name = "YC",
+                align="center",
+                minWidth = 32
+              ),
+              red_cards = reactable::colDef(
+                name = "RC",
+                align="center",
+                minWidth = 32
+              )
             ),
             rowStyle = function(index) {
               if (line_up[index, "role"] == "sub") {
@@ -262,6 +285,8 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
             reactable::reactable(
               data = lge_tab,
               class = "reactable-text",
+              showSortIcon = FALSE,
+              defaultColDef = reactable::colDef(headerClass = "bar-sort-header"),
               defaultPageSize = 24,
               compact    = TRUE,
               bordered = FALSE,

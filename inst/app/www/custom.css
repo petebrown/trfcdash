@@ -90,3 +90,30 @@ div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
     display: none;
   }
 }
+
+/*******************************************************************************************/
+/* Beginning of Reactable CSS                                                              */
+/* https://glin.github.io/reactable/articles/cookbook/cookbook.html#custom-sort-indicators */
+/*******************************************************************************************/
+.bar-sort-header:hover,
+.bar-sort-header:focus {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Add a top bar on ascending sort */
+.bar-sort-header[aria-sort="ascending"] {
+  box-shadow: inset 0 3px 0 0 rgba(0, 0, 0, 0.6);
+}
+
+/* Add a bottom bar on descending sort */
+.bar-sort-header[aria-sort="descending"] {
+  box-shadow: inset 0 -3px 0 0 rgba(0, 0, 0, 0.6);
+}
+
+/* Add an animation when toggling between ascending and descending sort */
+.bar-sort-header {
+  transition: box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+/*******************************************************************************************/
+/* End of Reactable CSS                                                                    */
+/*******************************************************************************************/
