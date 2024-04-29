@@ -231,7 +231,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
               shirt_no = reactable::colDef(
                 name = "No.",
                 align = "center",
-                min_Width = 35
+                minWidth = 35
               ),
               menu_name = reactable::colDef(
                 name = "Player",
