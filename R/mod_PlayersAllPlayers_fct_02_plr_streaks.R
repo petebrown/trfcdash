@@ -94,6 +94,7 @@ output_all_plr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
 
   output_tab <- reactable::reactable(
     data = df,
+    searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = list("wins" = "desc"),
     defaultColDef = reactable::colDef(

@@ -79,6 +79,7 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
 
   reactable::reactable(
     data = df,
+    searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = list("total_apps" = "desc"),
     defaultColDef = reactable::colDef(
