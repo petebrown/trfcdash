@@ -1,22 +1,12 @@
 get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, game_range) {
 
-  scorers_df <- player_apps %>%
-    dplyr::filter(
-      goals_scored > 0
-    ) %>%
-    dplyr::select(
-      game_date,
-      menu_name,
-      goals_scored
-    )
-
   min_year <- year_range[1]
   max_year <- year_range[2]
 
   min_game_no <- game_range[1]
   max_game_no <- game_range[2]
 
-  df <- results_dataset %>%
+  filtered_df <- results_dataset %>%
     dplyr::filter(
       ssn_year >= min_year,
       ssn_year <= max_year,
@@ -33,7 +23,9 @@ get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup
         .default = outcome
       )
     ) %>%
-    dplyr::arrange(game_date) %>%
+    dplyr::arrange(game_date)
+
+  df <- filtered_df %>%
     dplyr::group_by(season) %>%
     dplyr::mutate(
       game_no = dplyr::row_number()
@@ -42,22 +34,44 @@ get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup
       game_no >= min_game_no,
       game_no <= max_game_no
     ) %>%
-    dplyr::ungroup() %>%
-    dplyr::left_join(
-      scorers_df,
-      by = c("game_date")
-    ) %>%
-    dplyr::group_by(
-      season
-    ) %>%
+    # dplyr::ungroup() %>%
+    # dplyr::left_join(
+    #   scorers_df,
+    #   by = c("game_date")
+    # ) %>%
+    # dplyr::group_by(
+    #   season
+    # ) %>%
     dplyr::summarise(
       played = dplyr::n(),
       scored = sum(goals_for > 0),
       av_gf = mean(goals_for),
-      diff_scorers = dplyr::n_distinct(menu_name),
+      # diff_scorers = dplyr::n_distinct(menu_name),
       blanks = sum(goals_for == 0),
       clean_sheets = sum(goals_against == 0),
       av_ga = mean(goals_against)
+    )
+
+  scorers_df <- player_apps %>%
+    dplyr::filter(
+      goals_scored > 0,
+      game_date %in% filtered_df$game_date
+    ) %>%
+    dplyr::select(
+      season,
+      menu_name
+    ) %>%
+    dplyr::group_by(
+      season
+    ) %>%
+    dplyr::summarize(
+      diff_scorers = dplyr::n_distinct(menu_name),
+    )
+
+  df <- df %>%
+    dplyr::left_join(
+      scorers_df,
+      by = c("season")
     )
 
   reactable::reactable(
