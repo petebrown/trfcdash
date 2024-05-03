@@ -72,6 +72,16 @@ get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup
     dplyr::left_join(
       scorers_df,
       by = c("season")
+    ) %>%
+    dplyr::select(
+      season,
+      played,
+      scored,
+      av_gf,
+      diff_scorers,
+      blanks,
+      clean_sheets,
+      av_ga
     )
 
   reactable::reactable(
