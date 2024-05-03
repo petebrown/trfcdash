@@ -21,9 +21,13 @@ filter_ssn_results <- function(selected_seasons) {
 
 
 map_club_to_crest <- function(club_name) {
-  img_path <- clubs_crests %>%
+  if (club_name == "Tranmere Rovers") {
+    img_path <- "./www/images/clubs/tranmere-rovers.svg"
+  } else {
+    img_path <- clubs_crests %>%
     dplyr::filter(club == club_name) %>%
     dplyr::pull(file_path)
+  }
 
   return (img_path)
 }
