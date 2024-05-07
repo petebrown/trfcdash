@@ -404,8 +404,8 @@ club_and_crest <- function(value, venue="A", img_size=32) {
 
   tagList(
     div(style="display: flex",
-        div(style = stringr::str_glue("display:flex; justify-content:center; width:{img_size+8}px;"), image),
-        div(style = "display: flex; text-align: left; margin: 10px;", text)
+        div(style = stringr::str_glue("display:flex; justify-content:center; width:{img_size + 8}px;"), image),
+        div(style = stringr::str_glue("display: flex; text-align: left; margin: {img_size * 0.2}px;"), text)
     )
   )
 }
