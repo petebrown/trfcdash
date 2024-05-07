@@ -389,10 +389,10 @@ popover_options <- function(ns) {
   )
 }
 
-club_and_crest <- function(value, venue="A") {
+club_and_crest <- function(value, venue="A", img_size=32) {
   image <- img(
     src = map_club_to_crest(value),
-    style = "height: 32px; margin: 2px;",
+    style = stringr::str_glue("height: {img_size}px; margin: 2px;"),
     alt = value
   )
 
@@ -404,7 +404,7 @@ club_and_crest <- function(value, venue="A") {
 
   tagList(
     div(style="display: flex",
-        div(style = "display:flex; justify-content: center; width:40px;", image),
+        div(style = stringr::str_glue("display:flex; justify-content:center; width:{img_size+8}px;"), image),
         div(style = "display: flex; text-align: left; margin: 10px;", text)
     )
   )

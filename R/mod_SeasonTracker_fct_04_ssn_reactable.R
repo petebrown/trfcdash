@@ -303,7 +303,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
                 Team = reactable::colDef(
                   minWidth = 200,
                   cell = function(value) {
-                    club_and_crest(value)
+                    club_and_crest(value, img_size=25)
                   }
                 ),
                 Pld = reactable::colDef(width = 50),
