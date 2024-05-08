@@ -127,10 +127,91 @@ goalscorers_by_game <- goals %>%
   )
 
 
+goals_by_game_with_mins <- goals %>%
+  dplyr::filter(
+    !is.na(goal_min)
+  ) %>%
+  dplyr::mutate(
+    goal_text = dplyr::case_when(
+      penalty == 1 ~ paste0(goal_min, " pen"),
+      own_goal == 1 & player_name != "OG" ~ paste0(goal_min, " og"),
+      .default = as.character(goal_min)
+    )
+  ) %>%
+  dplyr::group_by(
+    game_date,
+    player_name
+  ) %>%
+  dplyr::reframe(
+    min_goal = min(goal_min),
+    goal_text = paste0(goal_text, collapse = ", ")
+  ) %>%
+  dplyr::ungroup() %>%
+  unique() %>%
+  dplyr::arrange(
+    game_date,
+    min_goal
+  ) %>%
+  dplyr::mutate(
+    goal_text = paste0(player_name, " (", goal_text, ")")
+  ) %>%
+  dplyr::select(
+    game_date,
+    goal_text
+  ) %>%
+  dplyr::group_by(
+    game_date
+  ) %>%
+  dplyr::summarise(
+    text = paste(goal_text, collapse = ", "),
+    html = paste0("<p>", paste0(goal_text, collapse = "<br>"), "</p>"),
+    .groups = "drop"
+  )
+
+goals_by_game_without_mins <- goals %>%
+  dplyr::filter(
+    is.na(goal_min)
+  ) %>%
+  dplyr::group_by(
+    game_date,
+    player_name
+  ) %>%
+  dplyr::reframe(
+    n_goals = dplyr::n(),
+    goal_text = dplyr::case_when(
+      n_goals > 1 ~ paste0(player_name, " (", n_goals, ")"),
+      .default = player_name
+    )
+  ) %>%
+  dplyr::ungroup() %>%
+  unique() %>%
+  dplyr::select(
+    game_date,
+    goal_text
+  ) %>%
+  dplyr::group_by(
+    game_date
+  ) %>%
+  dplyr::summarise(
+    text = paste(goal_text, collapse = ", "),
+    html = paste0("<p>", paste0(goal_text, collapse = "<br>"), "</p>"),
+    .groups = "drop"
+  )
+
+
+goals_with_info <- dplyr::bind_rows(
+  goals_by_game_with_mins,
+  goals_by_game_without_mins
+) %>%
+  dplyr::arrange(
+    game_date
+  )
+
 usethis::use_data(
   goals,
   player_goals_per_game,
   goalscorers_by_game,
+  goals_with_info
 
   overwrite = TRUE
 )
