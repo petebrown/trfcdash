@@ -211,7 +211,7 @@ usethis::use_data(
   goals,
   player_goals_per_game,
   goalscorers_by_game,
-  goals_with_info
+  goals_with_info,
 
   overwrite = TRUE
 )
