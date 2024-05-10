@@ -312,11 +312,12 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
                 L = reactable::colDef(width = 40),
                 GF = reactable::colDef(width = 50),
                 GA = reactable::colDef(width = 50),
-                GD = reactable::colDef(width = 50,
-                                       # Function to add plus sign (+) before positive figures
-                                       cell = function(value) {
-                                         format_gd(value)
-                                       }
+                GD = reactable::colDef(
+                  width = 50,
+                  # Function to add plus sign (+) before positive figures
+                  cell = function(value) {
+                    format_gd(value)
+                  }
                 ),
                 Pts = reactable::colDef(width = 50),
                 league_tier = reactable::colDef(show = FALSE)

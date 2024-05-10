@@ -18,6 +18,8 @@ mod_PlayersByPlayer_ui <- function(id){
 
     uiOutput(ns("pl_image")),
 
+    uiOutput(ns("getty_image")),
+
     bslib::page_fluid(
       bslib::card(
         full_screen = TRUE,
@@ -106,6 +108,11 @@ mod_PlayersByPlayer_server <- function(id, player_name){
         height = 150,
         alt = player_name()
       )
+    })
+
+    output$getty_image <- renderUI({
+      HTML("<a id='4sZzeQhrQhRFqyL_LbTNBA' class='gie-slideshow' href='http://www.gettyimages.com/detail/676501898' target='_blank' style='color:#a7a7a7;text-decoration:none;font-weight:normal !important;border:none;display:inline-block;'>Embed from Getty Images</a><script>window.gie=window.gie||function(c){(gie.q=gie.q||[]).push(c)};gie(function(){gie.widgets.load({id:'4sZzeQhrQhRFqyL_LbTNBA',sig:'tBu0P23sDuSnveFSg_qJV2WLLvM9BNhOc33Tw6tTW8k=',w:'594px',h:'458px',items:'676501898,85308231,128786371,96280225,676838158',caption: false ,tld:'com',is360: false })});</script><script src='//embed-cdn.gettyimages.com/widgets.js' charset='utf-8' async></script>")
+
     })
 
 

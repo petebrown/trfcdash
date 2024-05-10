@@ -136,6 +136,11 @@ format_streak_cols <- function() {
 streaks_reactable <- function(df) {
   reactable::reactable(
     data = df,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
     defaultSortOrder = "desc",
     columns = format_streak_cols()
   )
@@ -474,4 +479,12 @@ plr_name_and_headshot <- function(value, img_size=45) {
         div(style = "display: flex; text-align: left; margin: 10px;", value)
     )
   )
+}
+
+getty_image_html <- function(id, photo_no, sig, width, height) {
+
+  html <- stringr::str_glue("<a id='{id}' class='gie-single' href='http://www.gettyimages.com/detail/{photo_no}' target='_blank' style='color:#a7a7a7;text-decoration:none;font-weight:normal !important;border:none;display:inline-block;'>Embed from Getty Images</a><script>window.gie=window.gie||function(c){{(gie.q=gie.q||[]).push(c)}};gie(function(){{gie.widgets.load({{id:'{id}',sig:'{sig}',w:'{width}px',h:'{height}px',items:'{photo_no}',caption: false ,tld:'com',is360: false }})}});</script><script src='//embed-cdn.gettyimages.com/widgets.js' charset='utf-8' async></script>")
+
+  HTML(html)
+
 }
