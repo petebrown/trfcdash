@@ -118,6 +118,7 @@ pl_win_pc <- function(pl_name) {
   df <- player_apps %>%
     dplyr::filter(
       menu_name == pl_name,
+      role == "starter"
     ) %>%
     dplyr::left_join(
       results_dataset %>% dplyr::select(game_date, game_type, outcome),

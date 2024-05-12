@@ -11,12 +11,15 @@ mod_PlayersByPlayer_ui <- function(id){
   ns <- NS(id)
   tagList(
 
-    uiOutput(ns("pl_quick_facts")),
-
-    h1(textOutput(ns("pl_name"))),
-    p(textOutput(ns("pl_dob"))),
+    div(
+      style = "text-align: center;",
+      h1(textOutput(ns("pl_name"))),
+      p(textOutput(ns("pl_dob"))),
+    ),
 
     uiOutput(ns("pl_image")),
+
+    uiOutput(ns("pl_quick_facts")),
 
     uiOutput(ns("getty_image")),
 
@@ -111,8 +114,26 @@ mod_PlayersByPlayer_server <- function(id, player_name){
     })
 
     output$getty_image <- renderUI({
-      HTML("<a id='4sZzeQhrQhRFqyL_LbTNBA' class='gie-slideshow' href='http://www.gettyimages.com/detail/676501898' target='_blank' style='color:#a7a7a7;text-decoration:none;font-weight:normal !important;border:none;display:inline-block;'>Embed from Getty Images</a><script>window.gie=window.gie||function(c){(gie.q=gie.q||[]).push(c)};gie(function(){gie.widgets.load({id:'4sZzeQhrQhRFqyL_LbTNBA',sig:'tBu0P23sDuSnveFSg_qJV2WLLvM9BNhOc33Tw6tTW8k=',w:'594px',h:'458px',items:'676501898,85308231,128786371,96280225,676838158',caption: false ,tld:'com',is360: false })});</script><script src='//embed-cdn.gettyimages.com/widgets.js' charset='utf-8' async></script>")
+      if (player_name() %in% getty_img_code$menu_name) {
 
+      img_code <- getty_img_code %>%
+        dplyr::filter(menu_name == player_name()) %>%
+        dplyr::pull(img_code)
+
+      bslib::card(
+        full_screen = FALSE,
+        bslib::card_header(
+          class = "bg-dark",
+          "Player Images"
+        ),
+        bslib::card_body(
+          class = "align-items-center",
+          HTML(img_code)
+        )
+      )
+    } else {
+        NULL
+      }
     })
 
 

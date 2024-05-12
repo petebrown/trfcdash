@@ -116,8 +116,17 @@ player_imgs <- data.frame(
     )
   )
 
+  getty_img_code <- vroom::vroom(
+    file = "https://raw.githubusercontent.com/petebrown/source-getty-players/main/getty-images.csv",
+    show_col_types = FALSE
+  ) %>%
+    dplyr::mutate(
+      menu_name = paste(surname, forename, sep=", ")
+    )
+
 
 usethis::use_data(
   player_imgs,
+  getty_img_code,
   overwrite = TRUE
 )
