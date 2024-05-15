@@ -11,15 +11,18 @@ mod_PlayersByPlayer_ui <- function(id){
   ns <- NS(id)
   tagList(
 
+    uiOutput(ns("pl_quick_facts")),
+
     div(
-      style = "text-align: center;",
-      h1(textOutput(ns("pl_name"))),
+      p(
+        textOutput(ns("pl_name"), inline=TRUE),
+        style = "text-align: center; font-size: 6rem; font-weight: 900;"
+      ),
+
       p(textOutput(ns("pl_dob"))),
     ),
 
     uiOutput(ns("pl_image")),
-
-    uiOutput(ns("pl_quick_facts")),
 
     uiOutput(ns("getty_image")),
 
