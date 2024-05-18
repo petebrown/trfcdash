@@ -299,14 +299,17 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
                 season = reactable::colDef(show = FALSE),
                 game_no = reactable::colDef(show = FALSE),
                 game_date = reactable::colDef(show = FALSE),
-                pos = reactable::colDef(name = "Pos", align = "left", width = 45),
+                pos = reactable::colDef(
+                  name = "Pos",
+                  align = "left",
+                  width = 37),
                 Team = reactable::colDef(
                   minWidth = 200,
                   cell = function(value) {
                     club_and_crest(value, img_size=25)
                   }
                 ),
-                Pld = reactable::colDef(width = 50),
+                Pld = reactable::colDef(width = 40),
                 W = reactable::colDef(width = 40),
                 D = reactable::colDef(width = 40),
                 L = reactable::colDef(width = 40),

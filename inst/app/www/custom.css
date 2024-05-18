@@ -35,6 +35,10 @@ button[id*="_sidebar_ui_1-"] {
 
 div.sidebar-content div[class^="selectize-"] {
   font-size: small;
+
+  input {
+    font-size: small;
+  }
 }
 
 #includePlayOffs {
@@ -50,7 +54,7 @@ div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
 }
 
 .reactable-details {
-  margin: 1rem;
+  margin: 1rem 0;
   padding: 1rem;
   width: fit-content;
   border: none;

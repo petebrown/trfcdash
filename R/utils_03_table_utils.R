@@ -425,7 +425,7 @@ generic_comp_logo <- function(competition, from_generic=FALSE) {
 
   tagList(
     div(style="display: flex",
-        div(style = "display:flex; justify-content: center; width:40px;", image),
+        div(style = "display:flex; justify-content:center; width:40px; align-items:center;", image),
         div(style = "display: flex; text-align: left; margin: 10px;", competition)
     )
   )

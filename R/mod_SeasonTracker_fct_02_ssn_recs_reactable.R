@@ -33,29 +33,39 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
     groupBy = if (inc_cup_games == "Yes") {
       c("season")
     },
+    defaultSortOrder = "desc",
     striped = FALSE,
     defaultPageSize = length(df$season),
     compact = TRUE,
     style = list(
       fontSize = "smaller",
-      fontWeight = 400,
+      fontWeight = 300,
       color = "black"
     ),
     rowStyle = if (inc_cup_games == "Yes") {
-      list(
-        fontWeight = 300,
-        color = "black"
-      )
+      reactable::JS("function(rowInfo) {
+        if (rowInfo.aggregated === true) {
+          return {
+            lineHeight: '2.5rem',
+            fontWeight: 400,
+            background: '#d7dee912'
+          }
+        }
+      }")
     },
     defaultColDef = reactable::colDef(
-      vAlign = "center"
+      vAlign = "center",
+      footerStyle = list(
+        lineHeight = "2.5rem",
+        fontWeight = 500
+      )
     ),
     columns = list(
       season = reactable::colDef(
         name = "Season",
         align = "left",
         sticky = "left",
-        minWidth = 90,
+        minWidth = 85,
         grouped = if (inc_cup_games == "Yes") {
           reactable::JS("function(cellInfo) {
             return cellInfo.value
@@ -66,7 +76,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         name = "Competition",
         align = "left",
         sticky = "left",
-        minWidth = 110,
+        minWidth = 130,
         aggregate = if (inc_cup_games == "Yes") {
           reactable::JS("function(values, rows) {
             let comps = 0
@@ -82,7 +92,12 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         },
         footer = if (n_seasons > 1) {
           "Average"
-        }
+        },
+        footerStyle = list(
+          padding = "0.6rem 0",
+          fontWeight = 400,
+          textAlign = "right"
+        )
       ),
       P = reactable::colDef(
         name = "P",
