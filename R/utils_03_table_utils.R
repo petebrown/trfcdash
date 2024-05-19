@@ -394,6 +394,41 @@ popover_options <- function(ns) {
   )
 }
 
+wins_popover_options <- function(ns) {
+  bslib::popover(
+    title = "Display Options",
+    bsicons::bs_icon("gear"),
+    sliderInput(
+      inputId = ns("wins_react_min_diff"),
+      label = tags$b("Minimum win size:"),
+      min = 1,
+      max = 10,
+      value = 4,
+      sep = "",
+      ticks = FALSE,
+      step = 1
+    )
+  )
+}
+
+defeats_popover_options <- function(ns) {
+  bslib::popover(
+    title = "Display Options",
+    bsicons::bs_icon("gear"),
+    sliderInput(
+      inputId = ns("defeats_react_min_diff"),
+      label = tags$b("Minimum defeat size:"),
+      min = 1,
+      max = 10,
+      value = 4,
+      sep = "",
+      ticks = FALSE,
+      step = 1
+    )
+  )
+}
+
+
 club_and_crest <- function(value, venue="A", img_size=32) {
   image <- img(
     src = map_club_to_crest(value),
@@ -471,6 +506,29 @@ plr_name_and_headshot <- function(value, img_size=45) {
     src = map_plr_to_headshot(value),
     style = stringr::str_glue("height: {img_size}px; margin: 2px;"),
     alt = value
+  )
+
+  tagList(
+    div(style="display: flex",
+        div(style = stringr::str_glue("display:flex; justify-content: center; width:{img_size+5}px;"), image),
+        div(style = "display: flex; text-align: left; margin: 10px;", value)
+    )
+  )
+}
+
+
+mgr_name_and_headshot <- function(value, img_size=45) {
+
+  mgr_name <- dplyr::case_when(
+    stringr::str_detect(value, "Sheedy") ~ "Kevin Sheedy",
+    stringr::str_detect(value, "McAteer") ~ "Jason McAteer",
+    TRUE ~ value
+  )
+
+  image <- img(
+    src = map_mgr_to_headshot(mgr_name),
+    style = stringr::str_glue("height: {img_size}px; margin: 2px;"),
+    alt = mgr_name
   )
 
   tagList(

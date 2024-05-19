@@ -55,6 +55,30 @@ mod_SeasonOverviews_ui <- function(id){
       )
     ),
 
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark d-flex justify-content-between",
+        "Biggest Wins",
+        wins_popover_options(ns)
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("biggest_wins"), height = "auto"),
+      )
+    ),
+
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark d-flex justify-content-between",
+        "Biggest Defeats",
+        defeats_popover_options(ns)
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("biggest_defeats"), height = "auto"),
+      )
+    ),
+
     bslib::layout_column_wrap(
       width = 1/2,
       bslib::card(
@@ -118,6 +142,30 @@ mod_SeasonOverviews_server <- function(id, year_range, league_tiers, includePlay
       reactable::renderReactable(
         get_attack_and_defend(
           year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), game_range()
+        )
+      )
+    }
+
+    min_win_diff <- reactive({
+      input$wins_react_min_diff
+    })
+
+    output$biggest_wins <- {
+      reactable::renderReactable(
+        get_biggest_wins(
+          year_range(), league_tiers(), includePlayOffs(), cup_comps(), venue_options(), game_range(), min_win_diff()
+        )
+      )
+    }
+
+    min_defeat_diff <- reactive({
+      input$defeats_react_min_diff
+    })
+
+    output$biggest_defeats <- {
+      reactable::renderReactable(
+        get_biggest_defeats(
+          year_range(), league_tiers(), includePlayOffs(), cup_comps(), venue_options(), game_range(), min_defeat_diff()
         )
       )
     }

@@ -125,8 +125,28 @@ player_imgs <- data.frame(
     )
 
 
+manager_imgs <- data.frame(
+  manager_name = sort(unique(managers$manager_name))
+) %>%
+  dplyr::mutate(
+    img = stringr::str_to_lower(manager_name) %>%
+      stringr::str_replace_all(" ", "-") %>%
+      stringr::str_replace_all("'", ""),
+    file_path = dplyr::case_when(
+      file.exists(paste0("./inst/app/www/images/managers/", img, ".png")) ~ paste0("./www/images/managers/", img, ".png"),
+      file.exists(paste0("./inst/app/www/images/managers/", img, ".jpg")) ~ paste0("./www/images/managers/", img, ".jpg"),
+      TRUE ~ "./www/images/crest.svg"
+    ),
+    headshot_file_path = dplyr::case_when(
+      file.exists(paste0("./inst/app/www/images/managers/", img, ".png")) ~ paste0("./www/images/managers/", img, ".png"),
+      file.exists(paste0("./inst/app/www/images/managers/", img, ".jpg")) ~ paste0("./www/images/managers/", img, ".jpg"),
+      TRUE ~ "./www/images/crest.svg"
+    )
+  )
+
 usethis::use_data(
   player_imgs,
   getty_img_code,
+  manager_imgs,
   overwrite = TRUE
 )

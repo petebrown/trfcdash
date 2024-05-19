@@ -89,3 +89,12 @@ map_plr_to_headshot <- function(player) {
 
   return (img_path)
 }
+
+map_mgr_to_headshot <- function(manager) {
+
+  img_path <- manager_imgs %>%
+    dplyr::filter(manager_name == manager) %>%
+    dplyr::pull(headshot_file_path)
+
+  return (img_path)
+}
