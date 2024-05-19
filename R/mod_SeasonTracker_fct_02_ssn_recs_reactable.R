@@ -45,10 +45,18 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
     rowStyle = if (inc_cup_games == "Yes") {
       reactable::JS("function(rowInfo) {
         if (rowInfo.aggregated === true) {
-          return {
-            lineHeight: '2.5rem',
-            fontWeight: 400,
-            background: '#d7dee912'
+          console.log(rowInfo)
+          if (rowInfo.isExpanded === true) {
+            return {
+              lineHeight: '2.5rem',
+              fontWeight: 400,
+              background: '#d7dee912'
+            }
+          } else {
+            return {
+              lineHeight: '2.5rem',
+              fontWeight: 400
+            }
           }
         }
       }")
