@@ -15,7 +15,7 @@ app_ui <- function(request) {
         fg = "#385580",
         bg = "white",
         primary = "#385580",
-        "enable-rounded" = FALSE
+        "enable-rounded" = TRUE
       ),
       title = div(
         img(
@@ -90,7 +90,7 @@ app_ui <- function(request) {
         bslib::nav_panel("Season Overviews", mod_SeasonOverviews_ui("SeasonOverviews_ui_1"))
       ),
       bslib::nav_menu(
-        title = "Head-to-Head Records",
+        title = "H2H",
         bslib::nav_panel("All head-to-head records", mod_Head2HeadAllOpponents_ui("Head2HeadAllOpponents_ui_1")),
         bslib::nav_panel("Record vs. specific team", mod_Head2HeadByOpponent_ui("Head2HeadByOpponent_ui_1"))
       ),
@@ -109,7 +109,7 @@ app_ui <- function(request) {
         bslib::nav_panel("Overall attendance stats", mod_AttendancesOverview_ui("AttendancesOverview_ui_1")),
         bslib::nav_panel("Attendance stats by season", mod_AttendancesBySeason_ui("AttendancesBySeason_ui_1"))
       ),
-      bslib::nav_panel("On This Day", mod_OnThisDay_ui("OnThisDay_ui_1"))
+      bslib::nav_panel("OTD", mod_OnThisDay_ui("OnThisDay_ui_1"))
     )
   )
 }

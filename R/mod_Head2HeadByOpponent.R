@@ -11,9 +11,20 @@ mod_Head2HeadByOpponent_ui <- function(id){
   ns <- NS(id)
   tagList(
 
-    uiOutput(ns("club_crest")),
-
-    h1(textOutput(ns("opponent")), class = "opponent-title"),
+    div(
+      class="row",
+      style="margin-bottom: 2rem;",
+      div(
+        class="col-sm-auto d-flex align-items-center",
+        style="text-align: left; margin-left: 1rem",
+        h1(textOutput(ns("opponent")), class = "display-1 opponent-title")
+      ),
+      div(
+        class="col align-items-center",
+        style="margin-right: 1rem;",
+        uiOutput(ns("club_crest"))
+      )
+    ),
 
     bslib::card(
       full_screen = TRUE,
@@ -76,8 +87,9 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
 
       img(
         src = file_path,
-        height = 150,
-        alt = opponent()
+        height = 200,
+        alt = opponent(),
+        class = "float-right"
       )
     })
 
