@@ -53,9 +53,13 @@ get_goal_margins <- function(year_range, league_tiers, includePlayOffs, cup_comp
 
   reactable::reactable(
     data = df,
+    defaultColDef = reactable::colDef(
+      minWidth = 60
+    ),
     columns = list(
       season = reactable::colDef(
-        name = "Season"
+        name = "Season",
+        minWidth = 100
       ),
       plus_1 = reactable::colDef(
         name = "+1"

@@ -54,6 +54,17 @@ mod_Head2HeadByOpponent_ui <- function(id){
       full_screen = TRUE,
       bslib::card_header(
         class = "bg-dark",
+        "Streaks"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("h2h_streaks"))
+      )
+    ),
+
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark",
         "Managerial Records"
       ),
       bslib::card_body(
@@ -154,6 +165,14 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
               }
             )
           )
+        )
+      )
+    }
+
+    output$h2h_streaks <- {
+      reactable::renderReactable(
+        get_streaks_by_team(
+          opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
         )
       )
     }
