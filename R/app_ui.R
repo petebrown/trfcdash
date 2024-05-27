@@ -80,7 +80,7 @@ app_ui <- function(request) {
         ),
         # On This Day
         shiny::conditionalPanel(
-          "input.nav === 'On This Day'",
+          "input.nav === 'OTD'",
           OnThisDay_sidebar()
         )
       ),

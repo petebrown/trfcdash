@@ -45,7 +45,6 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
     rowStyle = if (inc_cup_games == "Yes") {
       reactable::JS("function(rowInfo) {
         if (rowInfo.aggregated === true) {
-          console.log(rowInfo)
           if (rowInfo.isExpanded === true) {
             return {
               lineHeight: '2.5rem',
