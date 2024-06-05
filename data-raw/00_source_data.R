@@ -615,7 +615,19 @@ lge_tables <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/scrape-latest-table/main/data/lge_tables.csv",
   show_col_types = FALSE,
   col_select = -("url")
-)
+) %>%
+  dplyr::mutate(
+    GD = GF - GA
+  ) %>%
+  dplyr::relocate(
+    GD,
+    .after = GA
+  ) %>%
+  dplyr::arrange(
+    season,
+    game_no,
+    pos
+  )
 
 
 lge_tables_by_venue <- vroom::vroom(
