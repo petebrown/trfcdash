@@ -47,8 +47,15 @@ output_h2h_records <- function(year_range, league_tiers, includePlayOffs, cup_co
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = "win_pc",
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(length(df$opposition)),
     defaultColDef = reactable::colDef(
       vAlign = "center"
+    ),
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
     ),
     columns = list(
       opposition = reactable::colDef(

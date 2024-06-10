@@ -108,10 +108,16 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
       opponent()
     })
 
+    base_df <- reactive({
+      base_h2hByOpponenet_df(
+        opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
+      )
+    })
+
     output$h2h_plot <- {
       renderPlot(
         plot_h2h_summary(
-          opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
+          base_df()
         )
       )
     }
@@ -120,7 +126,7 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
       reactable::renderReactable(
         reactable::reactable(
           get_h2h_summary(
-            opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
+            base_df()
           ),
           defaultColDef = reactable::colDef(
             align = "center",
@@ -141,7 +147,7 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
     output$h2h_venue_plot <- {
       renderPlot(
         plot_h2h_by_venue(
-          opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
+          base_df()
         )
       )
     }
@@ -150,7 +156,12 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
       reactable::renderReactable(
         reactable::reactable(
           get_h2h_by_venue(
-            opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
+            base_df()
+          ),
+          class = "apps-reactable",
+          style = list(
+            fontSize = "0.9rem",
+            fontWeight = 300
           ),
           columns = list(
             venue = reactable::colDef(
@@ -181,7 +192,7 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
       reactable::renderReactable(
         mgr_img_table(
           get_h2h_man_summary(
-            opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
+            base_df()
           ),
           col_sort = c("win_pc", "P")
         )
@@ -191,7 +202,7 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
     output$h2h_meetings <- {
       reactable::renderReactable(
         get_h2h_meetings(
-          opponent(), year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options()
+          base_df()
         )
       )
     }

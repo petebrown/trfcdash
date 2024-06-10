@@ -131,7 +131,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
         width = 100
       ),
       game_no = reactable::colDef(
-        name = "Game\nNo.",
+        name = "Game",
         align = "left",
         width = 70
       ),

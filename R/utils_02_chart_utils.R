@@ -167,6 +167,11 @@ mgr_img_table <- function(df, col_sort="P") {
     defaultSorted = c(
       col_sort
     ),
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
     columns = list(
       manager = reactable::colDef(
         name = "",

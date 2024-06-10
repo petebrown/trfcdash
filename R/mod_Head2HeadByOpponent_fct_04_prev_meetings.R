@@ -1,20 +1,4 @@
-get_h2h_meetings <- function(opponent, year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options) {
-
-  min_year <- year_range[1]
-  max_year <- year_range[2]
-
-  df <- results_dataset %>%
-    dplyr::filter(
-      opposition == opponent,
-      ssn_year >= min_year,
-      ssn_year <= max_year,
-      league_tier %in% league_tiers | generic_comp %in% cup_comps,
-      dplyr::case_when(
-        includePlayOffs == "No" ~ !grepl("play-off", competition, ignore.case = TRUE),
-        TRUE ~ TRUE
-      ),
-      venue %in% venue_options
-    )
+get_h2h_meetings <- function(df) {
 
   selected_seasons <- unique(df$season)
 
@@ -69,6 +53,11 @@ get_h2h_meetings <- function(opponent, year_range, league_tiers, includePlayOffs
     borderless = TRUE,
     filterable = FALSE,
     resizable = TRUE,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
     defaultColDef = reactable::colDef(
       vAlign = "center"
     ),

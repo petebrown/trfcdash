@@ -10,23 +10,27 @@
 mod_PlayersByPlayer_ui <- function(id){
   ns <- NS(id)
   tagList(
+    bslib::page_fluid(
 
-    uiOutput(ns("pl_quick_facts")),
+      uiOutput(ns("pl_quick_facts")),
 
-    div(
-      p(
-        textOutput(ns("pl_name"), inline=TRUE),
-        style = "text-align: center; font-size: 6rem; font-weight: 900;"
+      div(
+        p(
+          textOutput(ns("pl_name"), inline=TRUE),
+          style = "text-align: center; font-size: 6rem; font-weight: 900;"
+        ),
+
+        p(textOutput(ns("pl_dob"))),
+        p("[Place of birth]"),
+        p("[Position]"),
+        p("[Nationality]"),
+        p("[Height]"),
+        p("[No. spells]"),
+        p("[Date signed]")
       ),
 
-      p(textOutput(ns("pl_dob"))),
-    ),
+      uiOutput(ns("pl_image")),
 
-    uiOutput(ns("pl_image")),
-
-    uiOutput(ns("getty_image")),
-
-    bslib::page_fluid(
       bslib::card(
         full_screen = TRUE,
         bslib::card_header(
@@ -34,9 +38,8 @@ mod_PlayersByPlayer_ui <- function(id){
           "Summary"
         ),
         reactable::reactableOutput(ns("pl_summary"))
-      )
-    ),
-    bslib::page_fluid(
+      ),
+
       bslib::card(
         full_screen = TRUE,
         bslib::card_header(
@@ -44,9 +47,8 @@ mod_PlayersByPlayer_ui <- function(id){
           "By Season"
         ),
         reactable::reactableOutput(ns("pl_ssn_reactable"))
-      )
-    ),
-    bslib::page_fluid(
+      ),
+
       bslib::card(
         full_screen = TRUE,
         bslib::card_header(
@@ -54,9 +56,8 @@ mod_PlayersByPlayer_ui <- function(id){
           "By Competition"
         ),
         reactable::reactableOutput(ns("pl_comp_reactable"))
-      )
-    ),
-    bslib::page_fluid(
+      ),
+
       bslib::card(
         full_screen = TRUE,
         bslib::card_header(
@@ -64,9 +65,8 @@ mod_PlayersByPlayer_ui <- function(id){
           "By League Tier"
         ),
         reactable::reactableOutput(ns("pl_summary_by_tier"))
-      )
-    ),
-    bslib::page_fluid(
+      ),
+
       bslib::card(
         full_screen = TRUE,
         bslib::card_header(
@@ -74,9 +74,8 @@ mod_PlayersByPlayer_ui <- function(id){
           "By Opponent"
         ),
         reactable::reactableOutput(ns("pl_summary_by_oppo"))
-      )
-    ),
-    bslib::page_fluid(
+      ),
+
       bslib::card(
         full_screen = TRUE,
         bslib::card_header(
@@ -84,9 +83,8 @@ mod_PlayersByPlayer_ui <- function(id){
           "Appearances"
         ),
         reactable::reactableOutput(ns("player_apps"))
-      )
-    ),
-    bslib::page_fluid(
+      ),
+
       bslib::card(
         full_screen = TRUE,
         bslib::card_header(
@@ -94,7 +92,9 @@ mod_PlayersByPlayer_ui <- function(id){
           "By Manager"
         ),
         reactable::reactableOutput(ns("pl_summary_by_mgr"))
-      )
+      ),
+
+      uiOutput(ns("getty_image"))
     )
   )
 }

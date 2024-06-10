@@ -222,6 +222,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
         },
+        na = "-",
         align = "center",
         minWidth = 50,
         footer = if (n_seasons > 1) {
@@ -243,6 +244,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
         },
+        na = "-",
         align = "right",
         minWidth = 60,
         format = reactable::colFormat(

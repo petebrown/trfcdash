@@ -220,12 +220,16 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
 
             if (isFinite(mins_per_goal)) {
               return Number(mins_per_goal)
+            } else {
+              return '-'
             }
           }")
         },
         cell = function(value) {
           if (!is.infinite(value) && !is.na(value)) {
             return (round(value, 0))
+          } else {
+            return ('-')
           }
         }
       ),
@@ -236,7 +240,6 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         format = reactable::colFormat(
           digits = 1
         ),
-        na = "-",
         aggregate = if (inc_cup_games == "Yes") {
           reactable::JS("function(values, rows) {
             let mins_played = 0
@@ -249,12 +252,16 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
 
             if (isFinite(games_per_goal)) {
               return Number(games_per_goal.toFixed(2))
+            } else {
+              return '-'
             }
           }")
         },
         cell = function(value) {
           if (!is.infinite(value) && !is.na(value)) {
             return (round(value, 2))
+          } else {
+            return ('-')
           }
         }
       ),
@@ -280,6 +287,8 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
 
             if (isFinite(win_pc)) {
               return Number(win_pc)
+            } else {
+              return '-'
             }
           }")
         },
