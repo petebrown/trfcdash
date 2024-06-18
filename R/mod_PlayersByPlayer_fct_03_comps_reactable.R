@@ -65,7 +65,6 @@ output_plr_comps_reactable <- function(inp_player_name) {
     borderless = TRUE,
     defaultPageSize = 20,
     filterable = FALSE,
-    striped = TRUE,
     resizable = TRUE,
     columns = list(
       generic_comp = reactable::colDef(

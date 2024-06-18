@@ -116,7 +116,12 @@ plot_h2h_by_venue <- function(df) {
         rotate_margins = NA,
       ),
       panel.grid.major = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank()
+      panel.grid.minor = ggplot2::element_blank(),
+      strip.text = ggplot2::element_text(
+        family = "Helvetica Neue",
+        size = 14,
+        face = "bold"
+      )
     ) +
     # Remove y-axis labels
     ggplot2::scale_y_continuous(

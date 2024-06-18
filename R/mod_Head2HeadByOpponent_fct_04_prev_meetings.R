@@ -46,13 +46,6 @@ get_h2h_meetings <- function(df) {
 
   reactable::reactable(
     data = top_level,
-    defaultPageSize = 10,
-    fullWidth = TRUE,
-    compact = TRUE,
-    searchable = TRUE,
-    borderless = TRUE,
-    filterable = FALSE,
-    resizable = TRUE,
     class = "apps-reactable",
     style = list(
       fontSize = "0.9rem",
@@ -61,14 +54,23 @@ get_h2h_meetings <- function(df) {
     defaultColDef = reactable::colDef(
       vAlign = "center"
     ),
+    showPageSizeOptions = TRUE,
+    defaultPageSize = 10,
+    pageSizeOptions = get_page_nos(length(top_level$season)),
+    fullWidth = TRUE,
+    compact = TRUE,
+    searchable = TRUE,
+    borderless = TRUE,
+    filterable = FALSE,
+    resizable = TRUE,
     columns = list(
       season = reactable::colDef(
         name = "Season",
         minWidth = 100
       ),
       game_no = reactable::colDef(
-        name = "Game\nNo.",
-        align = "left",
+        name = "Game",
+        align = "center",
         minWidth = 65
       ),
       game_date = reactable::colDef(
@@ -83,11 +85,30 @@ get_h2h_meetings <- function(df) {
       ),
       opposition = reactable::colDef(
         name = "Opponent",
-        minWidth = 180
+        minWidth = 180,
+        cell = function(value, index) {
+          venue <- top_level$venue[index]
+
+          if (venue == "H") {
+            text = toupper(value)
+          } else {
+            text = value
+          }
+        },
+        style = function(value, index) {
+          if (top_level$venue[index] == "H") {
+            font_weight = "450"
+          } else {
+            font_weight = "300"
+          }
+          list(
+            fontWeight = font_weight
+          )
+        }
       ),
       outcome = reactable::colDef(
         name = "Res",
-        align = "left",
+        align = "center",
         minWidth = 45
       ),
       score = reactable::colDef(
@@ -117,14 +138,6 @@ get_h2h_meetings <- function(df) {
       )
     ),
     rowClass = "results-row",
-    rowStyle = function(index) {
-      if (top_level[index, "venue"] == "H") {
-        list(
-          # background = "rgb(248, 251, 253)",
-          fontWeight = "500"
-        )
-      }
-    },
     details = function(index) {
       line_up = second_level[second_level$game_date == top_level$game_date[index], ]
       lge_tab = lge_tabs[lge_tabs$game_date == top_level$game_date[index], ]

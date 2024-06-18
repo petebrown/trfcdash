@@ -59,9 +59,7 @@ output_pl_summary_by_opp <- function(inp_player_name) {
       Opposition = opposition,
       "Starts\n(sub)" = app_sums,
       "Win %" = win_pc,
-      "Mins\nplayed" = mins_played,
-      "Mins\nper goal" = mins_per_gl,
-      "Games\nper goal" = games_per_gl
+      "Mins\nplayed" = mins_played
     ) %>%
     dplyr::select(
       where(
@@ -70,6 +68,28 @@ output_pl_summary_by_opp <- function(inp_player_name) {
     )
 
   reactable::reactable(
-    df
+    df,
+    columns = list(
+      mins_per_gl = reactable::colDef(
+        name = "Mins per goal",
+        cell = function(value) {
+          if (is.na(value)) {
+            return ('-')
+          } else {
+            return (round(value, 1))
+          }
+        }
+      ),
+      games_per_gl = reactable::colDef(
+        name = "Games per goal",
+        cell = function(value) {
+          if (is.na(value)) {
+            return ('-')
+          } else {
+            return (round(value, 1))
+          }
+        }
+      )
+    )
   )
 }

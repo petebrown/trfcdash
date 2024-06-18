@@ -60,7 +60,7 @@ mod_SeasonOverviews_ui <- function(id){
       bslib::card_header(
         class = "bg-dark d-flex justify-content-between",
         "Biggest Wins",
-        wins_popover_options(ns)
+        wins_popover_options(ns("wins_react_min_diff"))
       ),
       bslib::card_body(
         reactable::reactableOutput(ns("biggest_wins"), height = "auto"),
@@ -72,7 +72,7 @@ mod_SeasonOverviews_ui <- function(id){
       bslib::card_header(
         class = "bg-dark d-flex justify-content-between",
         "Biggest Defeats",
-        defeats_popover_options(ns)
+        defeats_popover_options(ns("defeats_react_min_diff"))
       ),
       bslib::card_body(
         reactable::reactableOutput(ns("biggest_defeats"), height = "auto"),

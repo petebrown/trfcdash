@@ -394,16 +394,16 @@ popover_options <- function(ns) {
   )
 }
 
-wins_popover_options <- function(ns) {
+wins_popover_options <- function(input_id, min_goals=4) {
   bslib::popover(
     title = "Display Options",
     bsicons::bs_icon("gear"),
     sliderInput(
-      inputId = ns("wins_react_min_diff"),
+      inputId = input_id,
       label = tags$b("Minimum win size:"),
       min = 1,
       max = 10,
-      value = 4,
+      value = min_goals,
       sep = "",
       ticks = FALSE,
       step = 1
@@ -411,16 +411,16 @@ wins_popover_options <- function(ns) {
   )
 }
 
-defeats_popover_options <- function(ns) {
+defeats_popover_options <- function(input_id, min_goals=4) {
   bslib::popover(
     title = "Display Options",
     bsicons::bs_icon("gear"),
     sliderInput(
-      inputId = ns("defeats_react_min_diff"),
+      inputId = input_id,
       label = tags$b("Minimum defeat size:"),
       min = 1,
       max = 10,
-      value = 4,
+      value = min_goals,
       sep = "",
       ticks = FALSE,
       step = 1

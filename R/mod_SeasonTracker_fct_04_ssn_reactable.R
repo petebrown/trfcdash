@@ -111,8 +111,11 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
 
   reactable::reactable(
     data = top_level,
-    class = "reactable-text",
-    style = "font-size: smaller",
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
     defaultColDef = reactable::colDef(
       vAlign = "center"
     ),
@@ -132,7 +135,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
       ),
       game_no = reactable::colDef(
         name = "Game",
-        align = "left",
+        align = "center",
         width = 70
       ),
       game_date = reactable::colDef(
@@ -180,7 +183,6 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
         vAlign = "center",
         cell = function(value, index) {
           # generic_comp_logo(value)
-
           season <- top_level$season[index]
           specific_comp_logo(value, season)
         }

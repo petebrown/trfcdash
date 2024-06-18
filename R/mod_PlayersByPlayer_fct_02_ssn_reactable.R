@@ -44,8 +44,6 @@ output_plr_ssn_reactable <- function(inp_player_name) {
     searchable = TRUE,
     borderless = TRUE,
     defaultPageSize = 20,
-    filterable = FALSE,
-    striped = TRUE,
     resizable = TRUE,
     columns = list(
       season = reactable::colDef(

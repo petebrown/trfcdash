@@ -47,10 +47,7 @@ output_player_summary <- function(inp_player_name) {
       mins_played = sum(mins_played)
     ) %>%
     dplyr::mutate(
-      total_apps = starts + sub_apps,
-      debut = as.Date(debut, format = '%d-%m-%Y'),
-      debut = format(debut, "%d/%m/%Y"),
-      mins_played = format(mins_played, nsmall = 0, big.mark = ",")
+      total_apps = starts + sub_apps
     ) %>%
     dplyr::select(
       total_apps,
@@ -67,10 +64,25 @@ output_player_summary <- function(inp_player_name) {
       Starts = starts,
       "Sub Apps" = sub_apps,
       Goals = goals,
-      Debut = debut,
-      "Mins played" = mins_played,
       "Yellow cards" = yellow_cards,
       "Red cards" = red_cards
     ) %>%
-    reactable::reactable()
+    reactable::reactable(
+      columns = list(
+        mins_played = reactable::colDef(
+          name = "Mins played",
+          format = reactable::colFormat(
+            separators = TRUE
+          )
+        ),
+        debut = reactable::colDef(
+          name = "Debut",
+          align = "right",
+          format = reactable::colFormat(
+            date = TRUE,
+            locales = 'en-GB'
+          )
+        )
+      )
+    )
 }

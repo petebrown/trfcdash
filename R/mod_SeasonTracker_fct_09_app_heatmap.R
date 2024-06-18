@@ -227,6 +227,13 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           if (!is.na(value)) {
             list(background = "gold")
           }
+        },
+        cell = function(value) {
+          if (is.na(value)) {
+            '-'
+          } else {
+            round(value, 0)
+          }
         }
       ),
       games_per_goal = reactable:: colDef(
@@ -246,6 +253,13 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           if (!is.na(value) & !is.infinite(value)) {
             list(background = "lightblue")
           }
+        },
+        cell = function(value) {
+          if (is.na(value)) {
+            '-'
+          } else {
+            round(value, 1)
+          }
         }
       ),
       ppg = reactable:: colDef(
@@ -263,6 +277,13 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         style = function(value) {
           if (!is.na(value)) {
             list(background = "lightblue")
+          }
+        },
+        cell = function(value) {
+          if (is.na(value)) {
+            '-'
+          } else {
+            round(value, 2)
           }
         }
       )

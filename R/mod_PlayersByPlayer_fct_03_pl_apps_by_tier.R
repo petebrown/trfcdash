@@ -76,6 +76,7 @@ output_pl_summary_by_tier <- function(inp_player_name) {
     data = df,
     pagination = FALSE,
     compact = TRUE,
+    resizable = TRUE,
     style = list(
       fontSize = "smaller",
       fontWeight = 400,

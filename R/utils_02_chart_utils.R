@@ -172,6 +172,10 @@ mgr_img_table <- function(df, col_sort="P") {
       fontSize = "0.9rem",
       fontWeight = 300
     ),
+    showPageSizeOptions = TRUE,
+    defaultPageSize = 10,
+    pageSizeOptions = get_page_nos(length(df$mgr_name)),
+    searchable = TRUE,
     columns = list(
       manager = reactable::colDef(
         name = "",

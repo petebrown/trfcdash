@@ -81,6 +81,45 @@ mod_Head2HeadByOpponent_ui <- function(id){
       bslib::card_body(
         reactable::reactableOutput(ns("h2h_meetings"))
       )
+    ),
+
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark d-flex justify-content-between",
+        "Player Stats"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("plr_stats_vs_opp"), height = "auto"),
+        p(
+          style = "text-align: right; color: grey; font-size: small",
+          "Games per goal based on total minutes played. Win percentage based on games started."
+        )
+      )
+    ),
+
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark d-flex justify-content-between",
+        "Biggest Wins",
+        wins_popover_options(ns("wins_by_opp_react_min_diff"), min_goals=1)
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("h2h_biggest_wins"), height = "auto"),
+      )
+    ),
+
+    bslib::card(
+      full_screen = TRUE,
+      bslib::card_header(
+        class = "bg-dark d-flex justify-content-between",
+        "Biggest Defeats",
+        defeats_popover_options(ns("defeats_by_opp_react_min_diff"), min_goals=1)
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("h2h_biggest_defeats"), height = "auto"),
+      )
     )
 
   )
@@ -203,6 +242,38 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
       reactable::renderReactable(
         get_h2h_meetings(
           base_df()
+        )
+      )
+    }
+
+    output$plr_stats_vs_opp <- {
+      reactable::renderReactable(
+        get_h2h_player_stats(
+          base_df()
+        )
+      )
+    }
+
+    min_win_diff <- reactive({
+      input$wins_by_opp_react_min_diff
+    })
+
+    output$h2h_biggest_wins <- {
+      reactable::renderReactable(
+        get_biggest_wins_by_opp(
+          base_df(), min_win_diff()
+        )
+      )
+    }
+
+    min_defeat_diff <- reactive({
+      input$defeats_by_opp_react_min_diff
+    })
+
+    output$h2h_biggest_defeats <- {
+      reactable::renderReactable(
+        get_biggest_defeats_by_opp(
+          base_df(), min_defeat_diff()
         )
       )
     }
