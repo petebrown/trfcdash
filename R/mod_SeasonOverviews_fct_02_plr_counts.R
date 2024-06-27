@@ -11,12 +11,12 @@ get_players_used <- function (df) {
     ) %>%
     dplyr::group_by(season) %>%
     dplyr::summarise(
-      n_players = dplyr::n(),
       starters = sum(n_starts > 0),
-      sub_only = sum(n_starts == 0 & n_sub > 0)
+      sub_only = sum(n_starts == 0 & n_sub > 0),
+      n_players = dplyr::n()
     ) %>%
     dplyr::arrange(
-      dplyr::desc(starters)
+      dplyr::desc(n_players)
     )
 }
 
@@ -69,11 +69,26 @@ get_season_plr_stats <- function(year_range, league_tiers, includePlayOffs, cup_
 
   reactable::reactable(
     data = df,
+    searchable = TRUE,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(length(df$season)),
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
     defaultSortOrder = "desc",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     defaultSorted = c("n_players"),
     columns = list(
       season = reactable::colDef(
-        name = "Season"
+        name = "Season",
+        width = 75
       ),
       n_players = reactable::colDef(
         name = "Total Players Used"

@@ -60,16 +60,31 @@ output_pl_summary_by_opp <- function(inp_player_name) {
       "Starts\n(sub)" = app_sums,
       "Win %" = win_pc,
       "Mins\nplayed" = mins_played
-    ) %>%
-    dplyr::select(
-      where(
-        ~sum(!is.na(.x)) > 0
-      )
     )
 
   reactable::reactable(
     df,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
+    searchable = TRUE,
+    defaultSortOrder = "desc",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     columns = list(
+      Opposition = reactable::colDef(
+        name = "Opposition",
+        minWidth = 130,
+        cell = function(value) {
+          club_and_crest(value)
+        }
+      ),
       mins_per_gl = reactable::colDef(
         name = "Mins per goal",
         cell = function(value) {

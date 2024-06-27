@@ -94,22 +94,31 @@ output_all_plr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
 
   output_tab <- reactable::reactable(
     data = df,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = list("wins" = "desc"),
     defaultColDef = reactable::colDef(
-      vAlign = "center"
+      vAlign = "center",
+      headerClass = "bar-sort-header"
     ),
+    showSortIcon = FALSE,
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
-        minWidth = 150,
+        minWidth = 180,
         cell = function(value) {
           plr_name_and_headshot(value)
         }
       ),
       starts = reactable::colDef(
-        name = "Total Starts"
+        name = "Total Starts",
+        show = FALSE
       ),
       wins = reactable::colDef(
         name = "Wins"

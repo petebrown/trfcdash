@@ -33,6 +33,9 @@ get_season_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
       game_no <= max_game_no
     ) %>%
     generate_streaks() %>%
+    dplyr::arrange(
+      dplyr::desc(season)
+    ) %>%
     dplyr::rename(Season = season)
 
   streaks_reactable(df)

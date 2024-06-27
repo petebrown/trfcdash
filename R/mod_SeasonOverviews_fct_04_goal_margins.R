@@ -53,13 +53,27 @@ get_goal_margins <- function(year_range, league_tiers, includePlayOffs, cup_comp
 
   reactable::reactable(
     data = df,
-    defaultColDef = reactable::colDef(
-      minWidth = 60
+    searchable = TRUE,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(length(df$season)),
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
     ),
+    rowClass = "results-row",
+    defaultSortOrder = "desc",
+    defaultSorted = "season",
+    defaultColDef = reactable::colDef(
+      minWidth = 60,
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     columns = list(
       season = reactable::colDef(
         name = "Season",
-        minWidth = 100
+        width = 75
       ),
       plus_1 = reactable::colDef(
         name = "+1"

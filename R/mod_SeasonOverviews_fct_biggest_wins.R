@@ -61,7 +61,6 @@ get_biggest_wins <- function(year_range, league_tiers, includePlayOffs, cup_comp
     fullWidth = TRUE,
     compact = TRUE,
     searchable = TRUE,
-    borderless = TRUE,
     filterable = FALSE,
     resizable = TRUE,
     columns = list(

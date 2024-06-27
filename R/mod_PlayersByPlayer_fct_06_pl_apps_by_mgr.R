@@ -37,13 +37,15 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
       ),
       games_per_gl = round(mins_per_gl / 90, 2),
       mins_per_gl = round(mins_per_gl, 2),
-      win_pc = round((W / P) * 100, 1)
+      win_pc = round((W / P) * 100, 1),
+      mgr_name = manager
     ) %>%
     dplyr::arrange(
       dplyr::desc(P)
     ) %>%
     dplyr::select(
       manager,
+      mgr_name,
       P,
       app_sums,
       W,
@@ -70,6 +72,46 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
     )
 
   reactable::reactable(
-    df
+    df,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
+    defaultSortOrder = "desc",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
+    columns = list(
+      Manager = reactable::colDef(
+        name = "",
+        width = 75,
+        vAlign = "top",
+        cell = function(value) {
+          image <- img(
+            src = dplyr::case_when(
+              .default = paste0(
+                "./www/images/managers/", tolower(gsub(' ', '-', value)), ".jpg"),
+              value == "No manager" ~ "./www/images/crest.svg",
+              stringr::str_detect(value, "Sheedy") ~ "./www/images/managers/kevin-sheedy.jpg",
+              stringr::str_detect(value, "McAteer") ~ "./www/images/managers/jason-mcateer.jpg"
+            ),
+            style = dplyr::case_when(
+              .default = "height: 50px; border-radius: 50%;",
+              value == "No manager" ~ "height: 50px;"
+            ),
+            alt = value
+          )
+          tagList(
+            div(style = "display: inline-block; width: 60px;", image)
+          )
+        }),
+      mgr_name = reactable::colDef(
+        name = ""
+      )
+    )
   )
 }

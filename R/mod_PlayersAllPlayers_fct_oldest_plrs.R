@@ -42,10 +42,20 @@ get_oldest_players <- function(n_records) {
 
   reactable::reactable(
     data = df,
-    style = "font-size: smaller;",
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = "plr_game_age",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     columns = list(
       rank = reactable::colDef(
         name = "",

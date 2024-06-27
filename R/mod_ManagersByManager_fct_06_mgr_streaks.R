@@ -43,6 +43,20 @@ output_mgr_streaks <- function(selected_manager, streak_type, inc_cup_games, pen
 
   reactable::reactable(
     data = df,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
+    showPageSizeOptions = TRUE,
+    defaultPageSize = 10,
+    pageSizeOptions = get_page_nos(length(df$P)),
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = "wins",
@@ -54,6 +68,13 @@ output_mgr_streaks <- function(selected_manager, streak_type, inc_cup_games, pen
             prefix = "(",
             suffix = ")"
           )
+        ),
+        Opposition = reactable::colDef(
+          name = "Opposition",
+          minWidth = 175,
+          cell = function(value) {
+            club_and_crest(value)
+          }
         )
       ),
       format_streak_cols()

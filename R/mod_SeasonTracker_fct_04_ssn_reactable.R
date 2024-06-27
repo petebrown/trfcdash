@@ -117,8 +117,10 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
       fontWeight = 300
     ),
     defaultColDef = reactable::colDef(
-      vAlign = "center"
+      vAlign = "center",
+      headerClass = "bar-sort-header"
     ),
+    showSortIcon = FALSE,
     showPageSizeOptions = TRUE,
     defaultPageSize = 10,
     pageSizeOptions = get_page_nos(length(top_level$season)),

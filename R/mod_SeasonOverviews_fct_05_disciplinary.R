@@ -48,17 +48,32 @@ get_season_discipline <- function(year_range, league_tiers, includePlayOffs, cup
 
   reactable::reactable(
     data = df,
+    searchable = TRUE,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(length(df$season)),
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
     defaultSortOrder = "desc",
     defaultSorted = c("total"),
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     columns = list(
       season = reactable::colDef(
-        name = "Season"
+        name = "Season",
+        width = 75
       ),
       yc = reactable::colDef(
-        name = "Yellows"
+        name = "🟨"
       ),
       rc = reactable::colDef(
-        name = "Reds"
+        name = "🟥"
       ),
       total = reactable::colDef(
         name = "Total"

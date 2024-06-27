@@ -7,6 +7,172 @@
 #' @noRd
 
 
+results_display_options <- function(page_length, details=NULL) {
+  list(
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
+    showPageSizeOptions = TRUE,
+    defaultPageSize = 10,
+    pageSizeOptions = get_page_nos(page_length),
+    fullWidth = TRUE,
+    compact = TRUE,
+    searchable = TRUE,
+    borderless = TRUE,
+    filterable = FALSE,
+    resizable = TRUE,
+    rowClass = "results-row",
+    defaultSortOrder = "asc",
+    details = details
+  )
+}
+
+# Function to format Reactable columns for game lists
+results_columns <- function(df, page, opponent_img=TRUE, comp_image=TRUE) {
+  list(
+    columns = c(list(
+      game_no = reactable::colDef(
+        name = "Game",
+        align = "center",
+        width = 60
+      ),
+      season = reactable::colDef(
+        name = "Season",
+        width = 100
+      ),
+      game_date = reactable::colDef(
+        name = "Date",
+        width = 100,
+        format = reactable::colFormat(
+          date = TRUE,
+          locales = "en-GB"
+        )
+      ),
+      opposition = reactable::colDef(
+        name = "Opponent",
+        minWidth = 200,
+        cell = function(value, index) {
+          venue <- df$venue[index]
+
+          club_and_crest(value, venue)
+        },
+        style = function(value, index) {
+          if (df$venue[index] == "H") {
+            font_weight = "450"
+          } else {
+            font_weight = "300"
+          }
+          list(
+            fontWeight = font_weight
+          )
+        }
+      ),
+      venue = reactable::colDef(
+        name = "Venue",
+        width = 70,
+        align = "center",
+        defaultSortOrder = "desc"
+      ),
+      score = reactable::colDef(
+        name = "Score",
+        minWidth = 60,
+        align = "center"
+      ),
+      outcome = reactable::colDef(
+        name = "Res",
+        align = "center",
+        minWidth = 45
+      ),
+      generic_comp = reactable::colDef(
+        name = "Competition",
+        minWidth = 200,
+        vAlign = "center",
+        cell = function(value) {
+          generic_comp_logo(value, from_generic=TRUE)
+        }
+      )
+    ),
+    if (page=='player') {
+      plr_results_columns()
+    } else if (page=='manager') {
+      mgr_results_columns()
+    })
+  )
+}
+
+plr_results_columns <- function() {
+  list(
+    role = reactable::colDef(
+      name = "Role",
+      width = 80
+    ),
+    shirt_no = reactable::colDef(
+      name = "Shirt",
+      align = "center",
+      width = 50
+    ),
+    mins_played = reactable::colDef(
+      name = "⏱️",
+      align = "center",
+      width = 50,
+      defaultSortOrder = "desc"
+    ),
+    goals_scored = reactable::colDef(
+      name = "⚽️",
+      align = "center",
+      width = 50,
+      defaultSortOrder = "desc"
+    ),
+    yellow_cards = reactable::colDef(
+      name = "🟨",
+      align = "center",
+      width = 50,
+      defaultSortOrder = "desc"
+    ),
+    red_cards = reactable::colDef(
+      name = "🟥",
+      align = "center",
+      width = 50,
+      defaultSortOrder = "desc"
+    )
+  )
+}
+
+mgr_results_columns <- function() {
+  list(
+    league_pos = reactable::colDef(
+      name = "League Pos",
+      width = 100
+    ),
+    attendance = reactable::colDef(
+      name = "Attendance",
+      width = 100,
+      format = reactable::colFormat(
+        separators = TRUE
+      ),
+      defaultSortOrder = "desc"
+    )
+  )
+}
+
+compile_results_table <- function(df, page, details=NULL) {
+  do.call(
+    reactable::reactable,
+    c(list(df),
+      results_display_options(page_length = length(df$game_date)),
+      c(results_columns(df, page))
+    )
+  )
+}
+
+
 font_style <- "color: black; font-weight: 200; font-size: smaller;"
 
 # Function to add plus sign (+) before positive figures
@@ -141,8 +307,24 @@ streaks_reactable <- function(df) {
       fontSize = "0.9rem",
       fontWeight = 300
     ),
+    rowClass = "results-row",
     defaultSortOrder = "desc",
-    columns = format_streak_cols()
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
+    columns = c(
+      format_streak_cols(),
+      if ("Season" %in% colnames(df)) {
+        list(
+          Season = reactable::colDef(
+            name = "Season",
+            width = 75
+          )
+        )
+      }
+    )
   )
 }
 

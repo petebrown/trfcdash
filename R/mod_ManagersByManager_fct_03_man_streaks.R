@@ -51,6 +51,21 @@ output_all_mgr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
 
   output_tab <- reactable::reactable(
     data = df,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(length(df$manager)),
+    searchable = TRUE,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
+    defaultSortOrder = "desc",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     defaultSorted = list("wins" = "desc"),
     columns = list(
       manager = reactable::colDef(

@@ -75,10 +75,20 @@ get_pl_debuts <- function(year_range, league_tiers, includePlayOffs, cup_comps, 
 
   reactable::reactable(
     data = df,
-    style = "font-size: smaller;",
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
     searchable = TRUE,
     defaultSortOrder = "asc",
     defaultSorted = "debut_age",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     columns = list(
       rank = reactable::colDef(
         name = "",

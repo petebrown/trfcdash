@@ -61,7 +61,21 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
 
   output_tab <- reactable::reactable(
     data = df,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(length(df$manager)),
+    searchable = TRUE,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
     defaultSortOrder = "desc",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     defaultSorted = list(
       "P" = "desc"
     ),
@@ -112,11 +126,17 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
       ),
       GF = reactable::colDef(
         vAlign = "center",
-        minWidth = 70
+        minWidth = 70,
+        format = reactable::colFormat(
+          separators = TRUE
+        )
       ),
       GA = reactable::colDef(
         vAlign = "center",
-        minWidth = 70
+        minWidth = 70,
+        format = reactable::colFormat(
+          separators = TRUE
+        )
       ),
       GD = reactable::colDef(
         vAlign = "center",

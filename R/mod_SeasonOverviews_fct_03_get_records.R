@@ -35,13 +35,27 @@ get_season_records <- function(year_range, league_tiers, includePlayOffs, cup_co
 
   reactable::reactable(
     data = df,
-    defaultColDef = reactable::colDef(
-      minWidth = 60
+    searchable = TRUE,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(length(df$season)),
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
     ),
+    rowClass = "results-row",
+    defaultSortOrder = "desc",
+    defaultColDef = reactable::colDef(
+      minWidth = 60,
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
+    defaultSorted = "season",
     columns = list(
       season = reactable::colDef(
         name = "Season",
-        minWidth = 90
+        width = 75
       ),
       GD = reactable::colDef(
         show = TRUE,

@@ -24,7 +24,7 @@ output_mgr_records <- function(selected_manager, record_type, inc_cup_games, pen
   } else if (record_type == "competition") {
     df <- df %>%
       dplyr::group_by(
-        competition
+        generic_comp
       )
   } else if (record_type == "opposition") {
     df <- df %>%
@@ -48,23 +48,38 @@ output_mgr_records <- function(selected_manager, record_type, inc_cup_games, pen
     ) %>%
     dplyr::rename_with(
       .fn = ~ stringr::str_to_title(.x),
-      .cols = dplyr::contains(c("opposition", "season", "competition"))
+      .cols = dplyr::contains(c("opposition", "season", "generic_comp"))
     )
+
+  formatted_column <- function() {
+    Opposition = reactable::colDef(
+        name = "Opposition",
+        minWidth = 175,
+        cell = function(value) {
+          club_and_crest(value)
+        }
+      )
+  }
 
   reactable::reactable(
     data = df,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
+    defaultSortOrder = "desc",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
+    showPageSizeOptions = TRUE,
+    defaultPageSize = 10,
     searchable = TRUE,
     compact = TRUE,
-    style = list(
-      fontWeight = 400,
-      color = "black"
-    ),
-    rowStyle = function() {
-      list(
-        fontWeight = 300,
-        color = "black"
-      )
-    },
+    defaultSorted = ifelse(record_type == "season", "Season", "P"),
     columns = c(
       list(
         GD = reactable::colDef(
@@ -79,7 +94,35 @@ output_mgr_records <- function(selected_manager, record_type, inc_cup_games, pen
             digits = 1
           )
         )
-      )
+      ),
+      if (record_type == "opposition") {
+        list(
+          Opposition = reactable::colDef(
+            name = "Opposition",
+            minWidth = 175,
+            cell = function(value) {
+              club_and_crest(value)
+            }
+          )
+        )
+      } else if (record_type == "competition") {
+        list(
+          Generic_comp = reactable::colDef(
+            name = "Competition",
+            minWidth = 175,
+            cell = function(value) {
+              generic_comp_logo(value, from_generic=TRUE)
+            }
+          )
+        )
+      } else if (record_type == "season") {
+        list(
+          Season = reactable::colDef(
+            name = "Season",
+            minWidth = 175
+          )
+        )
+      }
     )
   )
 

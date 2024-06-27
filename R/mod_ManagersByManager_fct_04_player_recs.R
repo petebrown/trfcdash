@@ -13,7 +13,7 @@ output_mgr_plr_records <- function(mgr_name) {
       manager == mgr_name
     ) %>%
     dplyr::group_by(
-      player_name
+      menu_name
     ) %>%
     dplyr::summarise(
       starts = sum(role == "starter"),
@@ -32,15 +32,32 @@ output_mgr_plr_records <- function(mgr_name) {
 
   reactable::reactable(
     data = df,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
     defaultSortOrder = "desc",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     defaultSorted = list("starts" = "desc"),
-
+    showPageSizeOptions = TRUE,
+    defaultPageSize = 10,
+    pageSizeOptions = get_page_nos(length(df$menu_name)),
     columns = list(
-      player_name = reactable::colDef(
+      menu_name = reactable::colDef(
         name = "Player",
-        show = TRUE
+        show = TRUE,
+        width = 200,
+        defaultSortOrder = "asc",
+        cell = function(value) {
+          plr_name_and_headshot(value, img_size=35)
+        }
       ),
-
       starts = reactable::colDef(
         name = "Starts",
         show = TRUE
@@ -50,21 +67,18 @@ output_mgr_plr_records <- function(mgr_name) {
         name = "Wins",
         show = TRUE
       ),
-
       win_pc = reactable::colDef(
-        name = "Win rate (starts)",
+        name = "Win Rate",
         show = TRUE,
         format = reactable::colFormat(
           percent = TRUE,
           digits = 1
         )
       ),
-
       goals = reactable::colDef(
         name = "Goals",
         show = TRUE
       ),
-
       mins_played = reactable::colDef(
         name = "Mins Played",
         show = TRUE,
@@ -72,12 +86,10 @@ output_mgr_plr_records <- function(mgr_name) {
           separators = TRUE
         )
       ),
-
       subbed_off = reactable::colDef(
         name = "Subbed Off",
         show = TRUE
       ),
-
       subbed_off_pc = reactable::colDef(
         name = "Subbed Off %",
         show = TRUE,
@@ -86,14 +98,12 @@ output_mgr_plr_records <- function(mgr_name) {
           digits = 1
         )
       ),
-
       sub_apps = reactable::colDef(
-        name = "Sub apps",
+        name = "Sub Apps",
         show = TRUE
       ),
-
       sub_apps_pc = reactable::colDef(
-        name = "Sub apps %",
+        name = "Sub Apps %",
         show = TRUE,
         format = reactable::colFormat(
           percent = TRUE,

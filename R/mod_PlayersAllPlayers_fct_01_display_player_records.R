@@ -79,17 +79,25 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
 
   reactable::reactable(
     data = df,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = list("total_apps" = "desc"),
     defaultColDef = reactable::colDef(
-      vAlign = "center"
+      vAlign = "center",
+      headerClass = "bar-sort-header"
     ),
+    showSortIcon = FALSE,
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
         show = TRUE,
-        minWidth = 150,
+        minWidth = 180,
         cell = function(value) {
             plr_name_and_headshot(value)
           }
@@ -118,16 +126,13 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
         )
       ),
       yellow_cards = reactable::colDef(
-        name = "Yellow Cards",
-        show = TRUE
+        name = "🟨"
       ),
       red_cards = reactable::colDef(
-        name = "Red Cards",
-        show = TRUE
+        name = "🟥"
       ),
       debut = reactable::colDef(
         name = "Debut",
-        show = TRUE,
         align = "right"
       )
     )

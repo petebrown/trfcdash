@@ -89,8 +89,10 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       minWidth = 70,
       sortNALast = TRUE,
       vAlign = "center",
-      headerVAlign = "center"
+      headerVAlign = "center",
+      headerClass = "bar-sort-header"
     ),
+    showSortIcon = FALSE,
     groupBy = if (inc_cup_games == "Yes") {
       c("menu_name")
     },
@@ -112,19 +114,20 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         name = "Player",
         sticky = "left",
         defaultSortOrder = "asc",
+        sortable = FALSE,
         minWidth = 185,
         grouped = if (show_images=='Yes') {
           reactable::JS("function(cellInfo) {
-            const src = cellInfo.row['menu_name']
+            const src = cellInfo.row['menu_name'];
             return `
               <div>
                 ${src}
               </div>
-            `
+            `;
           }")
         } else {
           reactable::JS("function(cellInfo) {
-            return cellInfo.value
+            return cellInfo.value;
           }")
         },
         html = if (show_images=='Yes') {
@@ -134,10 +137,8 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       generic_comp = reactable::colDef(
         name = "",
         defaultSortOrder = "asc",
-        minWidth = 90 #,
-        # cell = function(value, index) {
-        #   generic_comp_logo(value, from_generic=TRUE)
-        # }
+        width = 110,
+        sortable = FALSE
       ),
       apps = reactable::colDef(
         name = "Total Apps",
@@ -202,29 +203,34 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       mins_per_goal = reactable::colDef(
         name = "Mins per Goal",
         defaultSortOrder = "asc",
+        sortNALast = TRUE,
         align = "right",
         format = reactable::colFormat(
           separators = TRUE,
           digits = 0
         ),
-        na = "-",
         aggregate = if (inc_cup_games == "Yes") {
           reactable::JS("function(values, rows) {
-            let mins_played = 0
-            let goals = 0
+            let mins_played = 0;
+            let goals = 0;
             rows.forEach(function(row) {
-              mins_played += row['mins_played']
-              goals += row['goals']
+              mins_played += row['mins_played'];
+              goals += row['goals'];
             })
-            let mins_per_goal = mins_played / goals
+            let mins_per_goal = mins_played / goals;
 
             if (isFinite(mins_per_goal)) {
-              return Number(mins_per_goal)
-            } else {
-              return '-'
+              return parseFloat(mins_per_goal.toFixed(0));
             }
           }")
         },
+        aggregated = reactable::JS("function(cellInfo, state) {
+          if (isFinite(cellInfo.value)) {
+            return cellInfo.value
+          } else {
+            return '-'
+          }
+        }"),
         cell = function(value) {
           if (!is.infinite(value) && !is.na(value)) {
             return (round(value, 0))
@@ -252,11 +258,16 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
 
             if (isFinite(games_per_goal)) {
               return Number(games_per_goal.toFixed(2))
-            } else {
-              return '-'
             }
           }")
         },
+        aggregated = reactable::JS("function(cellInfo, state) {
+          if (isFinite(cellInfo.value)) {
+            return cellInfo.value
+          } else {
+            return '-'
+          }
+        }"),
         cell = function(value) {
           if (!is.infinite(value) && !is.na(value)) {
             return (round(value, 2))
@@ -274,7 +285,10 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       win_pc = reactable::colDef(
         name = "Win %",
         align = "right",
-        na = "-",
+        # format = reactable::colFormat(
+        #   percent = TRUE,
+        #   digits = 1
+        # ),
         aggregate = if (inc_cup_games == "Yes") {
           reactable::JS("function(values, rows) {
             let winning_starts = 0
@@ -287,15 +301,24 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
 
             if (isFinite(win_pc)) {
               return Number(win_pc)
-            } else {
-              return '-'
             }
           }")
         },
-        format = reactable::colFormat(
-          percent = TRUE,
-          digits = 1
-        )
+        aggregated = reactable::JS("function(cellInfo, state) {
+          if (isFinite(cellInfo.value)) {
+            let pc = cellInfo.value * 100;
+            return pc.toFixed(1) + '%'
+          } else {
+            return '-'
+          }
+        }"),
+        cell = function(value) {
+          if (!is.infinite(value) && !is.na(value)) {
+            return (paste0(round(value * 100, 1), '%'))
+          } else {
+            return ('-')
+          }
+        }
       )
     )
   )

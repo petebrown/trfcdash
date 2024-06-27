@@ -15,6 +15,8 @@ mod_ManagersByManager_ui <- function(id){
 
       uiOutput(ns("manager_img")),
 
+      reactable::reactableOutput(ns("mgr_results")),
+
       bslib::card(
         bslib::card_header(
           class = "bg-dark",
@@ -176,6 +178,16 @@ mod_ManagersByManager_ui <- function(id){
         bslib::card_body(
           reactable::reactableOutput(ns("mgr_h2h_recs"))
         )
+      ),
+
+      bslib::card(
+        bslib::card_header(
+          class = "bg-dark",
+          "Games Managed"
+        ),
+        bslib::card_body(
+          reactable::reactableOutput(ns("mgr_results"))
+        )
       )
     )
   )
@@ -288,6 +300,12 @@ mod_ManagersByManager_server <- function(id, manager_name){
     output$mgr_streaks <- {
       reactable::renderReactable(
         expr = output_mgr_streaks(manager_name(), streak_type(), streaks_inc_cup_games(), streaks_pens_as_draw())
+      )
+    }
+
+    output$mgr_results <- {
+      reactable::renderReactable(
+        expr = output_mgr_games(manager_name())
       )
     }
 

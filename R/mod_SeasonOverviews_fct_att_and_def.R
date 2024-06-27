@@ -34,21 +34,13 @@ get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup
       game_no >= min_game_no,
       game_no <= max_game_no
     ) %>%
-    # dplyr::ungroup() %>%
-    # dplyr::left_join(
-    #   scorers_df,
-    #   by = c("game_date")
-    # ) %>%
-    # dplyr::group_by(
-    #   season
-    # ) %>%
     dplyr::summarise(
       played = dplyr::n(),
       scored = sum(goals_for > 0),
       av_gf = mean(goals_for),
-      # diff_scorers = dplyr::n_distinct(menu_name),
-      blanks = sum(goals_for == 0),
       clean_sheets = sum(goals_against == 0),
+      wins_to_nil = sum(goals_against == 0 & outcome == "W"),
+      blanks = sum(goals_for == 0),
       av_ga = mean(goals_against)
     )
 
@@ -81,14 +73,32 @@ get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup
       diff_scorers,
       blanks,
       clean_sheets,
+      wins_to_nil,
       av_ga
     )
 
   reactable::reactable(
     df,
+    searchable = TRUE,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(length(df$season)),
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
+    defaultSortOrder = "desc",
+    defaultSorted = "season",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     columns = list(
       season = reactable::colDef(
-        name = "Season"
+        name = "Season",
+        width = 75
       ),
       played = reactable::colDef(
         show = FALSE
@@ -108,12 +118,16 @@ get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup
         name = "Different Scorers",
         align = "center"
       ),
-      blanks = reactable::colDef(
-        name = "Blanks",
-        align = "center"
-      ),
       clean_sheets = reactable::colDef(
         name = "Clean Sheets",
+        align = "center"
+      ),
+      wins_to_nil = reactable::colDef(
+        name = "Wins to Nil",
+        align = "center"
+      ),
+      blanks = reactable::colDef(
+        name = "Blanks",
         align = "center"
       ),
       av_ga = reactable::colDef(

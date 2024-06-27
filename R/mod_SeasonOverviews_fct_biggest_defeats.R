@@ -61,7 +61,6 @@ get_biggest_defeats <- function(year_range, league_tiers, includePlayOffs, cup_c
     fullWidth = TRUE,
     compact = TRUE,
     searchable = TRUE,
-    borderless = TRUE,
     filterable = FALSE,
     resizable = TRUE,
     columns = list(

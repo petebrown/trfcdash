@@ -173,5 +173,3 @@ get_basic_player_stats <- function(year_range, league_tiers, includePlayOffs, cu
   )
 
 }
-
-# get_basic_player_stats(year_range = c(2023,2023), league_tiers = c(2,3,4,5), includePlayOffs = ("Yes"), cup_comps = c("Anglo-Italian Cup", "Associate Members\' Cup", "FA Cup", "FA Trophy", "Full Members\' Cup", "League Cup", "War League"), pens_as_draw = "Yes", venue_options = c("H", "A", "N"), min_games = 1)

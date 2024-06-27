@@ -22,13 +22,33 @@ get_mgr_h2h_summary <- function(selected_manager) {
       ),
       lge_ppg = lge_pts / sum(game_type == "League"),
       .groups = "drop"
+    ) %>%
+    dplyr::arrange(
+      dplyr::desc(P),
+      dplyr::desc(lge_pts),
+      dplyr::desc(GD),
+      dplyr::desc(GF),
+      opposition
     )
 
   reactable::reactable(
     data = df,
-    defaultColDef = reactable::colDef(
-      vAlign = "center"
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
     ),
+    rowClass = "results-row",
+    defaultSortOrder = "desc",
+    # defaultSorted = "P",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
+    showPageSizeOptions = TRUE,
+    defaultPageSize = 10,
+    pageSizeOptions = get_page_nos(length(df$opposition)),
     columns = list(
       opposition = reactable::colDef(
         name = "Opposition",
