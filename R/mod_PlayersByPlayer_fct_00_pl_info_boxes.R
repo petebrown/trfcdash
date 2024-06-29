@@ -165,7 +165,8 @@ pl_value_boxes <- function(player_name) {
         ),
         bslib::value_box(
           title = "Goals",
-          theme_color = "warning",
+          theme_color = "white",
+          class = "value_box_bordered",
           value = pl_total_gls(player_name),
           # showcase = fontawesome::fa("futbol"),
           p(pl_gls_totals(player_name)[1]),

@@ -15,21 +15,36 @@ mod_PlayersByPlayer_ui <- function(id){
       uiOutput(ns("pl_quick_facts")),
 
       div(
-        p(
-          textOutput(ns("pl_name"), inline=TRUE),
-          style = "text-align: center; font-size: 6rem; font-weight: 900;"
+        class="row",
+        style="margin-bottom: 2rem;",
+        div(
+          class="col-sm-auto d-flex align-items-center",
+          style="text-align: left; margin-left: 1rem",
+          h1(textOutput(ns("pl_name")), class = "display-1 opponent-title")
         ),
-
-        p(textOutput(ns("pl_dob"))),
-        p("[Place of birth]"),
-        p("[Position]"),
-        p("[Nationality]"),
-        p("[Height]"),
-        p("[No. spells]"),
-        p("[Date signed]")
+        div(
+          class="col align-items-center",
+          style="margin-right: 1rem;",
+          uiOutput(ns("pl_image"))
+        )
       ),
 
-      uiOutput(ns("pl_image")),
+      # div(
+      #   p(
+      #     textOutput(ns("pl_name"), inline=TRUE),
+      #     style = "text-align: center; font-size: 6rem; font-weight: 900;"
+      #   ),
+      #
+      #   p(textOutput(ns("pl_dob"))),
+      #   p("[Place of birth]"),
+      #   p("[Position]"),
+      #   p("[Nationality]"),
+      #   p("[Height]"),
+      #   p("[No. spells]"),
+      #   p("[Date signed]")
+      # ),
+      #
+      # uiOutput(ns("pl_image")),
 
       bslib::card(
         full_screen = TRUE,
@@ -111,8 +126,9 @@ mod_PlayersByPlayer_server <- function(id, player_name){
 
       img(
         src = file_path,
-        height = 150,
-        alt = player_name()
+        height = 200,
+        alt = player_name(),
+        class = "float-right"
       )
     })
 

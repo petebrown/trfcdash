@@ -40,7 +40,6 @@ get_mgr_h2h_summary <- function(selected_manager) {
     ),
     rowClass = "results-row",
     defaultSortOrder = "desc",
-    # defaultSorted = "P",
     defaultColDef = reactable::colDef(
       vAlign = "center",
       headerClass = "bar-sort-header"
@@ -58,13 +57,19 @@ get_mgr_h2h_summary <- function(selected_manager) {
         }
       ),
       lge_pts = reactable::colDef(
-        name = "League Points"
+        name = "League Points",
+        cell = function(value) {
+          ifelse(!is.na(value), value, '-')
+        }
       ),
       lge_ppg = reactable::colDef(
         name = "League PPG",
         format = reactable::colFormat(
           digits = 2
-        )
+        ),
+        cell = function(value) {
+          ifelse(!is.na(value), round(value, 2), '-')
+        }
       )
     ),
   )

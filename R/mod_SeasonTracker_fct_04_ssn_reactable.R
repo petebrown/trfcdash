@@ -124,7 +124,6 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
     showPageSizeOptions = TRUE,
     defaultPageSize = 10,
     pageSizeOptions = get_page_nos(length(top_level$season)),
-    fullWidth = TRUE,
     compact = TRUE,
     searchable = TRUE,
     borderless = TRUE,
@@ -247,7 +246,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
               role = reactable::colDef(
                 name="Role",
                 align = "left",
-                minWidth=75,
+                width = 70,
                 cell = function(value) {
                   stringr::str_to_title(value)
                 }
@@ -255,7 +254,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
               mins_played = reactable::colDef(
                 name = "Mins",
                 align="center",
-                minWidth = 50
+                width = 50
               ),
               goals_scored = reactable::colDef(
                 name = "Goals",
@@ -263,12 +262,12 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
                 minWidth = 50
               ),
               yellow_cards = reactable::colDef(
-                name = "YC",
+                name = "🟨",
                 align="center",
                 minWidth = 32
               ),
               red_cards = reactable::colDef(
-                name = "RC",
+                name = "🟥",
                 align="center",
                 minWidth = 32
               )
@@ -292,7 +291,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
               showSortIcon = FALSE,
               defaultColDef = reactable::colDef(headerClass = "bar-sort-header"),
               defaultPageSize = 24,
-              compact    = TRUE,
+              compact = TRUE,
               bordered = FALSE,
               borderless = TRUE,
               outlined = FALSE,

@@ -26,7 +26,6 @@ get_mgr_summary_by_ssn_reactable <- function(selected_manager) {
 
   reactable::reactable(
     data = df,
-    elementId = "mgrs_by_season",
     defaultPageSize = length(df$season),
     class = "apps-reactable",
     style = list(
@@ -41,18 +40,12 @@ get_mgr_summary_by_ssn_reactable <- function(selected_manager) {
     ),
     showSortIcon = FALSE,
     groupBy = c("season"),
-    # rowStyle = function() {
-    #   list(
-    #     `font-weight` = 300,
-    #     `background` = "#f8fdff91"
-    #   )
-    # },
     columns = list(
       season = reactable::colDef(
         name = "Season",
         align = "left",
         sticky = "left",
-        minWidth = 50,
+        minWidth = 75,
         grouped = reactable::JS("function(cellInfo) {
           return cellInfo.value
         }")

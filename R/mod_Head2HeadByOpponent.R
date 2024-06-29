@@ -157,7 +157,8 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
       renderPlot(
         plot_h2h_summary(
           base_df()
-        )
+        ),
+        bg = "transparent"
       )
     }
 
@@ -166,6 +167,11 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
         reactable::reactable(
           get_h2h_summary(
             base_df()
+          ),
+          class = "apps-reactable",
+          style = list(
+            fontSize = "0.9rem",
+            fontWeight = 300
           ),
           defaultColDef = reactable::colDef(
             align = "center",
@@ -187,7 +193,8 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
       renderPlot(
         plot_h2h_by_venue(
           base_df()
-        )
+        ),
+        bg = "transparent"
       )
     }
 
@@ -232,8 +239,7 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
         mgr_img_table(
           get_h2h_man_summary(
             base_df()
-          ),
-          col_sort = c("win_pc", "P")
+          )
         )
       )
     }

@@ -97,5 +97,18 @@ plot_h2h_summary <- function(df) {
         "Draws" = "steelblue",
         "Losses" = "#414C6B"
       )
+    )  +
+    ggtext::geom_textbox(
+      ggplot2::aes(
+        x = factor(outcome, levels = c("Losses", "Draws", "Wins")),
+        y = n,
+        label = n
+      ),
+      size = 5,
+      halign = 0,
+      hjust = 0,
+      fill = NA,
+      box.colour = NA,
+      family = "Helvetica Neue"
     )
 }

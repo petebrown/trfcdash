@@ -77,9 +77,7 @@ output_mgr_records <- function(selected_manager, record_type, inc_cup_games, pen
     showSortIcon = FALSE,
     showPageSizeOptions = TRUE,
     defaultPageSize = 10,
-    searchable = TRUE,
     compact = TRUE,
-    defaultSorted = ifelse(record_type == "season", "Season", "P"),
     columns = c(
       list(
         GD = reactable::colDef(

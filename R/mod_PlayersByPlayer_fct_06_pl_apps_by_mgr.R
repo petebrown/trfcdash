@@ -20,7 +20,7 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
       manager
     ) %>%
     dplyr::summarise(
-      P = dplyr::n(),
+      apps = dplyr::n(),
       starts = sum(role == "starter"),
       sub_apps = sum(role == "sub"),
       mins_played = sum(mins_played),
@@ -30,24 +30,24 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
       Goals = sum(goals_scored)
     ) %>%
     dplyr::mutate(
-      app_sums = stringr::str_glue("{starts} ({sub_apps})"),
       mins_per_gl = dplyr::case_when(
         mins_played / Goals != Inf ~ mins_played / Goals,
         TRUE ~ NA
       ),
       games_per_gl = round(mins_per_gl / 90, 2),
       mins_per_gl = round(mins_per_gl, 2),
-      win_pc = round((W / P) * 100, 1),
+      win_pc = round((W / starts) * 100, 1),
       mgr_name = manager
     ) %>%
     dplyr::arrange(
-      dplyr::desc(P)
+      dplyr::desc(apps)
     ) %>%
     dplyr::select(
       manager,
       mgr_name,
-      P,
-      app_sums,
+      apps,
+      starts,
+      sub_apps,
       W,
       D,
       L,
@@ -56,14 +56,6 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
       Goals,
       mins_per_gl,
       games_per_gl
-    ) %>%
-    dplyr::rename(
-      Manager = manager,
-      "Starts\n(sub)" = app_sums,
-      "Win %" = win_pc,
-      "Mins\nplayed" = mins_played,
-      "Mins\nper goal" = mins_per_gl,
-      "Games\nper goal" = games_per_gl
     ) %>%
     dplyr::select(
       where(
@@ -86,7 +78,7 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
     ),
     showSortIcon = FALSE,
     columns = list(
-      Manager = reactable::colDef(
+      manager = reactable::colDef(
         name = "",
         width = 75,
         vAlign = "top",
@@ -108,9 +100,42 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
           tagList(
             div(style = "display: inline-block; width: 60px;", image)
           )
-        }),
+        }
+      ),
       mgr_name = reactable::colDef(
-        name = ""
+        name = "",
+        width = 130
+      ),
+      apps = reactable::colDef(
+        name = "Apps"
+      ),
+      starts = reactable::colDef(
+        name = "Starts"
+      ),
+      sub_apps = reactable::colDef(
+        name = "Sub Apps"
+      ),
+      win_pc = reactable::colDef(
+        name = "Win %"
+      ),
+      mins_played = reactable::colDef(
+        name = "Mins",
+        format = reactable::colFormat(
+          separators = TRUE
+        )
+      ),
+      mins_per_gl = reactable::colDef(
+        name = "Mins per goal",
+        format = reactable::colFormat(
+          digits = 0,
+          separators = TRUE
+        )
+      ),
+      games_per_gl = reactable::colDef(
+        name = "Games per goal",
+        format = reactable::colFormat(
+          digits = 1
+        )
       )
     )
   )

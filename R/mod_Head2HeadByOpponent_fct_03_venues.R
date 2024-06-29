@@ -91,7 +91,6 @@ plot_h2h_by_venue <- function(df) {
       ),
       scales = "free_y"
     ) +
-    # remove guidelines
     ggplot2::theme(
       text = ggtext::element_markdown(
         family = "Helvetica Neue",

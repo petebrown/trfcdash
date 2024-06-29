@@ -235,8 +235,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
             })
             av_pts = total_pts / ssns
             return Number(av_pts.toFixed(0))
-          }"
-          )
+          }")
         }
       ),
       PPG = reactable::colDef(
@@ -268,8 +267,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
             })
             av_ppg = total_ppg / ssns
             return Number(av_ppg.toFixed(2))
-          }"
-          )
+          }")
         }
       ),
       win_pc = reactable::colDef(

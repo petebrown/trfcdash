@@ -103,6 +103,8 @@ results_columns <- function(df, page, opponent_img=TRUE, comp_image=TRUE) {
       plr_results_columns()
     } else if (page=='manager') {
       mgr_results_columns()
+    } else if (page=='attendance') {
+      att_results_columns()
     })
   )
 }
@@ -151,6 +153,19 @@ mgr_results_columns <- function() {
       name = "League Pos",
       width = 100
     ),
+    attendance = reactable::colDef(
+      name = "Attendance",
+      width = 100,
+      format = reactable::colFormat(
+        separators = TRUE
+      ),
+      defaultSortOrder = "desc"
+    )
+  )
+}
+
+att_results_columns <- function() {
+  list(
     attendance = reactable::colDef(
       name = "Attendance",
       width = 100,
@@ -310,6 +325,7 @@ streaks_reactable <- function(df) {
     rowClass = "results-row",
     defaultSortOrder = "desc",
     defaultColDef = reactable::colDef(
+      align = "center",
       vAlign = "center",
       headerClass = "bar-sort-header"
     ),
@@ -320,6 +336,7 @@ streaks_reactable <- function(df) {
         list(
           Season = reactable::colDef(
             name = "Season",
+            align = "left",
             width = 75
           )
         )

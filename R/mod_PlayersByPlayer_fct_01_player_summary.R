@@ -68,6 +68,19 @@ output_player_summary <- function(inp_player_name) {
       "Red cards" = red_cards
     ) %>%
     reactable::reactable(
+      class = "apps-reactable",
+      style = list(
+        fontSize = "0.9rem",
+        fontWeight = 300
+      ),
+      rowClass = "results-row",
+      defaultSortOrder = "desc",
+      defaultColDef = reactable::colDef(
+        align = "center",
+        vAlign = "center",
+        headerClass = "bar-sort-header"
+      ),
+      showSortIcon = FALSE,
       columns = list(
         mins_played = reactable::colDef(
           name = "Mins played",

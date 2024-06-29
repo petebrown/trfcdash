@@ -69,7 +69,7 @@ get_biggest_wins <- function(year_range, league_tiers, includePlayOffs, cup_comp
         width = 100
       ),
       game_no = reactable::colDef(
-        name = "Game\nNo.",
+        name = "Game",
         align = "left",
         width = 70
       ),

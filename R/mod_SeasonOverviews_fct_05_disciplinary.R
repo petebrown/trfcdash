@@ -12,6 +12,7 @@ get_season_discipline <- function(year_range, league_tiers, includePlayOffs, cup
     dplyr::filter(
       ssn_year >= min_year,
       ssn_year <= max_year,
+      ssn_year > 1975,
       league_tier %in% league_tiers | generic_comp %in% cup_comps,
       dplyr::case_when(
         includePlayOffs == "No" ~ !grepl("play-off", competition, ignore.case = TRUE),

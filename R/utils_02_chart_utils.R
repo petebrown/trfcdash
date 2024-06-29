@@ -168,6 +168,13 @@ mgr_img_table <- function(df, col_sort="P") {
       col_sort
     ),
     class = "apps-reactable",
+    defaultColDef = reactable::colDef(
+      sortNALast = TRUE,
+      vAlign = "center",
+      headerVAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     style = list(
       fontSize = "0.9rem",
       fontWeight = 300

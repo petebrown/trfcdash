@@ -95,6 +95,11 @@ div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
   }
 }
 
+.value_box_bordered {
+  border: navy 0.1pt solid !important;
+  border-radius: 2%;
+}
+
 /*******************************************************************************************/
 /* Beginning of Reactable CSS                                                              */
 /* https://glin.github.io/reactable/articles/cookbook/cookbook.html#custom-sort-indicators */

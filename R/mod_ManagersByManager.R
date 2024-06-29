@@ -11,183 +11,182 @@ mod_ManagersByManager_ui <- function(id){
   ns <- NS(id)
   tagList(
 
-    bslib::page_fluid(
-
-      uiOutput(ns("manager_img")),
-
-      reactable::reactableOutput(ns("mgr_results")),
-
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Overall Record"
-        ),
-        bslib::card_body(
-          gt::gt_output(ns("mgr_summary_overall"))
-        )
+    div(
+      class="row",
+      style="margin-bottom: 2rem;",
+      div(
+        class="col-sm-auto d-flex align-items-center",
+        style="text-align: left; margin-left: 1rem",
+        h1(textOutput(ns("manager_name")), class = "display-1 opponent-title")
       ),
+      div(
+        class="col align-items-center",
+        style="margin-right: 1rem;",
+        uiOutput(ns("manager_img"))
+      )
+    ),
 
+    reactable::reactableOutput(ns("mgr_results")),
 
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Overall Record"
-        ),
-        bslib::layout_sidebar(
-          fillable = FALSE,
-          sidebar = bslib::sidebar(
-            position = "left",
-            width = 200,
-            bg = "#4c668d",
-            class = "card-sidebar",
-            open = FALSE,
-            radioButtons(
-              inputId = ns("mgr_recs_inc_cup_games"),
-              label = "Include cup games?",
-              choices = c("Yes", "No"),
-              selected = "Yes",
-              inline = TRUE
-            ),
-            hr(),
-            radioButtons(
-              inputId = ns("mgr_recs_pens_as_draw"),
-              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
-              choices = c("Yes", "No"),
-              selected = "Yes",
-              inline = TRUE
-            )
-          ),
+    bslib::card(
+      bslib::card_header(
+        class = "bg-dark",
+        "Overall Record"
+      ),
+      bslib::layout_sidebar(
+        fillable = FALSE,
+        sidebar = bslib::sidebar(
+          position = "left",
+          width = 200,
+          bg = "#4c668d",
+          class = "card-sidebar",
+          open = FALSE,
           radioButtons(
-            inputId = ns("record_type"),
-            label = NULL,
-            choiceNames = list(
-              "Overall",
-              "By season",
-              "By opponent",
-              "By competition"
-            ),
-            choiceValues = list(
-              "overall",
-              "season",
-              "opposition",
-              "competition"
-            ),
+            inputId = ns("mgr_recs_inc_cup_games"),
+            label = "Include cup games?",
+            choices = c("Yes", "No"),
+            selected = "Yes",
             inline = TRUE
           ),
-          reactable::reactableOutput(ns("mgr_records"))
-        )
-      ),
-
-
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Overall Record by Season"
-        ),
-        bslib::card_body(
-          reactable::reactableOutput(ns("mgr_summary_by_ssn_reactable"))
-        )
-      ),
-
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Overall Record by Competition"
-        ),
-        bslib::card_body(
-          gt::gt_output(ns("mgr_summary_by_comp"))
-        )
-      ),
-
-
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Overall Record by Season"
-        ),
-        bslib::card_body(
-          gt::gt_output(ns("mgr_summary_by_ssn"))
-        )
-      ),
-
-
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Streaks"
-        ),
-        bslib::layout_sidebar(
-          fillable = FALSE,
-          sidebar = bslib::sidebar(
-            position = "left",
-            width = 200,
-            bg = "#4c668d",
-            class = "card-sidebar",
-            open = FALSE,
-            radioButtons(
-              inputId = ns("mgr_streaks_inc_cup_games"),
-              label = "Include cup games?",
-              choices = c("Yes", "No"),
-              selected = "Yes",
-              inline = TRUE
-            ),
-            hr(),
-            radioButtons(
-              inputId = ns("mgr_streaks_pens_as_draw"),
-              label = "Treat one-off cup games decided by penalty shoot-out as draws?",
-              choices = c("Yes", "No"),
-              selected = "Yes",
-              inline = TRUE
-            )
-          ),
+          hr(),
           radioButtons(
-            inputId = ns("streak_type"),
-            label = NULL,
-            choiceNames = list(
-              "Overall",
-              "By season",
-              "By opponent"
-            ),
-            choiceValues = list(
-              "overall",
-              "season",
-              "opposition"
-            ),
+            inputId = ns("mgr_recs_pens_as_draw"),
+            label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+            choices = c("Yes", "No"),
+            selected = "Yes",
+            inline = TRUE
+          )
+        ),
+        radioButtons(
+          inputId = ns("record_type"),
+          label = NULL,
+          choiceNames = list(
+            "Overall",
+            "By season",
+            "By opponent",
+            "By competition"
+          ),
+          choiceValues = list(
+            "overall",
+            "season",
+            "opposition",
+            "competition"
+          ),
+          inline = TRUE
+        ),
+        reactable::reactableOutput(ns("mgr_records"))
+      )
+    ),
+
+
+    bslib::card(
+      bslib::card_header(
+        class = "bg-dark",
+        "Overall Record by Season"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("mgr_summary_by_ssn_reactable"))
+      )
+    ),
+
+    # bslib::card(
+    #   bslib::card_header(
+    #     class = "bg-dark",
+    #     "Overall Record by Competition"
+    #   ),
+    #   bslib::card_body(
+    #     gt::gt_output(ns("mgr_summary_by_comp"))
+    #   )
+    # ),
+    #
+    #
+    # bslib::card(
+    #   bslib::card_header(
+    #     class = "bg-dark",
+    #     "Overall Record by Season"
+    #   ),
+    #   bslib::card_body(
+    #     gt::gt_output(ns("mgr_summary_by_ssn"))
+    #   )
+    # ),
+
+
+    bslib::card(
+      bslib::card_header(
+        class = "bg-dark",
+        "Streaks"
+      ),
+      bslib::layout_sidebar(
+        fillable = FALSE,
+        sidebar = bslib::sidebar(
+          position = "left",
+          width = 200,
+          bg = "#4c668d",
+          class = "card-sidebar",
+          open = FALSE,
+          radioButtons(
+            inputId = ns("mgr_streaks_inc_cup_games"),
+            label = "Include cup games?",
+            choices = c("Yes", "No"),
+            selected = "Yes",
             inline = TRUE
           ),
-          reactable::reactableOutput(ns("mgr_streaks"))
-        )
-      ),
-
-
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Players Used"
+          hr(),
+          radioButtons(
+            inputId = ns("mgr_streaks_pens_as_draw"),
+            label = "Treat one-off cup games decided by penalty shoot-out as draws?",
+            choices = c("Yes", "No"),
+            selected = "Yes",
+            inline = TRUE
+          )
         ),
-        bslib::card_body(
-          reactable::reactableOutput(ns("mgr_player_recs"))
-        )
-      ),
-
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Head-to-Head Records"
+        radioButtons(
+          inputId = ns("streak_type"),
+          label = NULL,
+          choiceNames = list(
+            "Overall",
+            "By season",
+            "By opponent"
+          ),
+          choiceValues = list(
+            "overall",
+            "season",
+            "opposition"
+          ),
+          inline = TRUE
         ),
-        bslib::card_body(
-          reactable::reactableOutput(ns("mgr_h2h_recs"))
-        )
-      ),
+        reactable::reactableOutput(ns("mgr_streaks"))
+      )
+    ),
 
-      bslib::card(
-        bslib::card_header(
-          class = "bg-dark",
-          "Games Managed"
-        ),
-        bslib::card_body(
-          reactable::reactableOutput(ns("mgr_results"))
-        )
+
+    bslib::card(
+      bslib::card_header(
+        class = "bg-dark",
+        "Players Used"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("mgr_player_recs"))
+      )
+    ),
+
+    bslib::card(
+      bslib::card_header(
+        class = "bg-dark",
+        "Head-to-Head Records"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("mgr_h2h_recs"))
+      )
+    ),
+
+    bslib::card(
+      bslib::card_header(
+        class = "bg-dark",
+        "Games Managed"
+      ),
+      bslib::card_body(
+        reactable::reactableOutput(ns("mgr_results"))
       )
     )
   )
@@ -199,6 +198,10 @@ mod_ManagersByManager_ui <- function(id){
 mod_ManagersByManager_server <- function(id, manager_name){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    output$manager_name <- renderText({
+      manager_name()
+    })
 
     output$manager_img <- renderUI({
       manager_name <- manager_name()
@@ -223,26 +226,16 @@ mod_ManagersByManager_server <- function(id, manager_name){
       }
 
 
-      bslib::card(
-        class = "borderless",
-        h1(manager_name()),
-        img(
-          src = file_path,
-          class = if(manager_name != "No manager") {"rounded-circle"},
-          width = 150,
-          height = 150,
-          alt = manager_name
-        )
+      img(
+        src = file_path,
+        class = if(manager_name != "No manager") {"rounded-circle"},
+        width = 200,
+        height = 200,
+        alt = manager_name,
+        class = c("float-right", if(manager_name != "No manager") {"rounded-circle"})
       )
 
     })
-
-    output$mgr_summary_overall <- {
-      gt::render_gt(
-        expr = get_mgr_summary_overall(manager_name()),
-        width = "100%"
-      )
-    }
 
     record_type <- reactive({
       input$record_type
@@ -266,23 +259,9 @@ mod_ManagersByManager_server <- function(id, manager_name){
       )
     }
 
-    output$mgr_summary_by_ssn <- {
-      gt::render_gt(
-        expr = get_mgr_summary_by_ssn(manager_name()),
-        width = "100%"
-      )
-    }
-
     output$mgr_summary_by_ssn_reactable <- {
       reactable::renderReactable(
         expr = get_mgr_summary_by_ssn_reactable(manager_name())
-      )
-    }
-
-    output$mgr_summary_by_comp <- {
-      gt::render_gt(
-        expr = get_mgr_summary_by_comp(manager_name()),
-        width = "100%"
       )
     }
 

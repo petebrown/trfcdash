@@ -34,6 +34,10 @@ plot_av_attendances <- function(year_range, cup_comps) {
       linetype = "dashed",
       linewidth = 0.2
     ) +
+    ggplot2::labs(
+      x = NULL,
+      y = NULL
+    ) +
     ggplot2::theme_minimal() +
     ggplot2::scale_x_discrete(
       breaks = df$season[c(T,F,F,F,F)]

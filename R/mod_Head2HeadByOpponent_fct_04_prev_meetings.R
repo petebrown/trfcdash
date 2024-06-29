@@ -195,7 +195,7 @@ get_h2h_meetings <- function(df) {
                 season = reactable::colDef(show = FALSE),
                 game_no = reactable::colDef(show = FALSE),
                 game_date = reactable::colDef(show = FALSE),
-                pos = reactable::colDef(name = "Pos", align = "left", width = 52),
+                pos = reactable::colDef(name = "Pos", align = "left", width = 40),
                 Team = reactable::colDef(width = 145),
                 Pld = reactable::colDef(width = 50),
                 W = reactable::colDef(width = 40),

@@ -44,8 +44,11 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
     showPageSizeOptions = TRUE,
     pageSizeOptions = get_page_nos(length(df$opposition)),
     defaultColDef = reactable::colDef(
-      vAlign = "center"
+      align = "center",
+      vAlign = "center",
+      headerClass = "bar-sort-header"
     ),
+    showSortIcon = FALSE,
     class = "apps-reactable",
     style = list(
       fontSize = "0.9rem",
@@ -58,7 +61,8 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
           minWidth = 175,
           cell = function(value) {
             club_and_crest(value)
-          }
+          },
+          align = "left"
         ),
         P = reactable::colDef(
           show = FALSE

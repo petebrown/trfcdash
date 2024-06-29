@@ -63,11 +63,7 @@ output_mgr_streaks <- function(selected_manager, streak_type, inc_cup_games, pen
     columns = c(
       list(
         P = reactable::colDef(
-          name = "(P)",
-          format = reactable::colFormat(
-            prefix = "(",
-            suffix = ")"
-          )
+          show = FALSE
         ),
         Opposition = reactable::colDef(
           name = "Opposition",
