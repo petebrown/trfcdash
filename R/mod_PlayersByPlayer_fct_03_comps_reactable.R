@@ -59,12 +59,20 @@ output_plr_comps_reactable <- function(inp_player_name) {
 
   reactable::reactable(
     data = df,
-    fullWidth = TRUE,
-    compact = TRUE,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
     searchable = TRUE,
-    borderless = TRUE,
-    defaultPageSize = 20,
-    filterable = FALSE,
+    defaultSortOrder = "desc",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
+    fullWidth = TRUE,
     resizable = TRUE,
     columns = list(
       generic_comp = reactable::colDef(
@@ -100,7 +108,6 @@ output_plr_comps_reactable <- function(inp_player_name) {
         name = "Red cards",
         footer = function(values) sprintf("%d", sum(values))
       )
-    ),
-    defaultColDef = reactable::colDef(footerStyle = list(fontWeight = "bold"))
+    )
   )
 }

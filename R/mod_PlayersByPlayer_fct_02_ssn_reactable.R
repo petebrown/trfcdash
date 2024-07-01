@@ -39,15 +39,24 @@ output_plr_ssn_reactable <- function(inp_player_name) {
 
   reactable::reactable(
     data = df,
-    fullWidth = TRUE,
-    compact = TRUE,
-    searchable = TRUE,
-    borderless = TRUE,
-    defaultPageSize = 20,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
+    defaultSortOrder = "desc",
+    defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
     resizable = TRUE,
+    defaultPageSize = length(df$season),
     columns = list(
       season = reactable::colDef(
         name = "Season",
+        defaultSortOrder = "asc",
         footer = "Total"
       ),
       total_apps = reactable::colDef(
@@ -79,7 +88,6 @@ output_plr_ssn_reactable <- function(inp_player_name) {
         name = "Red cards",
         footer = function(values) sprintf("%d", sum(values))
       )
-    ),
-    defaultColDef = reactable::colDef(footerStyle = list(fontWeight = "bold"))
+    )
   )
 }

@@ -74,24 +74,21 @@ output_pl_summary_by_tier <- function(inp_player_name) {
 
   reactable::reactable(
     data = df,
-    pagination = FALSE,
-    compact = TRUE,
-    resizable = TRUE,
+    class = "apps-reactable",
     style = list(
-      fontSize = "smaller",
-      fontWeight = 400,
-      color = "black"
+      fontSize = "0.9rem",
+      fontWeight = 300
     ),
-    rowStyle = function() {
-      list(
-        fontWeight = 300,
-        color = "black"
-      )
-    },
-    groupBy = c("league_tier"),
+    rowClass = "results-row",
+    searchable = TRUE,
+    defaultSortOrder = "desc",
     defaultColDef = reactable::colDef(
+      vAlign = "center",
+      headerClass = "bar-sort-header",
       aggregate = "sum"
     ),
+    showSortIcon = FALSE,
+    groupBy = c("league_tier"),
     columns = list(
       league_tier = reactable::colDef(
         name = "Tier",
