@@ -71,7 +71,9 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
             <img src='{map_plr_to_headshot(menu_name)}' style='height: 45px; margin: 2px;'>
           </div>
           <div style='padding-left: 10px; width: 100%; margin: auto;'>
-            {menu_name}
+            {menu_name}<br>
+            <span style='color: #aaa9a9; font-size: smaller;'>
+              {map_pos_to_id(menu_name)}
           </div>
        </div>
       ")

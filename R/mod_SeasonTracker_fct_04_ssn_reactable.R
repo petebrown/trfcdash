@@ -217,7 +217,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
             data = line_up,
             class = "reactable-text",
             defaultColDef = reactable::colDef(
-              vAlign = "center",
+              vAlign = "top",
               headerClass = "bar-sort-header"
             ),
             showSortIcon = FALSE,
@@ -240,7 +240,7 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
                 name = "Player",
                 minWidth = 200,
                 cell = function(value) {
-                  plr_name_and_headshot(value, img_size=30)
+                  plr_name_and_headshot(value, img_size=30, inc_pos="Y")
                 }
               ),
               role = reactable::colDef(
@@ -252,12 +252,12 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
                 }
                 ),
               mins_played = reactable::colDef(
-                name = "Mins",
+                name = "⏱️",
                 align="center",
                 width = 50
               ),
               goals_scored = reactable::colDef(
-                name = "Goals",
+                name = "⚽️",
                 align="center",
                 minWidth = 50
               ),
@@ -289,7 +289,10 @@ output_ssn_reactable <- function(selected_seasons, inc_cup_games) {
               data = lge_tab,
               class = "reactable-text",
               showSortIcon = FALSE,
-              defaultColDef = reactable::colDef(headerClass = "bar-sort-header"),
+              defaultColDef = reactable::colDef(
+                vAlign = "center",
+                headerClass = "bar-sort-header"
+              ),
               defaultPageSize = 24,
               compact = TRUE,
               bordered = FALSE,

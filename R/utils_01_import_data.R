@@ -98,3 +98,12 @@ map_mgr_to_headshot <- function(manager) {
 
   return (img_path)
 }
+
+map_pos_to_id <- function(plr_id) {
+
+  player_pos <- player_positions %>%
+    dplyr::filter(pl_index == plr_id) %>%
+    dplyr::pull(position)
+
+  return (player_pos)
+}

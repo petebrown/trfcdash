@@ -77,6 +77,7 @@ output_plr_comps_reactable <- function(inp_player_name) {
     columns = list(
       generic_comp = reactable::colDef(
         name = "Competition",
+        minWidth = 101,
         footer = "Total"
       ),
       total_apps = reactable::colDef(

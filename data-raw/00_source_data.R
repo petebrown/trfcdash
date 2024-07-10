@@ -491,6 +491,31 @@ player_info <- vroom::vroom(
   show_col_types = FALSE
 )
 
+player_pos <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/wrangle-player-positions/main/output/player-positions.csv",
+  show_col_types = FALSE
+)
+
+player_positions <- player_info %>% dplyr::select(pl_index, player_name, player_dob) %>% dplyr::distinct() %>%
+  dplyr::left_join(
+    player_pos %>% dplyr::select(-surname, -forename),
+    by = c('player_name', 'player_dob')
+  ) %>%
+  dplyr::mutate(
+    position = dplyr::case_when(
+      !is.na(comp_rec_pos) ~ comp_rec_pos,
+      !is.na(tm_pos_1) ~ tm_pos_1,
+      !is.na(soccerbase_pos) ~ tm_pos_2,
+      TRUE ~ "Unknown"
+    )
+  )
+
+player_ids <- player_positions %>%
+  dplyr::select(
+    pl_index,
+    player_id
+  )
+
 
 player_goals_per_game <- goals %>%
   dplyr::group_by(
@@ -602,6 +627,8 @@ player_apps <- player_apps %>%
 usethis::use_data(
   player_apps,
   player_info,
+  player_ids,
+  player_positions,
 
   overwrite = TRUE
 )

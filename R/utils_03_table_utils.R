@@ -699,18 +699,26 @@ plr_name_and_img <- function(value) {
 }
 
 
-plr_name_and_headshot <- function(value, img_size=45) {
+plr_name_and_headshot <- function(value, img_size=45, inc_pos="N") {
+
+  if (inc_pos == "Y") {
+    pos_info <- span(style="font-size: smaller; color: #aaa9a9; line-height: 1.1rem;", br(), map_pos_to_id(value))
+  } else {
+    pos_info <- ""
+  }
 
   image <- img(
     src = map_plr_to_headshot(value),
-    style = stringr::str_glue("height: {img_size}px; margin: 2px;"),
+    style = stringr::str_glue("height: {img_size}px; margin: auto;"),
     alt = value
   )
 
   tagList(
     div(style="display: flex",
         div(style = stringr::str_glue("display:flex; justify-content: center; width:{img_size+5}px;"), image),
-        div(style = "display: flex; text-align: left; margin: 10px;", value)
+        div(style = "text-align: left; margin: auto 10px; line-height: 1rem;", value,
+            pos_info
+        )
     )
   )
 }

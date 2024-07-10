@@ -83,7 +83,7 @@ output_pl_summary_by_tier <- function(inp_player_name) {
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultColDef = reactable::colDef(
-      vAlign = "center",
+      vAlign = "top",
       headerClass = "bar-sort-header",
       aggregate = "sum"
     ),
@@ -92,7 +92,7 @@ output_pl_summary_by_tier <- function(inp_player_name) {
     columns = list(
       league_tier = reactable::colDef(
         name = "Tier",
-        minWidth = 160,
+        minWidth = 185,
         format = reactable::colFormat(
           prefix = "Tier "
         ),
@@ -103,14 +103,14 @@ output_pl_summary_by_tier <- function(inp_player_name) {
       ),
       season = reactable::colDef(
         name = "Season",
-        minWidth = 70,
+        minWidth = 75,
         aggregate = reactable::JS("function(values, rows) {
           let seasons = 0
 
           rows.forEach(function(row) {
             seasons += 1
           })
-          return 'All seasons (' + seasons + ')'
+          return 'All (' + seasons + ')'
         }"),
         footer = "Total"
       ),

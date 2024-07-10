@@ -55,7 +55,7 @@ output_mgr_plr_records <- function(mgr_name) {
         width = 200,
         defaultSortOrder = "asc",
         cell = function(value) {
-          plr_name_and_headshot(value, img_size=35)
+          plr_name_and_headshot(value, img_size=35, inc_pos="Y")
         }
       ),
       starts = reactable::colDef(

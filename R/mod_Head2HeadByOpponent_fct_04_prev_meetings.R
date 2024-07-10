@@ -161,11 +161,17 @@ get_h2h_meetings <- function(df) {
               game_date = reactable::colDef(show = FALSE),
               shirt_no = reactable::colDef(name = "No.", align = "left", width = 60),
               player_name = reactable::colDef(name = "Player", width = 180),
-              role = reactable::colDef(name = "Role", width = 60),
-              mins_played = reactable::colDef(name = "Mins", width = 60),
-              goals_scored = reactable::colDef(name = "Goals", width = 50),
-              yellow_cards = reactable::colDef(name = "YC", width = 40),
-              red_cards = reactable::colDef(name = "RC", width = 40)
+              role = reactable::colDef(
+                name = "Role",
+                width = 60,
+                cell = function(value) {
+                  stringr::str_to_title(value)
+                }
+              ),
+              mins_played = reactable::colDef(name = "⏱️", width = 60),
+              goals_scored = reactable::colDef(name = "⚽️", width = 50),
+              yellow_cards = reactable::colDef(name = "🟨", width = 40),
+              red_cards = reactable::colDef(name = "🟥", width = 40)
             ),
             rowStyle = function(index) {
               if (line_up[index, "role"] == "sub") {

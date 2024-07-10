@@ -108,12 +108,13 @@ output_all_plr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
       headerClass = "bar-sort-header"
     ),
     showSortIcon = FALSE,
+    compact = TRUE,
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
         minWidth = 180,
         cell = function(value) {
-          plr_name_and_headshot(value)
+          plr_name_and_headshot(value, inc_pos="Y")
         }
       ),
       starts = reactable::colDef(

@@ -18,9 +18,11 @@ mod_PlayersByPlayer_ui <- function(id){
         class="row",
         style="margin-bottom: 2rem;",
         div(
-          class="col-sm-auto d-flex align-items-center",
-          style="text-align: left; margin-left: 1rem",
-          h1(textOutput(ns("pl_name")), class = "display-1 opponent-title")
+          class="col-sm-auto d-flex align-items-left",
+          style="text-align: left; margin-left: 1rem; flex-direction: column;",
+          h1(textOutput(ns("pl_name")), class = "display-1 opponent-title"),
+          textOutput(ns("pl_pos")),
+          textOutput(ns("pl_dob"))
         ),
         div(
           class="col align-items-center",
@@ -160,7 +162,13 @@ mod_PlayersByPlayer_server <- function(id, player_name){
       get_player_name(player_name())
     })
     output$pl_dob <- renderText({
-      get_player_dob(player_name())
+      dob = get_player_dob(player_name())
+      dob = as.Date(dob, format = "%Y-%m-%d")
+      dob = format(dob, "%e %B, %Y")
+
+    })
+    output$pl_pos <- renderText({
+      map_pos_to_id(player_name())
     })
 
     output$pl_quick_facts <- renderUI({
