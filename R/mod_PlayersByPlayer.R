@@ -20,9 +20,22 @@ mod_PlayersByPlayer_ui <- function(id){
         div(
           class="col-sm-auto d-flex align-items-left",
           style="text-align: left; margin-left: 1rem; flex-direction: column;",
-          h1(textOutput(ns("pl_name")), class = "display-1 opponent-title"),
-          textOutput(ns("pl_pos")),
-          textOutput(ns("pl_dob"))
+          h1(
+            class = "display-1 opponent-title",
+            style = "margin-bottom: 0.05rem",
+            textOutput(ns("pl_name"))
+          ),
+          div(
+            span(
+              style = "display:flex; color:grey; font-size:xx-large; font-weight: 300;",
+              textOutput(ns("pl_pos"))
+            ),
+            span(
+              style = "display:flex; margin-top: 0.75rem; color:#909090; font-size:smaller; font-weight: 300;",
+              span(style = "margin-right: 0.25rem; font-weight: 400;", "Born"),
+              textOutput(ns("pl_dob"))
+            )
+          )
         ),
         div(
           class="col align-items-center",

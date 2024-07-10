@@ -67,7 +67,7 @@ pl_apps <- function(pl_name) {
   starts <- (sum(get_pl_summary(pl_name)$starts))
   sub_apps <- (sum(get_pl_summary(pl_name)$sub_apps))
 
-  stringr::str_glue("{starts} ({sub_apps})")
+  stringr::str_glue("{starts} + {sub_apps}")
 }
 pl_total_gls <- function(pl_name) {
   sum(get_pl_summary(pl_name)$goals)
