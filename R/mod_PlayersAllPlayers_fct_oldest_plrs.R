@@ -1,6 +1,6 @@
-get_oldest_players <- function(n_records) {
+get_oldest_players <- function(df, n_records) {
 
-  df <- player_apps %>%
+  df <- df %>%
     dplyr::filter(
       !is.na(player_dob)
     ) %>%
@@ -11,9 +11,6 @@ get_oldest_players <- function(n_records) {
       menu_name,
       plr_game_age,
       game_date
-    ) %>%
-    dplyr::group_by(
-      menu_name
     ) %>%
     dplyr::slice_max(
       order_by = plr_game_age,

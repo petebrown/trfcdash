@@ -36,7 +36,6 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
       .groups = "drop"
     ) %>%
     dplyr::mutate(
-      mgr_name = manager,
       win_pc = W / P
     ) %>%
     dplyr::filter(
@@ -48,7 +47,6 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
     ) %>%
     dplyr::select(
       manager,
-      mgr_name,
       P,
       W,
       D,
@@ -58,6 +56,18 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
       GD,
       win_pc
     )
+
+  mgr_imgs <- manager_imgs %>%
+    dplyr::select(
+      manager_name,
+      mgr_headshot = headshot_file_path
+    )
+
+  df <- dplyr::left_join(
+    df,
+    mgr_imgs,
+    by = c("manager" = "manager_name")
+  )
 
   output_tab <- reactable::reactable(
     data = df,
@@ -82,31 +92,29 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
     columns = list(
       manager = reactable::colDef(
         name = "",
-        width = 75,
+        width = 200,
         vAlign = "top",
-        cell = function(value) {
-          image <- img(
-            src = dplyr::case_when(
-              .default = paste0(
-                "./www/images/managers/", tolower(gsub(' ', '-', value)), ".jpg"),
-              value == "No manager" ~ "./www/images/crest.svg",
-              stringr::str_detect(value, "Sheedy") ~ "./www/images/managers/kevin-sheedy.jpg",
-              stringr::str_detect(value, "McAteer") ~ "./www/images/managers/jason-mcateer.jpg"
-            ),
-            style = dplyr::case_when(
-              .default = "height: 50px; border-radius: 50%;",
-              value == "No manager" ~ "height: 50px;"
-            ),
-            alt = value
-          )
-          tagList(
-            div(style = "display: inline-block; width: 60px;", image)
-          )
-        }),
-      mgr_name = reactable::colDef(
-        name = "",
-        vAlign = "center",
-        minWidth = 110
+        cell = reactable::JS("function(cellInfo) {
+          let img_src = cellInfo.row['mgr_headshot'];
+          let manager = cellInfo.value;
+          let borderRadius = 50;
+          let border = '0.1pt black solid';
+
+          if (manager === 'No manager') {
+            borderRadius = 0;
+            border = 'none';
+          }
+
+          img = `<img src='${img_src}' style='height: 50px; border-radius: ${borderRadius}%; border: ${border}' alt='${manager}'>`;
+
+          return `
+          <div style='display: flex'>
+            <div style='display:flex; justify-content:center; width:60px;'>${img}</div>
+            <div style='display:flex; margin-left:10px; text-align:left; align-items:center;'>${manager}</div>
+          </div>
+          `
+        }"),
+        html = TRUE
       ),
       P = reactable::colDef(
         vAlign = "center",
@@ -152,21 +160,29 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
         vAlign = "center",
         minWidth = 150,
         defaultSortOrder = "desc",
-        # Render the bar charts using a custom cell render function
-        cell = function(value) {
-          # Format as percentages with 1 decimal place
-          value <- paste0(format(round(value * 100, 1), nsmall = 1), "%")
-          bar_chart(
-            value,
-            width = value,
-            fill = "lightblue",
-            background = "#F2F2F2"
-          )
-        }
+        cell = reactable::JS("function(cellInfo) {
+          let value = cellInfo.value;
+          let bar_width = value * 100;
+          let bar_fill = 'lightblue';
+          let bar_background = '#F2F2F2';
+          let display_value = (value * 100).toFixed(1) + '%';
+
+          return `
+            <div style='display:flex; align-items:center;'>
+              <div style='flex-grow:1; margin-left:7%; margin-right:1.5rem; background:${bar_background}; border-style:solid; border-color:slategrey; border-width:thin'>
+                <div style='background:${bar_fill}; width:${bar_width}%; height:1.5rem;'></div>
+              </div>
+              <div style='width:45px'>${display_value}</div>
+            </div>
+          `;
+        }"),
+        html = TRUE
+      ),
+      mgr_headshot = reactable::colDef(
+        show = FALSE
       )
     )
   )
 
   return(output_tab)
-
 }

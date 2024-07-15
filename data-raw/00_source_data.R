@@ -623,12 +623,39 @@ player_apps <- player_apps %>%
     menu_name
   )
 
+player_debuts <- player_apps %>%
+  dplyr::arrange(
+    game_date
+  ) %>%
+  dplyr::group_by(
+    menu_name
+  ) %>%
+  dplyr::filter(
+    dplyr::row_number() == 1
+  ) %>%
+  dplyr::ungroup() %>%
+  dplyr::select(
+    menu_name,
+    player_name,
+    player_dob,
+    game_date
+  ) %>%
+  dplyr::mutate(
+    plr_game_age = game_date - player_dob,
+    age_yrs = floor(as.numeric(plr_game_age / 365.25)),
+    age_days = ceiling(plr_game_age - (age_yrs * 365.25)),
+    plr_game_age = as.integer(plr_game_age)
+  ) %>%
+  dplyr::rename(
+    debut_date = game_date
+  )
 
 usethis::use_data(
   player_apps,
   player_info,
   player_ids,
   player_positions,
+  player_debuts,
 
   overwrite = TRUE
 )

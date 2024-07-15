@@ -41,6 +41,11 @@ div.sidebar-content div[class^="selectize-"] {
   }
 }
 
+div.sidebar-content {
+  font-weight: 300;
+  font-size: 0.95rem;
+}
+
 #includePlayOffs {
   font-size: small;
 }
@@ -91,13 +96,24 @@ div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
   /* Hide the arrow on the expand/collapse button on player appearance table */
   /* Only applies if images are being dispaly */
   .rt-expander-button {
-    display: none;
+    /* display: none; */
+  }
+  .rt-td-inner {
+    display: flex;
   }
 }
 
 .value_box_bordered {
   border: navy 0.1pt solid !important;
   border-radius: 2%;
+}
+
+div.lge_tab .rt-td-inner {
+  padding: 0px 6px;
+}
+
+div.line_up .rt-td-inner {
+  padding: 2px 6px;
 }
 
 /*******************************************************************************************/

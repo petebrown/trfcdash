@@ -61,27 +61,26 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       starts >= min_starts
     )
 
-  if (show_images == 'Yes') {
-    df <- df %>%
-      dplyr::rowwise() %>%
-      dplyr::mutate(
-        menu_name = stringr::str_glue("
-        <div style='display: flex;'>
-          <div style='display:flex; justify-content: center; width:50px;'>
-            <img src='{map_plr_to_headshot(menu_name)}' style='height: 45px; margin: 2px;'>
-          </div>
-          <div style='padding-left: 10px; width: 100%; margin: auto;'>
-            {menu_name}<br>
-            <span style='color: #aaa9a9; font-size: smaller;'>
-              {map_pos_to_id(menu_name)}
-          </div>
-       </div>
-      ")
-      )
-  }
+  plr_positions <- as.list(
+    player_positions %>%
+      dplyr::select(pl_index, position) %>%
+      dplyr::pull(position) %>%
+      purrr::set_names(player_positions %>% dplyr::pull(pl_index))
+  )
+  plr_headshots <- as.list(
+    player_imgs %>%
+      dplyr::select(pl_index, headshot_file_path) %>%
+      dplyr::pull(headshot_file_path) %>%
+      purrr::set_names(player_imgs %>% dplyr::pull(pl_index))
+  )
+
 
   reactable::reactable(
     data = df,
+    meta = list(
+      positions = plr_positions,
+      headshots = plr_headshots
+    ),
     class = if (show_images == "Yes") {
       "apps_table_with_images"
     },
@@ -116,31 +115,57 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         name = "Player",
         sticky = "left",
         defaultSortOrder = "asc",
-        sortable = FALSE,
         minWidth = 185,
         grouped = if (show_images=='Yes') {
-          reactable::JS("function(cellInfo) {
-            const src = cellInfo.row['menu_name'];
+          reactable::JS("function(cellInfo, state) {
+            const player = cellInfo.value;
+            const plr_name = player.split(' (b.')[0];
+            const plr_pos = state.meta.positions[player];
+            const img_src = state.meta.headshots[player];
+
+            img = `<img src='${img_src}' style='height:45px; margin:auto;' alt='${plr_name}'>`;
+
             return `
-              <div>
-                ${src}
+            <div style='display: flex'>
+              <div style='display:flex; justify-content:center; width:50px;'>${img}</div>
+                <div style='text-align:left; margin:auto 10px; line-height:1rem;'>
+                  ${plr_name}
+                  <br>
+                  <span style='font-size: smaller; color:#aaa9a9; line-height:1.1rem;'>${plr_pos}</span>
+                </div>
               </div>
-            `;
+              `
           }")
         } else {
           reactable::JS("function(cellInfo) {
             return cellInfo.value;
           }")
         },
-        html = if (show_images=='Yes') {
-          TRUE
-        }
+        cell = reactable::JS("function(cellInfo, state) {
+            const player = cellInfo.value;
+            const plr_name = player.split(' (b.')[0];
+            const plr_pos = state.meta.positions[player];
+            const img_src = state.meta.headshots[player];
+
+            img = `<img src='${img_src}' style='height:45px; margin:auto;' alt='${plr_name}'>`;
+
+            return `
+            <div style='display: flex'>
+              <div style='display:flex; justify-content:center; width:50px;'>${img}</div>
+                <div style='text-align:left; margin:auto 10px; line-height:1rem;'>
+                  ${plr_name}
+                  <br>
+                  <span style='font-size: smaller; color:#aaa9a9; line-height:1.1rem;'>${plr_pos}</span>
+                </div>
+              </div>
+              `
+          }"),
+        html = TRUE
       ),
       generic_comp = reactable::colDef(
         name = "",
         defaultSortOrder = "asc",
-        width = 110,
-        sortable = FALSE
+        width = 110
       ),
       apps = reactable::colDef(
         name = "Total Apps",
@@ -287,10 +312,6 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       win_pc = reactable::colDef(
         name = "Win %",
         align = "right",
-        # format = reactable::colFormat(
-        #   percent = TRUE,
-        #   digits = 1
-        # ),
         aggregate = if (inc_cup_games == "Yes") {
           reactable::JS("function(values, rows) {
             let winning_starts = 0

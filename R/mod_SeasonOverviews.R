@@ -60,7 +60,10 @@ mod_SeasonOverviews_ui <- function(id){
       bslib::card_header(
         class = "bg-dark d-flex justify-content-between",
         "Biggest Wins",
-        wins_popover_options(ns("wins_react_min_diff"))
+        wins_popover_options(c(
+          ns("wins_react_min_diff"),
+          ns("wins_react_show_details")
+        ))
       ),
       bslib::card_body(
         reactable::reactableOutput(ns("biggest_wins"), height = "auto"),
@@ -114,6 +117,12 @@ mod_SeasonOverviews_server <- function(id, year_range, league_tiers, includePlay
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    base_df = reactive({
+      base_season_overviews_df(
+        year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), game_range()
+      )
+    })
+
     output$ssn_streaks <- {
       reactable::renderReactable(
         get_season_streaks(
@@ -149,25 +158,44 @@ mod_SeasonOverviews_server <- function(id, year_range, league_tiers, includePlay
     min_win_diff <- reactive({
       input$wins_react_min_diff
     })
+    wins_show_details <- reactive({
+      input$wins_react_show_details
+    })
+
+    biggest_wins_df <- reactive({
+      get_biggest_wins(
+        base_df(), min_win_diff()
+      )
+    })
 
     output$biggest_wins <- {
-      reactable::renderReactable(
-        get_biggest_wins(
-          year_range(), league_tiers(), includePlayOffs(), cup_comps(), venue_options(), game_range(), min_win_diff()
+      reactable::renderReactable({
+        results_with_subtable(
+          df = biggest_wins_df(),
+          inc_cup_games = 'No',
+          drop_cols = c('outcome'),
+          show_details = wins_show_details()
         )
-      )
+      })
     }
 
     min_defeat_diff <- reactive({
       input$defeats_react_min_diff
     })
 
-    output$biggest_defeats <- {
-      reactable::renderReactable(
-        get_biggest_defeats(
-          year_range(), league_tiers(), includePlayOffs(), cup_comps(), venue_options(), game_range(), min_defeat_diff()
-        )
+    biggest_defeats_df <- reactive({
+      get_biggest_defeats(
+        base_df(), min_defeat_diff()
       )
+    })
+
+    output$biggest_defeats <- {
+      reactable::renderReactable({
+        results_with_subtable(
+          biggest_defeats_df(),
+          drop_cols = c('outcome')
+        )
+      })
     }
 
     output$player_stats <- {

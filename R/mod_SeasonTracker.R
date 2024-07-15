@@ -53,6 +53,10 @@ mod_SeasonTracker_ui <- function(id){
         uiOutput(ns("footer_text"))
       ),
 
+      bslib::card(
+        uiOutput(ns("dynamicTabs"))
+      ),
+
 
       # UI: Seasonal league records ----
       bslib::card(
@@ -321,19 +325,7 @@ mod_SeasonTracker_ui <- function(id){
           ),
           uiOutput(ns("top_scorers"))
         )
-      ),
-
-
-      # UI: Player appearance heatmap graphic ----
-      # bslib::card(
-      #   bslib::card_header(
-      #     class = "bg-dark",
-      #     "Player appearances"
-      #   ),
-      #   bslib::card_body(
-      #     uiOutput(ns("app_heatmaps"))
-      #   )
-      # )
+      )
     )
   )
 }
@@ -345,6 +337,9 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
 
+    base_df <- reactive({
+      base_season_tracker_df(selected_seasons())
+    })
 
     ###########################
     # CARD 1: SEASON PROGRESS #
@@ -394,7 +389,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
     }
 
     # CARD 2A: Overall league records for selected seasons
-    output$season_records <- render_ssn_records(venues = c("H", "A"))
+    output$season_records <- render_ssn_records(venues = c("H", "A", "N"))
     # CARD 2B: Home league records for selected seasons
     output$season_records_home <- render_ssn_records(venues = "H")
     # CARD 2C: Away league records for selected seasons
@@ -404,38 +399,6 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
     ###############################
     # CARD 3: Appearance heat map #
     ###############################
-
-    # CARD 3: Output tabbed heatmaps showing player appearances in selected seasons
-    # output$app_heatmaps <- renderUI({
-    #   req(selected_seasons())
-    #   if (!is.null(selected_seasons())) {
-    #     # Sort selected seasons
-    #     selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
-    #
-    #     # Create a tab panel of appearance heatmaps for each  season
-    #     app_tabs <- lapply(selected_seasons, function(season) {
-    #       tabPanel(
-    #         title = season,
-    #         bslib::card(
-    #           full_screen = TRUE,
-    #           class = c("borderless", "no_padding"),
-    #           bslib::card_title(
-    #             paste0("Appearances, goals and cards in ", season)
-    #           ),
-    #           min_height = "880px",
-    #           renderPlot({
-    #             output_app_heatmap(season)
-    #           })
-    #         )
-    #       )
-    #     })
-    #
-    #     # Return a tabsetPanel containing season results
-    #     do.call(tabsetPanel, app_tabs)
-    #   } else {
-    #     p("Please select one or more seasons from the dropdown menu.")
-    #   }
-    # })
 
     output$app_reactable <- renderUI({
       req(selected_seasons())
@@ -492,7 +455,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
     output$app_table <- renderUI({
       req(selected_seasons())
       if (!is.null(selected_seasons())) {
-        # Sort selected seasons
+
         selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
 
         apps_inc_cup_games <- reactive({
@@ -553,22 +516,26 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
     # CARD 5: RESULTS #
     ###################
 
-    # CARD 5: Output tabbed results for selected seasions
+    # CARD 5: Output tabbed results for selected seasons
     output$ssn_results <- renderUI({
       req(selected_seasons())
       if (!is.null(selected_seasons())) {
         # Sort selected seasons
-        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
-        inc_cup_games <- input$res_inc_cup_games
-        n_fixtures <- input$n_fixtures
+        selected_seasons <- isolate(sort(selected_seasons(), decreasing = FALSE))
 
-        # Create a tab panel of results for each  season
+        inc_cup_games <- input$res_inc_cup_games
+
+        # Create a tab panel of results for eachseason
         ssn_tabs <- lapply(selected_seasons, function(season) {
           tabPanel(
             title = season,
-            reactable::renderReactable(
-              output_ssn_reactable(season, inc_cup_games)
-            )
+            reactable::renderReactable({
+              results_with_subtable(
+                df=filter_ssn_results(season),
+                inc_cup_games=inc_cup_games,
+                show_details='Yes',
+                show_imgs='Yes')
+            })
           )
         })
 
@@ -590,42 +557,6 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
 
       plot_top_scorers(selected_seasons(), inc_cup_games, n_scorers)
     })
-
-
-    # CARD 5: Output nested cards containing top scorers plots for selected seasons
-    # output$boxed_ssn_scorers <- renderUI({
-    #   if (!is.null(selected_seasons())) {
-    #     # Get selected seasons
-    #     selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
-    #
-    #     n_plots <- length(selected_seasons())
-    #     max_goals <- get_max_goals(selected_seasons())
-    #
-    #     # Create a list of scorer charts - one per season
-    #     ssn_scorer_boxes <- lapply(selected_seasons, function(season) {
-    #       bslib::card(
-    #         class = "borderless",
-    #         bslib::card_title(
-    #           season
-    #         ),
-    #         bslib::card_body(
-    #           plot_ssn_scorers(season, max_goals, n_plots)
-    #         )
-    #       )
-    #     })
-    #     # Return all charts - 100% width for one, 33% width for multiples of
-    #     # three, otherwise 50% width
-    #     bslib::layout_column_wrap(
-    #       width = ifelse(length(selected_seasons) == 1, 1,
-    #                      ifelse(length(selected_seasons) %% 3 == 0, 1/3,
-    #                             ifelse(length(selected_seasons) %% 2 == 0, 1/2, 1/3))),
-    #       !!!ssn_scorer_boxes,
-    #       heights_equal = "all", fixed_width = TRUE, fill = TRUE
-    #     )
-    #   } else {
-    #     p("Please select one or more seasons from the dropdown menu.")
-    #   }
-    # })
 
   })
 }

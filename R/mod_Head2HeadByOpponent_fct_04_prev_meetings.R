@@ -168,8 +168,8 @@ get_h2h_meetings <- function(df) {
                   stringr::str_to_title(value)
                 }
               ),
-              mins_played = reactable::colDef(name = "⏱️", width = 60),
-              goals_scored = reactable::colDef(name = "⚽️", width = 50),
+              mins_played = reactable::colDef(name = "⏱️", width = 40),
+              goals_scored = reactable::colDef(name = "⚽️", width = 40),
               yellow_cards = reactable::colDef(name = "🟨", width = 40),
               red_cards = reactable::colDef(name = "🟥", width = 40)
             ),

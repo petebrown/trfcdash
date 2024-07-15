@@ -593,12 +593,12 @@ popover_options <- function(ns) {
   )
 }
 
-wins_popover_options <- function(input_id, min_goals=4) {
+wins_popover_options <- function(input_ids, min_goals=4) {
   bslib::popover(
     title = "Display Options",
     bsicons::bs_icon("gear"),
     sliderInput(
-      inputId = input_id,
+      inputId = input_ids[1],
       label = tags$b("Minimum win size:"),
       min = 1,
       max = 10,
@@ -606,6 +606,14 @@ wins_popover_options <- function(input_id, min_goals=4) {
       sep = "",
       ticks = FALSE,
       step = 1
+    ),
+    hr(),
+    radioButtons(
+      inputId = input_ids[2],
+      label = tags$b("Show line-ups and league tables:"),
+      choices = c("Yes", "No"),
+      selected = "No",
+      inline = TRUE
     )
   )
 }
@@ -699,29 +707,49 @@ plr_name_and_img <- function(value) {
 }
 
 
-plr_name_and_headshot <- function(value, img_size=45, inc_pos="N") {
+plr_name_and_headshot <- function() {
+  reactable::JS("function(cellInfo) {
+    let player = cellInfo.value;
+    let plr_pos = cellInfo.row['position'];
+    let img_src = cellInfo.row['plr_headshot'];
 
-  if (inc_pos == "Y") {
-    pos_info <- span(style="font-size: smaller; color: #aaa9a9; line-height: 1.1rem;", br(), map_pos_to_id(value))
-  } else {
-    pos_info <- ""
-  }
+    img = `<img src='${img_src}' style='height:45px; margin:auto;' alt='${player}'>`;
 
-  image <- img(
-    src = map_plr_to_headshot(value),
-    style = stringr::str_glue("height: {img_size}px; margin: auto;"),
-    alt = value
-  )
-
-  tagList(
-    div(style="display: flex",
-        div(style = stringr::str_glue("display:flex; justify-content: center; width:{img_size+5}px;"), image),
-        div(style = "text-align: left; margin: auto 10px; line-height: 1rem;", value,
-            pos_info
-        )
-    )
-  )
+    return `
+    <div style='display: flex;'>
+      <div style='display:flex; justify-content:center; width:50px;'>${img}</div>
+      <div style='display:flex; flex-direction:column; text-align:left; margin:auto 10px; line-height: 1rem;'>
+        ${player}
+        <span style='font-size:smaller; color:#aaa9a9; line-height:1.1rem;'>${plr_pos}</span>
+      </div>
+    </div>
+    `
+  }")
 }
+
+# plr_name_and_headshot <- function(value, img_size=45, inc_pos="N") {
+#
+#   if (inc_pos == "Y") {
+#     pos_info <- span(style="font-size: smaller; color: #aaa9a9; line-height: 1.1rem;", br(), map_pos_to_id(value))
+#   } else {
+#     pos_info <- ""
+#   }
+#
+#   image <- img(
+#     src = map_plr_to_headshot(value),
+#     style = stringr::str_glue("height: {img_size}px; margin: auto;"),
+#     alt = value
+#   )
+#
+#   tagList(
+#     div(style="display: flex",
+#         div(style = stringr::str_glue("display:flex; justify-content: center; width:{img_size+5}px;"), image),
+#         div(style = "text-align: left; margin: auto 10px; line-height: 1rem;", value,
+#             pos_info
+#         )
+#     )
+#   )
+# }
 
 
 mgr_name_and_headshot <- function(value, img_size=45) {

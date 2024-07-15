@@ -36,15 +36,13 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
       ),
       games_per_gl = round(mins_per_gl / 90, 2),
       mins_per_gl = round(mins_per_gl, 2),
-      win_pc = round((W / starts) * 100, 1),
-      mgr_name = manager
+      win_pc = round((W / starts) * 100, 1)
     ) %>%
     dplyr::arrange(
       dplyr::desc(apps)
     ) %>%
     dplyr::select(
       manager,
-      mgr_name,
       apps,
       starts,
       sub_apps,
@@ -63,6 +61,18 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
       )
     )
 
+  mgr_imgs <- manager_imgs %>%
+    dplyr::select(
+      manager_name,
+      mgr_headshot = headshot_file_path
+    )
+
+  df <- dplyr::left_join(
+    df,
+    mgr_imgs,
+    by = c("manager" = "manager_name")
+  )
+
   reactable::reactable(
     df,
     class = "apps-reactable",
@@ -80,31 +90,29 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
     columns = list(
       manager = reactable::colDef(
         name = "",
-        width = 75,
+        width = 200,
         vAlign = "top",
-        cell = function(value) {
-          image <- img(
-            src = dplyr::case_when(
-              .default = paste0(
-                "./www/images/managers/", tolower(gsub(' ', '-', value)), ".jpg"),
-              value == "No manager" ~ "./www/images/crest.svg",
-              stringr::str_detect(value, "Sheedy") ~ "./www/images/managers/kevin-sheedy.jpg",
-              stringr::str_detect(value, "McAteer") ~ "./www/images/managers/jason-mcateer.jpg"
-            ),
-            style = dplyr::case_when(
-              .default = "height: 50px; border-radius: 50%;",
-              value == "No manager" ~ "height: 50px;"
-            ),
-            alt = value
-          )
-          tagList(
-            div(style = "display: inline-block; width: 60px;", image)
-          )
-        }
-      ),
-      mgr_name = reactable::colDef(
-        name = "",
-        width = 130
+        cell = reactable::JS("function(cellInfo) {
+          let img_src = cellInfo.row['mgr_headshot'];
+          let manager = cellInfo.value;
+          let borderRadius = 50;
+          let border = '0.1pt black solid';
+
+          if (manager === 'No manager') {
+            borderRadius = 0;
+            border = 'none';
+          }
+
+          img = `<img src='${img_src}' style='height: 50px; border-radius: ${borderRadius}%; border: ${border}' alt='${manager}'>`;
+
+          return `
+          <div style='display: flex'>
+            <div style='display:flex; justify-content:center; width:60px;'>${img}</div>
+            <div style='display:flex; margin-left:10px; text-align:left; align-items:center;'>${manager}</div>
+          </div>
+          `
+        }"),
+        html = TRUE
       ),
       apps = reactable::colDef(
         name = "Apps"
@@ -136,6 +144,9 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
         format = reactable::colFormat(
           digits = 1
         )
+      ),
+      mgr_headshot = reactable::colDef(
+        show = FALSE
       )
     )
   )

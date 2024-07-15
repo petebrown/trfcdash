@@ -30,8 +30,25 @@ output_mgr_plr_records <- function(mgr_name) {
       dplyr::desc(subbed_off_pc)
     )
 
+  plr_positions <- as.list(
+    player_positions %>%
+      dplyr::select(pl_index, position) %>%
+      dplyr::pull(position) %>%
+      purrr::set_names(player_positions %>% dplyr::pull(pl_index))
+  )
+  plr_headshots <- as.list(
+    player_imgs %>%
+      dplyr::select(pl_index, headshot_file_path) %>%
+      dplyr::pull(headshot_file_path) %>%
+      purrr::set_names(player_imgs %>% dplyr::pull(pl_index))
+  )
+
   reactable::reactable(
     data = df,
+    meta = list(
+      positions = plr_positions,
+      headshots = plr_headshots
+    ),
     class = "apps-reactable",
     style = list(
       fontSize = "0.9rem",
@@ -54,9 +71,29 @@ output_mgr_plr_records <- function(mgr_name) {
         show = TRUE,
         width = 200,
         defaultSortOrder = "asc",
-        cell = function(value) {
-          plr_name_and_headshot(value, img_size=35, inc_pos="Y")
-        }
+        cell = reactable::JS("function(cellInfo, state) {
+          const player = cellInfo.value;
+          const plr_name = player.split(' (b.')[0];
+          const plr_pos = state.meta.positions[player];
+          const img_src = state.meta.headshots[player];
+
+          img = `<img src='${img_src}' style='height:45px; margin:auto;' alt='${plr_name}'>`;
+
+          return `
+          <div style='display: flex'>
+            <div style='display:flex; justify-content:center; width:50px;'>
+              ${img}
+            </div>
+            <div style='text-align:left; margin:auto 10px; line-height:1rem;'>
+              ${plr_name}
+              <br>
+              <span style='font-size: smaller; color:#aaa9a9; line-height:1.1rem;'>
+                ${plr_pos}
+              </span>
+            </div>
+          </div>`
+        }"),
+        html = TRUE
       ),
       starts = reactable::colDef(
         name = "Starts",

@@ -1,4 +1,4 @@
-get_pl_debuts <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games) {
+get_youngest_players <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games) {
 
   min_year <- year_range[1]
   max_year <- year_range[2]

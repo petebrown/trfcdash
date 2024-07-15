@@ -122,10 +122,16 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         minWidth = 155,
         style = list(
           background = "white"
-        )
+        ),
+        cell = reactable::JS("function(cellInfo) {
+          let player = cellInfo.value;
+          let plr_name = player.split(' (b.')[0];
+
+          return plr_name
+        }"),
       ),
       starts = reactable:: colDef(
-        header = with_tooltip("A", "Starts"),
+        header = with_tooltip("👕", "Starts"),
         show = ifelse(
           "apps" %in% summary_stats,
           TRUE,
@@ -139,7 +145,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       sub_apps = reactable:: colDef(
-        header = with_tooltip("S", "Substitute Appearances"),
+        header = with_tooltip("🔄", "Substitute Appearances"),
         show = ifelse(
           "apps" %in% summary_stats & "sub" %in% player_roles,
           TRUE,
@@ -154,7 +160,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       goals = reactable:: colDef(
-        header = with_tooltip("G", "Goals"),
+        header = with_tooltip("⚽️", "Goals"),
         show = ifelse(
           "goals" %in% summary_stats,
           TRUE,
@@ -168,7 +174,8 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       mins_played = reactable:: colDef(
-        header = with_tooltip("Mins", "Minutes played"),
+        header = with_tooltip("⏱️", "Minutes played"),
+        headerStyle = "text-align: center;",
         show = ifelse(
           "mins_played" %in% summary_stats,
           TRUE,
@@ -185,7 +192,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       yc = reactable:: colDef(
-        header = with_tooltip("YC", "Yellow Cards"),
+        header = with_tooltip("🟨", "Yellow Cards"),
         show = ifelse(
           "cards" %in% summary_stats,
           TRUE,
@@ -198,7 +205,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         )
       ),
       rc = reactable:: colDef(
-        header = with_tooltip("RC", "Red Cards"),
+        header = with_tooltip("🟥", "Red Cards"),
         show = ifelse(
           "cards" %in% summary_stats,
           TRUE,
@@ -219,22 +226,22 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         ),
         sticky = "right",
         minWidth = 65,
-        format = reactable::colFormat(
-          percent = TRUE,
-          digits = 0
-        ),
         style = function(value) {
           if (!is.na(value)) {
             list(background = "gold")
           }
         },
         cell = function(value) {
-          if (is.na(value)) {
-            '-'
+          if (is.na(value) | is.infinite(value)) {
+              '-'
           } else {
-            round(value, 0)
+            scales::percent(value)
           }
-        }
+        },
+        format = reactable::colFormat(
+          percent = TRUE,
+          digits = 0
+        )
       ),
       games_per_goal = reactable:: colDef(
         header = with_tooltip("GPG", "Games-per-goal"),
@@ -255,7 +262,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
           }
         },
         cell = function(value) {
-          if (is.na(value)) {
+          if (is.na(value) | is.infinite(value)) {
             '-'
           } else {
             round(value, 1)

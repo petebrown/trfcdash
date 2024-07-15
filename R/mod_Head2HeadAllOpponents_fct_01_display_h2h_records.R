@@ -42,8 +42,18 @@ output_h2h_records <- function(year_range, league_tiers, includePlayOffs, cup_co
       opposition
     )
 
+  crest_list <- as.list(
+    clubs_crests %>%
+      dplyr::select(club, file_path) %>%
+      dplyr::pull(file_path) %>%
+      purrr::set_names(clubs_crests %>% dplyr::pull(club))
+  )
+
   reactable::reactable(
     data = df,
+    meta = list(
+      crests = crest_list
+    ),
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = "win_pc",
@@ -63,9 +73,23 @@ output_h2h_records <- function(year_range, league_tiers, includePlayOffs, cup_co
       opposition = reactable::colDef(
         name = "Opposition",
         minWidth = 130,
-        cell = function(value) {
-          club_and_crest(value)
-        }
+        defaultSortOrder = "asc",
+        cell = reactable::JS("function(cellInfo, state) {
+          const { crests } = state.meta;
+
+          let opponent = cellInfo.value;
+          let img_src = crests[opponent];
+
+          img = `<img src='${img_src}' style='height:32px; margin:2px;' alt='${opponent}'>`;
+
+          return `
+          <div style='display: flex'>
+            <div style='display:flex; justify-content:center; width:40px;'>${img}</div>
+            <div style='display:flex; text-align:left; margin:6.4px;'>${opponent}</div>
+          </div>
+          `
+        }"),
+        html = TRUE
       ),
       P = reactable::colDef(
         minWidth = 50
@@ -99,17 +123,23 @@ output_h2h_records <- function(year_range, league_tiers, includePlayOffs, cup_co
         vAlign = "center",
         minWidth = 150,
         defaultSortOrder = "desc",
-        # Render the bar charts using a custom cell render function
-        cell = function(value) {
-          # Format as percentages with 1 decimal place
-          value <- paste0(format(round(value * 100, 1), nsmall = 1), "%")
-          bar_chart(
-            value,
-            width = value,
-            fill = "lightblue",
-            background = "#F2F2F2"
-          )
-        }
+        cell = reactable::JS("function(cellInfo) {
+          let value = cellInfo.value;
+          let bar_width = value * 100;
+          let bar_fill = 'lightblue';
+          let bar_background = '#F2F2F2';
+          let display_value = (value * 100).toFixed(1) + '%';
+
+          return `
+            <div style='display:flex; align-items:center;'>
+              <div style='flex-grow:1; margin-left:7%; margin-right:1.5rem; background:${bar_background}; border-style:solid; border-color:slategrey; border-width:thin'>
+                <div style='background:${bar_fill}; width:${bar_width}%; height:1.5rem;'></div>
+              </div>
+              <div style='width:45px'>${display_value}</div>
+            </div>
+          `;
+        }"),
+        html = TRUE
       )
     )
   )

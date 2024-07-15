@@ -142,6 +142,18 @@ manager_imgs <- data.frame(
       file.exists(paste0("./inst/app/www/images/managers/", img, ".jpg")) ~ paste0("./www/images/managers/", img, ".jpg"),
       TRUE ~ "./www/images/crest.svg"
     )
+  ) %>%
+  dplyr::add_row(
+    manager_name = "Kevin Sheedy & Ray Mathias",
+    img = "kevin-sheedy",
+    file_path = "./www/images/managers/kevin-sheedy.jpg",
+    headshot_file_path = "./www/images/managers/kevin-sheedy.jpg"
+  ) %>%
+  dplyr::add_row(
+    manager_name = "Jason McAteer & John McMahon",
+    img = "jason-mcateer",
+    file_path = "./www/images/managers/jason-mcateer.jpg",
+    headshot_file_path = "./www/images/managers/jason-mcateer.jpg"
   )
 
 usethis::use_data(

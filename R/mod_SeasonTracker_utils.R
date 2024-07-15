@@ -51,3 +51,10 @@ get_comps_by_season <- function(selected_seasons) {
   return (comp_list$generic_comp)
 }
 
+base_season_tracker_df <- function(selected_seasons) {
+  df <- results_dataset %>%
+    dplyr::filter(
+      season %in% selected_seasons
+    )
+  return (df)
+}

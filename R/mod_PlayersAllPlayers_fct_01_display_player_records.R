@@ -52,9 +52,6 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
       mins_played = sum(mins_played)
     ) %>%
     dplyr::mutate(
-      # surname = stringr::str_split_i(player_name, " ", -1),
-      # forename = stringr::str_remove(player_name, surname),
-      # forename = stringr::str_trim(forename),
       total_apps = starts + sub_apps,
       debut = as.Date(debut, format = '%d-%m-%Y'),
       debut = format(debut, "%d/%m/%Y")
@@ -77,6 +74,21 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
       debut
     )
 
+  player_headshots <- player_imgs %>%
+    dplyr::select(menu_name=pl_index, plr_headshot=headshot_file_path)
+  plr_positions <- player_positions %>%
+    dplyr::select(menu_name=pl_index, position)
+
+  df <- df %>%
+    dplyr::left_join(
+      player_headshots,
+      by = "menu_name"
+    ) %>%
+    dplyr::left_join(
+      plr_positions,
+      by = "menu_name"
+    )
+
   reactable::reactable(
     data = df,
     class = "apps-reactable",
@@ -94,34 +106,29 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
     ),
     showSortIcon = FALSE,
     compact = TRUE,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(nrow(df)),
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
-        show = TRUE,
         minWidth = 180,
-        cell = function(value) {
-            plr_name_and_headshot(value, inc_pos="Y")
-          }
+        cell = plr_name_and_headshot(),
+        html = TRUE
       ),
       total_apps = reactable::colDef(
         name = "Apps",
-        show = TRUE
       ),
       starts = reactable::colDef(
         name = "Starts",
-        show = TRUE
       ),
       sub_apps = reactable::colDef(
         name = "Sub Apps",
-        show = TRUE
       ),
       goals = reactable::colDef(
         name = "Goals",
-        show = TRUE
       ),
       mins_played = reactable::colDef(
         name = "Mins Played",
-        show = TRUE,
         format = reactable::colFormat(
           separators = TRUE
         )
@@ -135,6 +142,12 @@ output_player_records <- function(year_range, league_tiers, includePlayOffs, cup
       debut = reactable::colDef(
         name = "Debut",
         align = "right"
+      ),
+      plr_headshot = reactable::colDef(
+        show = FALSE
+      ),
+      position = reactable::colDef(
+        show = FALSE
       )
     )
   )

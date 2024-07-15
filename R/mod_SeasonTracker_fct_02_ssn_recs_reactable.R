@@ -17,13 +17,18 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
     ) %>%
     dplyr::group_by(
       season,
-      generic_comp
+      competition
     ) %>%
     generate_record() %>%
     dplyr::arrange(
       season,
       dplyr::desc(P)
     )
+
+  comp_logos <- spec_comp_logos %>%
+    dplyr::select(season, competition, comp_logo=file_path)
+
+  df <- dplyr::left_join(df, comp_logos, by=c("season", "competition"))
 
   n_seasons = length(selected_seasons)
 
@@ -42,6 +47,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
       fontWeight = 300,
       color = "black"
     ),
+    defaultExpanded = ifelse(n_seasons==1 & length(selected_venue) > 1, TRUE, FALSE),
     rowStyle = if (inc_cup_games == "Yes") {
       reactable::JS("function(rowInfo) {
         if (rowInfo.aggregated === true) {
@@ -79,7 +85,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
           }")
         }
       ),
-      generic_comp = reactable::colDef(
+      competition = reactable::colDef(
         name = "Competition",
         align = "left",
         sticky = "left",
@@ -94,9 +100,20 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
             return 'All comps (' + comps + ')'
           }")
         },
-        cell = function(value, index) {
-          generic_comp_logo(value, from_generic=TRUE)
-        },
+        cell = reactable::JS("function(cellInfo) {
+          let img_src = cellInfo.row['comp_logo'];
+          let competition = cellInfo.value;
+
+          img = `<img src='${img_src}' style='height:32px; margin:auto;' alt='${competition}'>`;
+
+          return `
+          <div style='display: flex'>
+            <div style='display:flex; justify-content:center; width:40px;'>${img}</div>
+            <div style='display:flex; text-align:left; margin:10px;'>${competition}</div>
+          </div>
+          `
+        }"),
+        html = TRUE,
         footer = if (n_seasons > 1) {
           "Average"
         },
@@ -317,7 +334,8 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
             return formatter.format(win_pc)
           }")
         }
-      )
+      ),
+      comp_logo = reactable::colDef(show=FALSE)
     )
   )
 }

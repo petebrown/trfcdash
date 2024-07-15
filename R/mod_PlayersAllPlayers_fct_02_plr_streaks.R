@@ -92,6 +92,21 @@ output_all_plr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
       wins_to_0
     )
 
+  player_headshots <- player_imgs %>%
+    dplyr::select(menu_name=pl_index, plr_headshot=headshot_file_path)
+  plr_positions <- player_positions %>%
+    dplyr::select(menu_name=pl_index, position)
+
+  df <- df %>%
+    dplyr::left_join(
+      player_headshots,
+      by = "menu_name"
+    ) %>%
+    dplyr::left_join(
+      plr_positions,
+      by = "menu_name"
+    )
+
   output_tab <- reactable::reactable(
     data = df,
     class = "apps-reactable",
@@ -105,17 +120,22 @@ output_all_plr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
     defaultSorted = list("wins" = "desc"),
     defaultColDef = reactable::colDef(
       vAlign = "center",
-      headerClass = "bar-sort-header"
+      align = "center",
+      headerClass = "bar-sort-header",
+      headerStyle = "flex-direction: column-reverse;",
+      minWidth = 80
     ),
     showSortIcon = FALSE,
     compact = TRUE,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(nrow(df)),
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
         minWidth = 180,
-        cell = function(value) {
-          plr_name_and_headshot(value, inc_pos="Y")
-        }
+        align = "left",
+        cell = plr_name_and_headshot(),
+        html = TRUE
       ),
       starts = reactable::colDef(
         name = "Total Starts",
@@ -128,10 +148,10 @@ output_all_plr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
         name = "Goals"
       ),
       yel_cards = reactable::colDef(
-        name = "Yellow Cards"
+        name = "🟨"
       ),
       red_cards = reactable::colDef(
-        name = "Red Cards"
+        name = "🟥"
       ),
       unbeaten = reactable::colDef(
         name = "Unbeaten"
@@ -150,6 +170,12 @@ output_all_plr_streaks <- function(year_range, league_tiers, includePlayOffs, cu
       ),
       wins_to_0 = reactable::colDef(
         name = "Wins to nil"
+      ),
+      plr_headshot = reactable::colDef(
+        show = FALSE
+      ),
+      position = reactable::colDef(
+        show = FALSE
       )
     )
   )

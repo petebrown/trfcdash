@@ -1,5 +1,11 @@
 get_h2h_man_summary <- function(df) {
 
+  mgr_imgs <- manager_imgs %>%
+    dplyr::select(
+      manager_name,
+      mgr_headshot = headshot_file_path
+    )
+
   df %>%
     dplyr::group_by(
       manager
@@ -15,7 +21,6 @@ get_h2h_man_summary <- function(df) {
       .groups = "drop"
     ) %>%
     dplyr::mutate(
-      mgr_name = manager,
       win_pc = W / P
     ) %>%
     dplyr::arrange(
@@ -24,7 +29,6 @@ get_h2h_man_summary <- function(df) {
     ) %>%
     dplyr::select(
       manager,
-      mgr_name,
       P,
       W,
       D,
@@ -33,5 +37,10 @@ get_h2h_man_summary <- function(df) {
       GA,
       GD,
       win_pc
-    )
+    ) %>%
+    dplyr::left_join(
+      mgr_imgs,
+      by = c("manager" = "manager_name")
+   )
+
 }

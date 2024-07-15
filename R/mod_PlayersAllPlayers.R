@@ -37,9 +37,9 @@ mod_PlayersAllPlayers_ui <- function(id){
           full_screen = TRUE,
           bslib::card_header(
             class = "bg-dark",
-            "Player Debuts"
+            "Youngest Players"
           ),
-          reactable::reactableOutput(ns("player_debuts"))
+          reactable::reactableOutput(ns("youngest_players"))
         ),
         bslib::card(
           full_screen = TRUE,
@@ -49,6 +49,15 @@ mod_PlayersAllPlayers_ui <- function(id){
           ),
           reactable::reactableOutput(ns("oldest_players"))
         )
+      ),
+
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
+          "Player Debuts"
+        ),
+        reactable::reactableOutput(ns("player_debuts"))
       )
     )
   )
@@ -60,6 +69,10 @@ mod_PlayersAllPlayers_ui <- function(id){
 mod_PlayersAllPlayers_server <- function(id, year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, min_games){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+
+    base_df <- reactive({
+      base_PlayersAllPlayers_df(year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), min_games())
+    })
 
     output$player_records <- {
       reactable::renderReactable(
@@ -73,15 +86,21 @@ mod_PlayersAllPlayers_server <- function(id, year_range, league_tiers, includePl
       )
     }
 
-    output$player_debuts <- {
+    output$youngest_players <- {
       reactable::renderReactable(
-        get_pl_debuts(year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), min_games())
+        get_youngest_players(year_range(), league_tiers(), includePlayOffs(), cup_comps(), pens_as_draw(), venue_options(), min_games())
       )
     }
 
     output$oldest_players <- {
       reactable::renderReactable(
-        get_oldest_players(n=1)
+        get_oldest_players(base_df(), n=1)
+      )
+    }
+
+    output$player_debuts <- {
+      reactable::renderReactable(
+        get_player_debuts(base_df())
       )
     }
 

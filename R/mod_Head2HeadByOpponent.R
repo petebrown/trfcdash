@@ -103,7 +103,7 @@ mod_Head2HeadByOpponent_ui <- function(id){
       bslib::card_header(
         class = "bg-dark d-flex justify-content-between",
         "Biggest Wins",
-        wins_popover_options(ns("wins_by_opp_react_min_diff"), min_goals=1)
+        wins_popover_options(input_ids=c(ns("wins_by_opp_react_min_diff"), ns("wins_by_opp_react_show_details")), min_goals=1)
       ),
       bslib::card_body(
         reactable::reactableOutput(ns("h2h_biggest_wins"), height = "auto"),
@@ -246,8 +246,10 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
 
     output$h2h_meetings <- {
       reactable::renderReactable(
-        get_h2h_meetings(
-          base_df()
+        results_with_subtable(
+          df=base_df(),
+          show_details='Yes',
+          show_imgs='Yes'
         )
       )
     }
@@ -263,25 +265,44 @@ mod_Head2HeadByOpponent_server <- function(id, opponent, year_range, league_tier
     min_win_diff <- reactive({
       input$wins_by_opp_react_min_diff
     })
+    h2h_wins_show_details <- reactive({
+      input$wins_by_opp_react_show_details
+    })
+    h2h_biggest_wins_df <- reactive({
+      get_biggest_wins_by_opp(
+        base_df(), min_win_diff()
+      )
+    })
 
     output$h2h_biggest_wins <- {
-      reactable::renderReactable(
-        get_biggest_wins_by_opp(
-          base_df(), min_win_diff()
+      reactable::renderReactable({
+        results_with_subtable(
+          df=h2h_biggest_wins_df(),
+          drop_cols=c('outcome', 'game_type', 'league_tier'),
+          show_details=h2h_wins_show_details(),
+          show_imgs='No'
         )
-      )
+      })
     }
 
     min_defeat_diff <- reactive({
       input$defeats_by_opp_react_min_diff
     })
+    h2h_biggest_defeats_df <- reactive({
+      get_biggest_defeats_by_opp(
+        base_df(), min_win_diff()
+      )
+    })
 
     output$h2h_biggest_defeats <- {
-      reactable::renderReactable(
-        get_biggest_defeats_by_opp(
-          base_df(), min_defeat_diff()
+      reactable::renderReactable({
+        results_with_subtable(
+          df=h2h_biggest_defeats_df(),
+          drop_cols=c('outcome', 'game_type', 'league_tier'),
+          show_details=h2h_wins_show_details(),
+          show_imgs='No'
         )
-      )
+      })
     }
 
   })

@@ -26,8 +26,6 @@ mod_ManagersByManager_ui <- function(id){
       )
     ),
 
-    reactable::reactableOutput(ns("mgr_results")),
-
     bslib::card(
       bslib::card_header(
         class = "bg-dark",
@@ -88,28 +86,6 @@ mod_ManagersByManager_ui <- function(id){
         reactable::reactableOutput(ns("mgr_summary_by_ssn_reactable"))
       )
     ),
-
-    # bslib::card(
-    #   bslib::card_header(
-    #     class = "bg-dark",
-    #     "Overall Record by Competition"
-    #   ),
-    #   bslib::card_body(
-    #     gt::gt_output(ns("mgr_summary_by_comp"))
-    #   )
-    # ),
-    #
-    #
-    # bslib::card(
-    #   bslib::card_header(
-    #     class = "bg-dark",
-    #     "Overall Record by Season"
-    #   ),
-    #   bslib::card_body(
-    #     gt::gt_output(ns("mgr_summary_by_ssn"))
-    #   )
-    # ),
-
 
     bslib::card(
       bslib::card_header(

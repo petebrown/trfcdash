@@ -83,9 +83,7 @@ get_h2h_player_stats <- function(res_df, show_images='Yes') {
             return cellInfo.value
           }")
         },
-        html = if (show_images=='Yes') {
-          TRUE
-        }
+        html = TRUE
       ),
       apps = reactable::colDef(
         name = "Total Apps",

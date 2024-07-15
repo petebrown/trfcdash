@@ -36,8 +36,18 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
       dplyr::desc(P)
     )
 
+  crest_list <- as.list(
+    clubs_crests %>%
+      dplyr::select(club, file_path) %>%
+      dplyr::pull(file_path) %>%
+      purrr::set_names(clubs_crests %>% dplyr::pull(club))
+  )
+
   reactable::reactable(
     data = df,
+    meta = list(
+      crests = crest_list
+    ),
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultSorted = "wins",
@@ -59,10 +69,23 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
         opposition = reactable::colDef(
           name = "Opposition",
           minWidth = 175,
-          cell = function(value) {
-            club_and_crest(value)
-          },
-          align = "left"
+          defaultSortOrder = "asc",
+          cell = reactable::JS("function(cellInfo, state) {
+          const { crests } = state.meta;
+
+          let opponent = cellInfo.value;
+          let img_src = crests[opponent];
+
+          img = `<img src='${img_src}' style='height:32px; margin:2px;' alt='${opponent}'>`;
+
+          return `
+          <div style='display: flex'>
+            <div style='display:flex; justify-content:center; width:40px;'>${img}</div>
+            <div style='display:flex; text-align:left; margin:6.4px;'>${opponent}</div>
+          </div>
+          `
+        }"),
+          html = TRUE
         ),
         P = reactable::colDef(
           show = FALSE
