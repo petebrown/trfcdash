@@ -8,40 +8,45 @@ get_otd_debuts <- function(otd_date, inc_year = "No") {
         inc_year == "Yes" ~ lubridate::year(debut_date) == lubridate::year(otd_date),
         TRUE ~ TRUE
       )
-    )
-
-  player_headshots <- player_imgs %>%
-    dplyr::select(menu_name=pl_index, plr_headshot=headshot_file_path)
-  plr_positions <- player_positions %>%
-    dplyr::select(menu_name=pl_index, position)
-
-  df <- df %>%
-    dplyr::left_join(
-      player_headshots,
-      by = "menu_name"
-    ) %>%
-    dplyr::left_join(
-      plr_positions,
-      by = "menu_name"
     ) %>%
     dplyr::select(
       menu_name,
       plr_game_age,
       age_yrs,
-      age_days,
-      plr_headshot,
-      position
+      age_days
     )
 
 
   reactable::reactable(
     data = df,
+    meta = list(
+      plr_headshots = meta_data[['plr_headshots']],
+      plr_positions = meta_data[['plr_positions']]
+    ),
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
         minWidth = 175,
         defaultSortOrder = "asc",
-        cell = plr_name_and_headshot(),
+        cell = reactable::JS("function(cellInfo, state) {
+          const player = cellInfo.value;
+          const plr_name = player.split(' (b.')[0];
+          const plr_pos = state.meta.plr_positions[player];
+          const img_src = state.meta.plr_headshots[player];
+
+          img = `<img src='${img_src}' style='height:45px; margin:auto;' alt='${plr_name}'>`;
+
+          return `
+          <div style='display: flex'>
+            <div style='display:flex; justify-content:center; width:50px;'>${img}</div>
+              <div style='text-align:left; margin:auto 10px; line-height:1rem;'>
+                ${plr_name}
+                <br>
+                <span style='font-size: smaller; color:#aaa9a9; line-height:1.1rem;'>${plr_pos}</span>
+              </div>
+            </div>
+            `
+        }"),
         html = TRUE
       ),
       plr_game_age = reactable::colDef(
@@ -54,7 +59,7 @@ get_otd_debuts <- function(otd_date, inc_year = "No") {
           let age_display = '';
 
           if (typeof age === 'number') {
-            age_display = age_yrs + ' years' + age_days + ' days';
+            age_display = age_yrs + ' years, ' + age_days + ' days';
             age = age.toLocaleString() + ' days';
           } else {
             age_display = 'Unknown';
@@ -74,12 +79,6 @@ get_otd_debuts <- function(otd_date, inc_year = "No") {
         show = FALSE
       ),
       age_days = reactable::colDef(
-        show = FALSE
-      ),
-      plr_headshot = reactable::colDef(
-        show = FALSE
-      ),
-      position = reactable::colDef(
         show = FALSE
       )
     )

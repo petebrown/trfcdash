@@ -65,11 +65,6 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
       pos
     )
 
-  crest_list <- as.list(clubs_crests %>%
-    dplyr::select(club, file_path) %>%
-    dplyr::pull(file_path) %>%
-    purrr::set_names(clubs_crests %>% dplyr::pull(club)))
-
 
   comp_logos <- spec_comp_logos %>%
     dplyr::select(season, competition, comp_logo=file_path_2)
@@ -99,7 +94,9 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
   reactable::reactable(
     data = results_df,
     meta = list(
-      crests = crest_list
+      club_crests = meta_data[['club_crests']],
+      plr_headshots = meta_data[['plr_headshots']],
+      plr_positions = meta_data[['plr_positions']]
     ),
     class = "apps-reactable",
     style = list(
@@ -142,11 +139,11 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
         name = "Opponent",
         minWidth = 230,
         cell = reactable::JS("function(cellInfo, state) {
-          const { crests } = state.meta;
+          const { club_crests } = state.meta;
 
           let opponent = cellInfo.value;
           let opponent_text = opponent;
-          let img_src = crests[opponent];
+          let img_src = club_crests[opponent];
 
           let venue = cellInfo.row['venue'];
 
@@ -236,6 +233,10 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
           bslib::card_title("Line-up"),
           reactable::reactable(
             data = line_up,
+            meta = list(
+              plr_headshots = meta_data[['plr_headshots']],
+              plr_positions = meta_data[['plr_positions']]
+            ),
             class = "reactable-text",
             defaultColDef = reactable::colDef(
               vAlign = "top",
@@ -261,10 +262,12 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
                 name = "Player",
                 minWidth = 200,
                 cell = reactable::JS("function(cellInfo, state) {
+                  const { plr_headshots, plr_positions } = state.meta;
+
                   let player = cellInfo.value;
                   let plr_name = player.split(' (b.')[0];
-                  let plr_pos = cellInfo.row['position'];
-                  let img_src = cellInfo.row['plr_headshot'];
+                  let plr_pos = plr_positions[player]
+                  let img_src = plr_headshots[player]
 
                   img = `<img src='${img_src}' style='height:30px; margin:auto;' alt='${plr_name}'>`;
 
@@ -335,7 +338,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
             reactable::reactable(
               data = lge_tab,
               meta = list(
-                crests = crest_list
+                club_crests = meta_data[['club_crests']]
               ),
               class = "reactable-text lge_tab",
               showSortIcon = FALSE,
@@ -366,10 +369,10 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
                   minWidth = 200,
                   defaultSortOrder = "asc",
                   cell = reactable::JS("function(cellInfo, state) {
-                    const { crests } = state.meta;
+                    const { club_crests } = state.meta;
                     const team = cellInfo.value;
                     let opponent = cellInfo.value;
-                    let img_src = crests[opponent];
+                    let img_src = club_crests[opponent];
 
                     if (opponent === 'Tranmere Rovers') {
                       img_src = './www/images/clubs/tranmere-rovers.svg';

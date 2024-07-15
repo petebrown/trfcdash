@@ -61,25 +61,25 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       starts >= min_starts
     )
 
-  plr_positions <- as.list(
-    player_positions %>%
-      dplyr::select(pl_index, position) %>%
-      dplyr::pull(position) %>%
-      purrr::set_names(player_positions %>% dplyr::pull(pl_index))
-  )
-  plr_headshots <- as.list(
-    player_imgs %>%
-      dplyr::select(pl_index, headshot_file_path) %>%
-      dplyr::pull(headshot_file_path) %>%
-      purrr::set_names(player_imgs %>% dplyr::pull(pl_index))
-  )
+  # plr_positions <- as.list(
+  #   player_positions %>%
+  #     dplyr::select(pl_index, position) %>%
+  #     dplyr::pull(position) %>%
+  #     purrr::set_names(player_positions %>% dplyr::pull(pl_index))
+  # )
+  # plr_headshots <- as.list(
+  #   player_imgs %>%
+  #     dplyr::select(pl_index, headshot_file_path) %>%
+  #     dplyr::pull(headshot_file_path) %>%
+  #     purrr::set_names(player_imgs %>% dplyr::pull(pl_index))
+  # )
 
 
   reactable::reactable(
     data = df,
     meta = list(
-      positions = plr_positions,
-      headshots = plr_headshots
+      plr_positions = meta_plr_positions,
+      plr_headshots = meta_plr_headshots
     ),
     class = if (show_images == "Yes") {
       "apps_table_with_images"
@@ -121,8 +121,8 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
           reactable::JS("function(cellInfo, state) {
             const player = cellInfo.value;
             const plr_name = player.split(' (b.')[0];
-            const plr_pos = state.meta.positions[player];
-            const img_src = state.meta.headshots[player];
+            const plr_pos = state.meta.plr_positions[player];
+            const img_src = state.meta.plr_headshots[player];
 
             img = `<img src='${img_src}' style='height:45px; margin:auto;' alt='${plr_name}'>`;
 
@@ -145,8 +145,8 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         cell = reactable::JS("function(cellInfo, state) {
             const player = cellInfo.value;
             const plr_name = player.split(' (b.')[0];
-            const plr_pos = state.meta.positions[player];
-            const img_src = state.meta.headshots[player];
+            const plr_pos = state.meta.plr_positions[player];
+            const img_src = state.meta.plr_headshots[player];
 
             img = `<img src='${img_src}' style='height:45px; margin:auto;' alt='${plr_name}'>`;
 

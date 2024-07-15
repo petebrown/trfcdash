@@ -77,7 +77,6 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
       season = reactable::colDef(
         name = "Season",
         align = "left",
-        sticky = "left",
         minWidth = 85,
         grouped = if (inc_cup_games == "Yes") {
           reactable::JS("function(cellInfo) {
@@ -88,7 +87,6 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
       competition = reactable::colDef(
         name = "Competition",
         align = "left",
-        sticky = "left",
         minWidth = 130,
         aggregate = if (inc_cup_games == "Yes") {
           reactable::JS("function(values, rows) {

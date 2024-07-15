@@ -20,6 +20,7 @@ output_mgr_plr_records <- function(mgr_name) {
       wins = sum(role == "starter" & outcome == "W"),
       win_pc = wins / starts,
       goals = sum(goals_scored),
+      clean_sheets = sum(role == 'starter' & goals_against == 0),
       mins_played = sum(mins_played),
       subbed_off = sum(!is.na(off_for)),
       subbed_off_pc = subbed_off / starts,
@@ -58,7 +59,9 @@ output_mgr_plr_records <- function(mgr_name) {
     defaultSortOrder = "desc",
     defaultColDef = reactable::colDef(
       vAlign = "center",
-      headerClass = "bar-sort-header"
+      headerClass = "bar-sort-header",
+      headerVAlign = "bottom",
+      minWidth = 90
     ),
     showSortIcon = FALSE,
     defaultSorted = list("starts" = "desc"),
@@ -69,7 +72,7 @@ output_mgr_plr_records <- function(mgr_name) {
       menu_name = reactable::colDef(
         name = "Player",
         show = TRUE,
-        width = 200,
+        minWidth = 200,
         defaultSortOrder = "asc",
         cell = reactable::JS("function(cellInfo, state) {
           const player = cellInfo.value;
@@ -114,6 +117,10 @@ output_mgr_plr_records <- function(mgr_name) {
       ),
       goals = reactable::colDef(
         name = "Goals",
+        show = TRUE
+      ),
+      clean_sheets = reactable::colDef(
+        name = "Clean Sheets",
         show = TRUE
       ),
       mins_played = reactable::colDef(

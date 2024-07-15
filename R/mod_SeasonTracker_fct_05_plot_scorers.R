@@ -203,7 +203,7 @@ plot_ssn_scorers <- function(selected_season, max_goals, n_plots) {
     family = "Helvetica Neue"
     )
 
-  shiny::renderPlot(p, height = 150, bg = "transparent")
+  shiny::renderPlot(p, height = 300, bg = "transparent")
 
   # output_p <- plotly::ggplotly(p, tooltip="text") |> plotly::layout(plot_bgcolor = "rgba(0,0,0,0)", paper_bgcolor = "rgba(0,0,0,0)")
   #
