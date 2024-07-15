@@ -96,7 +96,17 @@ get_otd_results <- function(otd_date, inc_year = "No", as_reactable = "Yes") {
       ),
       scorers = reactable::colDef(
         name = "Scorers",
-        minWidth = 150
+        minWidth = 150,
+        cell = reactable::JS("function(cellInfo, state) {
+          let scorers = cellInfo.value;
+          if (scorers !== undefined) {
+            scorers = scorers.split(', ').map(function(scorer) {
+              return `<span>${scorer}</span>`;
+            }).join('<br>');
+          }
+          return `${scorers}`;
+        }"),
+        html = TRUE
       ),
       competition = reactable::colDef(
         name = "Competition",

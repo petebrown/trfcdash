@@ -11,6 +11,7 @@ get_otd_debuts <- function(otd_date, inc_year = "No") {
     ) %>%
     dplyr::select(
       menu_name,
+      debut_date,
       plr_game_age,
       age_yrs,
       age_days
@@ -48,6 +49,13 @@ get_otd_debuts <- function(otd_date, inc_year = "No") {
             `
         }"),
         html = TRUE
+      ),
+      debut_date = reactable::colDef(
+        name = "Debut Date",
+        format = reactable::colFormat(
+          date = TRUE,
+          locales = "en-GB"
+        )
       ),
       plr_game_age = reactable::colDef(
         name = "Age on Debut",
