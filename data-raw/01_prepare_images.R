@@ -99,7 +99,8 @@ player_imgs <- data.frame(
   dplyr::mutate(
     img = stringr::str_to_lower(player_name) %>%
       stringr::str_replace_all(" ", "-") %>%
-      stringr::str_replace_all("'", ""),
+      stringr::str_replace_all("'", "") %>%
+      stringr::str_replace_all("é", "e"),
     img = dplyr::case_when(
       !is.na(yob) ~ paste0(img, "-", yob),
       TRUE ~ img
