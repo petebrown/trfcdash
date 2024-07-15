@@ -98,7 +98,7 @@ div#PlayersByPlayer_ui_1-pl_quick_facts .value-box-area>:first-child {
   .rt-expander-button {
     /* display: none; */
   }
-  .rt-td-inner {
+  div.player-name .rt-td-inner {
     display: flex;
   }
 }

@@ -114,6 +114,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       menu_name = reactable::colDef(
         name = "Player",
         sticky = "left",
+        class = "player-name",
         defaultSortOrder = "asc",
         minWidth = 185,
         grouped = if (show_images=='Yes') {

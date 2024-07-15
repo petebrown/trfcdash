@@ -268,7 +268,6 @@ mod_SeasonTracker_ui <- function(id){
           "Season Results"
         ),
         bslib::layout_sidebar(
-          fillable = TRUE,
           sidebar = bslib::sidebar(
             position = "left",
             width = 200,

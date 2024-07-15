@@ -118,25 +118,24 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
     searchable = TRUE,
     borderless = TRUE,
     filterable = FALSE,
-    resizable = TRUE,
     columns = list(
       season = reactable::colDef(
         name = "Season",
-        width = 75
+        minWidth = 75
       ),
       game_no = reactable::colDef(
         name = "Game",
         align = "center",
-        width = 70
+        minWidth = 70
       ),
       game_date = reactable::colDef(
         name = "Date",
-        width = 105,
+        minWidth = 105,
         format = reactable::colFormat(date = TRUE, locales = "en-GB")
       ),
       venue = reactable::colDef(
         name = "Venue",
-        width = 70,
+        minWidth = 70,
         align = "center"
       ),
       opposition = reactable::colDef(
@@ -179,12 +178,12 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
       outcome = reactable::colDef(
         name = "Res",
         align = "center",
-        width = 40,
+        minWidth = 40,
         show = ifelse('outcome' %in% drop_cols, FALSE, TRUE)
       ),
       score = reactable::colDef(
         name = "Score",
-        width = 70,
+        minWidth = 70,
         align = "center"
       ),
       game_type = reactable::colDef(
@@ -211,7 +210,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
       ),
       attendance = reactable::colDef(
         name = "Att.",
-        width = 70,
+        minWidth = 70,
         format = reactable::colFormat(
           digits = 0,
           separators = TRUE
@@ -230,9 +229,10 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
       line_up = players_df[players_df$game_date == results_df$game_date[index], ]
       lge_tab = lge_tabs_df[lge_tabs_df$game_date == results_df$game_date[index], ]
       div(
-        style='display:flex; flex-wrap:wrap; gap:100px;',
+        style='display:flex; flex-wrap:wrap; gap:0 100px; max-width:1500px;',
         div(
           class = "reactable-details",
+          style = "flex-grow:45;",
           bslib::card_title("Line-up"),
           reactable::reactable(
             data = line_up,
@@ -286,7 +286,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
               role = reactable::colDef(
                 name="Role",
                 align = "left",
-                width = 70,
+                minWidth = 70,
                 cell = function(value) {
                   stringr::str_to_title(value)
                 }
@@ -294,7 +294,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
               mins_played = reactable::colDef(
                 name = "⏱️",
                 align="center",
-                width = 40,
+                minWidth = 40,
                 defaultSortOrder = "desc"
               ),
               goals_scored = reactable::colDef(
@@ -330,6 +330,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
         if (!is.na(results_df[index, "league_tier"])) {
           div(
             class = "reactable-details",
+            style = "flex-grow: 55;",
             bslib::card_title("As It Stood"),
             reactable::reactable(
               data = lge_tab,
