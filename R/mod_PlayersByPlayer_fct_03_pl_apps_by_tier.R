@@ -193,6 +193,7 @@ output_pl_summary_by_tier <- function(inp_player_name) {
         }")
       ),
       Goals = reactable::colDef(
+        name = "⚽️",
         footer = function(values) {
           sum(values)
         }

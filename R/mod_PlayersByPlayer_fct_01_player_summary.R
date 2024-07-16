@@ -58,10 +58,7 @@ output_player_summary <- function(inp_player_name) {
     dplyr::rename(
       Apps = total_apps,
       Starts = starts,
-      "Sub Apps" = sub_apps,
-      Goals = goals,
-      "Yellow cards" = yellow_cards,
-      "Red cards" = red_cards
+      "Sub Apps" = sub_apps
     ) %>%
     reactable::reactable(
       class = "apps-reactable",
@@ -78,11 +75,20 @@ output_player_summary <- function(inp_player_name) {
       ),
       showSortIcon = FALSE,
       columns = list(
+        goals = reactable::colDef(
+          name = "⚽️"
+        ),
+        yellow_cards = reactable::colDef(
+          name = "🟨"
+        ),
+        red_cards = reactable::colDef(
+          name = "🟥"
+        ),
         mins_played = reactable::colDef(
-          name = "Mins played",
+          name = "⏱️",
           format = reactable::colFormat(
             separators = TRUE
-          )
+          ),
         ),
         debut = reactable::colDef(
           name = "Debut",

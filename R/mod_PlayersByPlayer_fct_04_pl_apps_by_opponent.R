@@ -30,14 +30,13 @@ output_pl_summary_by_opp <- function(inp_player_name) {
       Goals = sum(goals_scored)
     ) %>%
     dplyr::mutate(
-      app_sums = stringr::str_glue("{starts} ({sub_apps})"),
       mins_per_gl = dplyr::case_when(
         mins_played / Goals != Inf ~ mins_played / Goals,
         TRUE ~ NA
       ),
-      games_per_gl = round(mins_per_gl / 90, 2),
-      mins_per_gl = round(mins_per_gl, 2),
-      win_pc = round((W / P) * 100, 1)
+      games_per_gl = mins_per_gl / 90,
+      mins_per_gl = mins_per_gl,
+      win_pc = W / P
     ) %>%
     dplyr::arrange(
       dplyr::desc(P)
@@ -45,7 +44,8 @@ output_pl_summary_by_opp <- function(inp_player_name) {
     dplyr::select(
       opposition,
       P,
-      app_sums,
+      starts,
+      sub_apps,
       W,
       D,
       L,
@@ -57,13 +57,14 @@ output_pl_summary_by_opp <- function(inp_player_name) {
     ) %>%
     dplyr::rename(
       Opposition = opposition,
-      "Starts\n(sub)" = app_sums,
-      "Win %" = win_pc,
       "Mins\nplayed" = mins_played
     )
 
   reactable::reactable(
     df,
+    meta = list(
+      crests = meta_data[['club_crests']]
+    ),
     class = "apps-reactable",
     style = list(
       fontSize = "0.9rem",
@@ -73,17 +74,52 @@ output_pl_summary_by_opp <- function(inp_player_name) {
     searchable = TRUE,
     defaultSortOrder = "desc",
     defaultColDef = reactable::colDef(
+      align = "right",
       vAlign = "center",
+      minWidth = 50,
       headerClass = "bar-sort-header"
     ),
     showSortIcon = FALSE,
     columns = list(
       Opposition = reactable::colDef(
         name = "Opposition",
-        minWidth = 130,
-        cell = function(value) {
-          club_and_crest(value)
-        }
+        align = "left",
+        minWidth = 150,
+        cell = reactable::JS("function(cellInfo, state) {
+          const { crests } = state.meta;
+
+          let opponent = cellInfo.value;
+          let img_src = crests[opponent];
+
+          img = `<img src='${img_src}' style='height:32px; margin:2px;' alt='${opponent}'>`;
+
+          return `
+          <div style='display: flex'>
+            <div style='display:flex; justify-content:center; width:40px;'>${img}</div>
+            <div style='display:flex; text-align:left; margin:6.4px;'>${opponent}</div>
+          </div>
+          `
+        }"),
+        html = TRUE
+      ),
+      P = reactable::colDef(
+        name = "Total Apps"
+      ),
+      starts = reactable::colDef(
+        name = "Starts"
+      ),
+      sub_apps = reactable::colDef(
+        name = "Sub apps",
+        format = reactable::colFormat(
+          prefix = '+'
+        )
+      ),
+      win_pc = reactable::colDef(
+        name = "Win %",
+        format = reactable::colFormat(
+          percent = TRUE,
+          digits = 1
+        )
       ),
       mins_per_gl = reactable::colDef(
         name = "Mins per goal",

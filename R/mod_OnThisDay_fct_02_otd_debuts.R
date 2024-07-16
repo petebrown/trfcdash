@@ -9,12 +9,16 @@ get_otd_debuts <- function(otd_date, inc_year = "No") {
         TRUE ~ TRUE
       )
     ) %>%
+    dplyr::mutate(
+      years_ago = lubridate::year(otd_date) - lubridate::year(debut_date)
+    ) %>%
     dplyr::select(
       menu_name,
       debut_date,
       plr_game_age,
       age_yrs,
-      age_days
+      age_days,
+      years_ago
     )
 
 
@@ -24,6 +28,16 @@ get_otd_debuts <- function(otd_date, inc_year = "No") {
       plr_headshots = meta_data[['plr_headshots']],
       plr_positions = meta_data[['plr_positions']]
     ),
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.9rem",
+      fontWeight = 300
+    ),
+    defaultColDef = reactable::colDef(
+      headerClass = "bar-sort-header"
+    ),
+    showSortIcon = FALSE,
+    rowClass = "results-row",
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
@@ -55,7 +69,19 @@ get_otd_debuts <- function(otd_date, inc_year = "No") {
         format = reactable::colFormat(
           date = TRUE,
           locales = "en-GB"
-        )
+        ),
+        cell = reactable::JS("function(cellInfo) {
+          let debut_date = cellInfo.value;
+          let years_ago = cellInfo.row.years_ago;
+
+          return `
+            <div style='display:flex; flex-direction:column;>
+              <span style='font-weight:300;'>${debut_date}</span>
+              <span style='font-weight:300; color:#aaa9a9; font-size:smaller;'>${years_ago} years ago</span>
+            </div>
+          `;
+        }"),
+        html = TRUE
       ),
       plr_game_age = reactable::colDef(
         name = "Age on Debut",
@@ -87,6 +113,9 @@ get_otd_debuts <- function(otd_date, inc_year = "No") {
         show = FALSE
       ),
       age_days = reactable::colDef(
+        show = FALSE
+      ),
+      years_ago = reactable::colDef(
         show = FALSE
       )
     )

@@ -36,22 +36,24 @@ mod_OnThisDay_ui <- function(id){
           reactable::reactableOutput(ns("otd_record"))
         ),
 
-        bslib::card(
-          full_screen = TRUE,
-          bslib::card_header(
-            class = "bg-dark",
-            "On this Day: Player Debuts"
+        bslib::layout_column_wrap(
+          width = 1/2,
+          bslib::card(
+            full_screen = TRUE,
+            bslib::card_header(
+              class = "bg-dark",
+              "On this Day: Player Debuts"
+            ),
+            reactable::reactableOutput(ns("otd_debuts"))
           ),
-          reactable::reactableOutput(ns("otd_debuts"))
-        ),
-
-        bslib::card(
-          full_screen = TRUE,
-          bslib::card_header(
-            class = "bg-dark",
-            "On this Day: Player Birthdays"
-          ),
-          reactable::reactableOutput(ns("otd_birthdays"))
+          bslib::card(
+            full_screen = TRUE,
+            bslib::card_header(
+              class = "bg-dark",
+              "On this Day: Player Birthdays"
+            ),
+            reactable::reactableOutput(ns("otd_birthdays"))
+          )
         )
       )
     )

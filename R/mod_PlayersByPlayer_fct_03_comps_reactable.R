@@ -93,20 +93,20 @@ output_plr_comps_reactable <- function(inp_player_name) {
         footer = function(values) sprintf("%d", sum(values))
       ),
       goals = reactable::colDef(
-        name = "Goals",
+        name = "⚽️",
         footer = function(values) sprintf("%d", sum(values))
       ),
       mins_played = reactable::colDef(
-        name = "Mins played", align = "right",
+        name = "⏱️", align = "right",
         format = reactable::colFormat(digits = 0, separators = TRUE),
         footer = function(values) prettyNum(sprintf("%d", sum(values)), big.mark = ",", preserve.width = "none")
       ),
       yellow_cards = reactable::colDef(
-        name = "Yellow cards",
+        name = "🟨",
         footer = function(values) sprintf("%d", sum(values))
       ),
       red_cards = reactable::colDef(
-        name = "Red cards",
+        name = "🟥",
         footer = function(values) sprintf("%d", sum(values))
       )
     )
