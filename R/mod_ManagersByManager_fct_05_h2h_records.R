@@ -42,6 +42,7 @@ get_mgr_h2h_summary <- function(selected_manager) {
     defaultSortOrder = "desc",
     defaultColDef = reactable::colDef(
       vAlign = "center",
+      headerVAlign = 'bottom',
       headerClass = "bar-sort-header"
     ),
     showSortIcon = FALSE,

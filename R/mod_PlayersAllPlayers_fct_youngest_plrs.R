@@ -77,7 +77,7 @@ get_youngest_players <- function(year_range, league_tiers, includePlayOffs, cup_
     data = df,
     class = "apps-reactable",
     style = list(
-      fontSize = "0.9rem",
+      fontSize = "0.8rem",
       fontWeight = 300
     ),
     rowClass = "results-row",
@@ -85,35 +85,35 @@ get_youngest_players <- function(year_range, league_tiers, includePlayOffs, cup_
     defaultSortOrder = "asc",
     defaultSorted = "debut_age",
     defaultColDef = reactable::colDef(
-      vAlign = "center",
+      vAlign = "top",
       headerClass = "bar-sort-header"
     ),
     showSortIcon = FALSE,
     columns = list(
       rank = reactable::colDef(
         name = "",
-        width = 50
+        width = 41
       ),
       menu_name = reactable::colDef(
         name = "Player",
-        minWidth = 150
+        minWidth = 115
       ),
       debut_age = reactable::colDef(
         name = "Age",
-        cell = function(value) {
-          years = floor(as.numeric(value / 365.25))
-          days = ceiling(value - (years * 365.25))
+        cell = reactable::JS("function(cellInfo, state) {
+          const age = cellInfo.value;
+          const years = Math.floor(age / 365.25);
+          const days = Math.ceil(age - (years * 365.25));
 
-          sprintf(
-            "%d years, %d days",
-            years,
-            days
-          )
-        },
+          return `${years} yrs, ${days} days`;
+        }"
+        ),
+        html = TRUE
       ),
       debut_date = reactable::colDef(
         name = "Game Date",
         align = "right",
+        width = 95,
         format = reactable::colFormat(
           date = TRUE,
           locales = "en-GB"

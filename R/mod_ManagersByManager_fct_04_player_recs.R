@@ -60,8 +60,7 @@ output_mgr_plr_records <- function(mgr_name) {
     defaultColDef = reactable::colDef(
       vAlign = "center",
       headerClass = "bar-sort-header",
-      headerVAlign = "bottom",
-      minWidth = 90
+      headerVAlign = "bottom"
     ),
     showSortIcon = FALSE,
     defaultSorted = list("starts" = "desc"),

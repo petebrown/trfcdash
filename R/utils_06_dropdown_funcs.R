@@ -276,7 +276,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
                   return `
                   <div style='display: flex'>
                     <div style='display:flex; justify-content:center; width:35px;'>${img}</div>
-                    <div style='text-align:left; margin:auto 10px; line-height: 1rem;'>
+                    <div style='text-align:left; margin:auto 0 auto 10px; line-height: 1rem;'>
                       ${plr_name}
                       <br>
                       <span style='font-size: smaller; color: #aaa9a9; line-height: 1.1rem;'>${plr_pos}</span>
@@ -383,7 +383,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
                     return `
                     <div style='display: flex'>
                       <div style='display:flex; justify-content:center; width:40px;'>${img}</div>
-                      <div style='display:flex; text-align:left; margin:5px;'>${opponent}</div>
+                      <div style='display:flex; text-align:left; margin:auto 0 auto 5px;'>${opponent}</div>
                     </div>
                     `
                   }"),

@@ -117,7 +117,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
             return `
             <div style='display: flex'>
               <div style='display:flex; justify-content:center; width:50px;'>${img}</div>
-                <div style='text-align:left; margin:auto 10px; line-height:1rem;'>
+                <div style='text-align:left; margin:auto 0px; line-height:1rem;'>
                   ${plr_name}
                   <br>
                   <span style='font-size: smaller; color:#aaa9a9; line-height:1.1rem;'>${plr_pos}</span>
@@ -141,7 +141,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
             return `
             <div style='display: flex'>
               <div style='display:flex; justify-content:center; width:50px;'>${img}</div>
-                <div style='text-align:left; margin:auto 10px; line-height:1rem;'>
+                <div style='text-align:left; margin:auto 0px; line-height:1rem;'>
                   ${plr_name}
                   <br>
                   <span style='font-size: smaller; color:#aaa9a9; line-height:1.1rem;'>${plr_pos}</span>
@@ -186,7 +186,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         }
       ),
       goals = reactable::colDef(
-        name = "⚽️",
+        name = "️Goals",
         align = "center",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
