@@ -61,18 +61,6 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       starts >= min_starts
     )
 
-  # plr_positions <- as.list(
-  #   player_positions %>%
-  #     dplyr::select(pl_index, position) %>%
-  #     dplyr::pull(position) %>%
-  #     purrr::set_names(player_positions %>% dplyr::pull(pl_index))
-  # )
-  # plr_headshots <- as.list(
-  #   player_imgs %>%
-  #     dplyr::select(pl_index, headshot_file_path) %>%
-  #     dplyr::pull(headshot_file_path) %>%
-  #     purrr::set_names(player_imgs %>% dplyr::pull(pl_index))
-  # )
 
 
   reactable::reactable(
@@ -87,10 +75,10 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
     defaultPageSize = length(df$menu_name),
     defaultSortOrder = "desc",
     defaultColDef = reactable::colDef(
-      minWidth = 70,
+      minWidth = 55,
       sortNALast = TRUE,
       vAlign = "center",
-      headerVAlign = "center",
+      headerVAlign = "bottom",
       headerClass = "bar-sort-header"
     ),
     showSortIcon = FALSE,
@@ -116,7 +104,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         sticky = "left",
         class = "player-name",
         defaultSortOrder = "asc",
-        minWidth = 185,
+        minWidth = 190,
         grouped = if (show_images=='Yes') {
           reactable::JS("function(cellInfo, state) {
             const player = cellInfo.value;
@@ -166,7 +154,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       generic_comp = reactable::colDef(
         name = "",
         defaultSortOrder = "asc",
-        width = 110
+        width = 95
       ),
       apps = reactable::colDef(
         name = "Total Apps",
@@ -198,28 +186,29 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         }
       ),
       goals = reactable::colDef(
-        name = "Goals",
+        name = "⚽️",
+        align = "center",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
-        },
-        align = "center"
+        }
       ),
       yellows = reactable::colDef(
-        name = "Yellow Cards",
+        name = "🟨",
+        align = "center",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
-        },
-        align = "center"
+        }
       ),
       reds = reactable::colDef(
-        name = "Red Cards",
+        name = "🟥",
+        align = "center",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
-        },
-        align = "center"
+        }
       ),
       mins_played = reactable::colDef(
         name = "Mins Played",
+        minWidth = 65,
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
         },
@@ -230,6 +219,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       ),
       mins_per_goal = reactable::colDef(
         name = "Mins per Goal",
+        minWidth = 65,
         defaultSortOrder = "asc",
         sortNALast = TRUE,
         align = "right",
@@ -269,6 +259,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       ),
       games_per_goal = reactable::colDef(
         name = "Games per Goal",
+        minWidth = 65,
         defaultSortOrder = "asc",
         align = "right",
         format = reactable::colFormat(

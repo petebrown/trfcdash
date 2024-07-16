@@ -53,10 +53,6 @@ mod_SeasonTracker_ui <- function(id){
         uiOutput(ns("footer_text"))
       ),
 
-      bslib::card(
-        uiOutput(ns("dynamicTabs"))
-      ),
-
 
       # UI: Seasonal league records ----
       bslib::card(

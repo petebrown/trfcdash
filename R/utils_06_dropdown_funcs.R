@@ -123,21 +123,21 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
       game_no = reactable::colDef(
         name = "Game",
         align = "center",
-        minWidth = 70
+        minWidth = 55
       ),
       game_date = reactable::colDef(
         name = "Date",
-        minWidth = 105,
+        minWidth = 95,
         format = reactable::colFormat(date = TRUE, locales = "en-GB")
       ),
       venue = reactable::colDef(
         name = "Venue",
-        minWidth = 70,
+        minWidth = 60,
         align = "center"
       ),
       opposition = reactable::colDef(
         name = "Opponent",
-        minWidth = 230,
+        minWidth = 200,
         cell = reactable::JS("function(cellInfo, state) {
           const { club_crests } = state.meta;
 
@@ -155,7 +155,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
 
           return `
           <div style='display: flex'>
-            <div style='display:flex; justify-content:center; width:40px;'>${img}</div>
+            <div style='display:flex; justify-content:center; width:36px;'>${img}</div>
             <div style='display:flex; text-align:left; margin:6.4px;'>${opponent_text}</div>
           </div>
           `
@@ -188,7 +188,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
       ),
       competition = reactable::colDef(
         name = "Competition",
-        minWidth = 200,
+        minWidth = 175,
         vAlign = "center",
         cell = reactable::JS("function(cellInfo) {
           let img_src = cellInfo.row['comp_logo'];
@@ -198,7 +198,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
 
           return `
           <div style='display: flex'>
-            <div style='display:flex; justify-content:center; width:40px;'>${img}</div>
+            <div style='display:flex; justify-content:center; width:36px;'>${img}</div>
             <div style='display:flex; text-align:left; margin:10px;'>${competition}</div>
           </div>
           `
@@ -226,7 +226,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
       line_up = players_df[players_df$game_date == results_df$game_date[index], ]
       lge_tab = lge_tabs_df[lge_tabs_df$game_date == results_df$game_date[index], ]
       div(
-        style='display:flex; flex-wrap:wrap; gap:0 70px;',
+        style='display:flex; flex-wrap:wrap; gap:0 40px;',
         div(
           class = "reactable-details",
           style = "flex-grow:45;",
