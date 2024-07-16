@@ -226,7 +226,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
       line_up = players_df[players_df$game_date == results_df$game_date[index], ]
       lge_tab = lge_tabs_df[lge_tabs_df$game_date == results_df$game_date[index], ]
       div(
-        style='display:flex; flex-wrap:wrap; gap:0 100px; max-width:1500px;',
+        style='display:flex; flex-wrap:wrap; gap:0 70px;',
         div(
           class = "reactable-details",
           style = "flex-grow:45;",
@@ -255,8 +255,8 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
               game_date = reactable::colDef(show = FALSE),
               shirt_no = reactable::colDef(
                 name = "No.",
-                align = "center",
-                minWidth = 35
+                align = "right",
+                width = 40
               ),
               menu_name = reactable::colDef(
                 name = "Player",
@@ -361,8 +361,8 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
                 game_date = reactable::colDef(show = FALSE),
                 pos = reactable::colDef(
                   name = "Pos",
-                  align = "left",
-                  width = 37,
+                  align = "right",
+                  width = 40,
                   defaultSortOrder = "asc"
                 ),
                 Team = reactable::colDef(
@@ -389,20 +389,20 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
                   }"),
                   html = TRUE
                 ),
-                Pld = reactable::colDef(width = 40),
-                W = reactable::colDef(width = 40),
-                D = reactable::colDef(width = 40),
-                L = reactable::colDef(width = 40),
-                GF = reactable::colDef(width = 40),
-                GA = reactable::colDef(width = 40),
+                Pld = reactable::colDef(minWidth = 40),
+                W = reactable::colDef(minWidth = 40),
+                D = reactable::colDef(minWidth = 40),
+                L = reactable::colDef(minWidth = 40),
+                GF = reactable::colDef(minWidth = 40),
+                GA = reactable::colDef(minWidth = 40),
                 GD = reactable::colDef(
-                  width = 50,
+                  minWidth = 50,
                   # Function to add plus sign (+) before positive figures
                   cell = function(value) {
                     format_gd(value)
                   }
                 ),
-                Pts = reactable::colDef(width = 40)
+                Pts = reactable::colDef(minWidth = 40)
               ),
               rowStyle = function(index) {
                 tier = results_df[results_df$game_date == lge_tab$game_date[index], ]$league_tier
