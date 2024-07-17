@@ -98,6 +98,11 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         )
       }
     },
+    columnGroups = list(
+      reactable::colGroup("Appearances & Goals", columns = c("apps", "starts", "sub_apps", "goals")),
+      reactable::colGroup("Performance", columns = c("mins_played", "mins_per_goal", "games_per_goal", "win_pc")),
+      reactable::colGroup("Cards", columns = c("yellows", "reds"))
+    ),
     columns = list(
       menu_name = reactable::colDef(
         name = "Player",
@@ -157,7 +162,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         width = 95
       ),
       apps = reactable::colDef(
-        name = "Total Apps",
+        name = "Total",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
         },
@@ -171,7 +176,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         align = "center"
       ),
       sub_apps = reactable::colDef(
-        name = "Sub Apps",
+        name = "Sub",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
         },

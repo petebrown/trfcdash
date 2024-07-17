@@ -104,7 +104,7 @@ get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup
         show = FALSE
       ),
       scored = reactable::colDef(
-        name = "Goals Scored",
+        name = "Scored 1+",
         align = "center"
       ),
       av_gf = reactable::colDef(

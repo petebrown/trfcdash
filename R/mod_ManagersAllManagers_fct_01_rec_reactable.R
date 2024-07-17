@@ -118,37 +118,30 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
       ),
       P = reactable::colDef(
         vAlign = "center",
-        minWidth = 70
       ),
       W = reactable::colDef(
         vAlign = "center",
-        minWidth = 70
       ),
       D = reactable::colDef(
         vAlign = "center",
-        minWidth = 70
       ),
       L = reactable::colDef(
         vAlign = "center",
-        minWidth = 70
       ),
       GF = reactable::colDef(
         vAlign = "center",
-        minWidth = 70,
         format = reactable::colFormat(
           separators = TRUE
         )
       ),
       GA = reactable::colDef(
         vAlign = "center",
-        minWidth = 70,
         format = reactable::colFormat(
           separators = TRUE
         )
       ),
       GD = reactable::colDef(
         vAlign = "center",
-        minWidth = 70,
         # Function to add plus sign (+) before positive figures
         cell = function(value) {
           format_gd(value)
@@ -158,7 +151,7 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
         name = "Win Rate",
         align = "right",
         vAlign = "center",
-        minWidth = 150,
+        minWidth = 180,
         defaultSortOrder = "desc",
         cell = reactable::JS("function(cellInfo) {
           let value = cellInfo.value;
@@ -169,7 +162,7 @@ output_all_mgr_records <- function(year_range, league_tiers, includePlayOffs, cu
 
           return `
             <div style='display:flex; align-items:center;'>
-              <div style='flex-grow:1; margin-left:7%; margin-right:1.5rem; background:${bar_background}; border-style:solid; border-color:slategrey; border-width:thin'>
+              <div style='flex-grow:1; margin-left:3px; margin-right:10px; background:${bar_background}; border-style:solid; border-color:slategrey; border-width:thin'>
                 <div style='background:${bar_fill}; width:${bar_width}%; height:1.5rem;'></div>
               </div>
               <div style='width:45px'>${display_value}</div>

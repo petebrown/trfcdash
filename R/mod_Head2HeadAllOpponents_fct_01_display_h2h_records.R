@@ -61,6 +61,7 @@ output_h2h_records <- function(year_range, league_tiers, includePlayOffs, cup_co
     pageSizeOptions = get_page_nos(length(df$opposition)),
     defaultColDef = reactable::colDef(
       vAlign = "center",
+      align = "center",
       headerClass = "bar-sort-header"
     ),
     showSortIcon = FALSE,
@@ -72,7 +73,8 @@ output_h2h_records <- function(year_range, league_tiers, includePlayOffs, cup_co
     columns = list(
       opposition = reactable::colDef(
         name = "Opposition",
-        minWidth = 130,
+        minWidth = 205,
+        align = "left",
         defaultSortOrder = "asc",
         cell = reactable::JS("function(cellInfo, state) {
           const { crests } = state.meta;
@@ -84,34 +86,27 @@ output_h2h_records <- function(year_range, league_tiers, includePlayOffs, cup_co
 
           return `
           <div style='display: flex'>
-            <div style='display:flex; justify-content:center; width:40px;'>${img}</div>
-            <div style='display:flex; text-align:left; margin:6.4px;'>${opponent}</div>
+            <div style='display:flex; justify-content:space-between; align-items:center; width:36px;'>${img}</div>
+            <div style='display:flex; text-align:left; margin:auto 0 auto 6.5px;'>${opponent}</div>
           </div>
           `
         }"),
         html = TRUE
       ),
       P = reactable::colDef(
-        minWidth = 50
       ),
       W = reactable::colDef(
-        minWidth = 50
       ),
       D = reactable::colDef(
-        minWidth = 50
       ),
       L = reactable::colDef(
-        minWidth = 50
       ),
       GF = reactable::colDef(
-        minWidth = 50
       ),
       GA = reactable::colDef(
-        minWidth = 50
       ),
       GD = reactable::colDef(
         vAlign = "center",
-        minWidth = 50,
         # Function to add plus sign (+) before positive figures
         cell = function(value) {
           sprintf("%+3d", value)
@@ -121,7 +116,7 @@ output_h2h_records <- function(year_range, league_tiers, includePlayOffs, cup_co
         name = "Win %",
         align = "right",
         vAlign = "center",
-        minWidth = 150,
+        minWidth = 180,
         defaultSortOrder = "desc",
         cell = reactable::JS("function(cellInfo) {
           let value = cellInfo.value;
@@ -132,7 +127,7 @@ output_h2h_records <- function(year_range, league_tiers, includePlayOffs, cup_co
 
           return `
             <div style='display:flex; align-items:center;'>
-              <div style='flex-grow:1; margin-left:7%; margin-right:1.5rem; background:${bar_background}; border-style:solid; border-color:slategrey; border-width:thin'>
+              <div style='flex-grow:1; margin-left:3px; margin-right:10px; background:${bar_background}; border-style:solid; border-color:slategrey; border-width:thin'>
                 <div style='background:${bar_fill}; width:${bar_width}%; height:1.5rem;'></div>
               </div>
               <div style='width:45px'>${display_value}</div>

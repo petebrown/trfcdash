@@ -56,6 +56,7 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
     defaultColDef = reactable::colDef(
       align = "center",
       vAlign = "center",
+      headerVAlign = "bottom",
       headerClass = "bar-sort-header"
     ),
     showSortIcon = FALSE,
@@ -68,7 +69,8 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
       list(
         opposition = reactable::colDef(
           name = "Opposition",
-          minWidth = 175,
+          align = "left",
+          minWidth = 205,
           defaultSortOrder = "asc",
           cell = reactable::JS("function(cellInfo, state) {
           const { crests } = state.meta;
@@ -81,7 +83,7 @@ output_h2h_streaks <- function(year_range, league_tiers, includePlayOffs, cup_co
           return `
           <div style='display: flex'>
             <div style='display:flex; justify-content:center; width:40px;'>${img}</div>
-            <div style='display:flex; text-align:left; margin:6.4px;'>${opponent}</div>
+            <div style='display:flex; text-align:left; margin:auto 0 auto 6.5px;'>${opponent}</div>
           </div>
           `
         }"),

@@ -260,7 +260,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
               ),
               menu_name = reactable::colDef(
                 name = "Player",
-                minWidth = 200,
+                minWidth = 155,
                 cell = reactable::JS("function(cellInfo, state) {
                   const { plr_headshots, plr_positions } = state.meta;
 
@@ -366,7 +366,7 @@ results_with_subtable <- function(df, inc_cup_games="Yes", drop_cols=c(), show_d
                   defaultSortOrder = "asc"
                 ),
                 Team = reactable::colDef(
-                  minWidth = 200,
+                  minWidth = 180,
                   defaultSortOrder = "asc",
                   cell = reactable::JS("function(cellInfo, state) {
                     const { club_crests } = state.meta;
