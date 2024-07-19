@@ -17,14 +17,18 @@ app_ui <- function(request) {
         primary = "#385580",
         "enable-rounded" = TRUE
       ),
-      title = div(
-        img(
-          src = "./www/images/crest.svg",
-          height = 55,
-          width = 55,
-          style = "margin:1px 1px"
-        ),
-        "Tranmere Rovers: A Complete Record"),
+      title = htmltools::HTML("
+      <div style='display:flex; flex-direction:row; width:fit-content'>
+        <div>
+          <img src='./www/images/crest.svg' height=55px, width=55px>
+        </div>
+        <div style='display:flex; flex-direction:column; margin: 0 5px;'>
+          <span style='font-size:1.1em'>Tranmere Rovers</span>
+          <span style='font-size: 0.8em; color:#fcf6dc; font-weight:300; line-height:0.9;'>A Complete Record</span>
+        </div>
+      </div>
+
+      "),
       bslib::nav_spacer(),
       id = "nav",
       sidebar = bslib::sidebar(
@@ -111,7 +115,11 @@ app_ui <- function(request) {
       ),
       bslib::nav_panel("OTD", mod_OnThisDay_ui("OnThisDay_ui_1"))
     )
-  )
+  )  |>
+    tagAppendAttributes(
+      .cssSelector = "nav",
+      class = "navbar-expand-custom"
+    )
 }
 
 #' Add external Resources to the Application
