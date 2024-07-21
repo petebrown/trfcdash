@@ -90,7 +90,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
       competition = reactable::colDef(
         name = "Competition",
         align = "left",
-        minWidth = 130,
+        minWidth = 140,
         aggregate = if (inc_cup_games == "Yes") {
           reactable::JS("function(values, rows) {
             let comps = 0
@@ -105,12 +105,12 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
           let img_src = cellInfo.row['comp_logo'];
           let competition = cellInfo.value;
 
-          img = `<img src='${img_src}' style='height:32px; margin:auto;' alt='${competition}'>`;
+          img = `<img src='${img_src}' style='width:28px;' alt='${competition}'>`;
 
           return `
-          <div style='display: flex'>
-            <div style='display:flex; justify-content:center; align-items:center; width:36px; margin:2px 0;'>${img}</div>
-            <div style='display:flex; text-align:left; align-items:center; margin-left:5px;'>${competition}</div>
+          <div style='display: flex; flex-direction: row;'>
+            <div style='align-self:center; width:40px; margin:2px 0;'>${img}</div>
+            <div style='text-align:left; align-self:center; margin-left:5px;'>${competition}</div>
           </div>
           `
         }"),
@@ -130,7 +130,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
           "sum"
         },
         align = "center",
-        minWidth = 50,
+        minWidth = 40,
         footer = if (n_seasons > 1) {
           function(values) {
             games = sum(values)
@@ -194,7 +194,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
           "sum"
         },
         align = "center",
-        minWidth = 50,
+        minWidth = 45,
         footer = if (n_seasons > 1) {
           function(values) {
             games = sum(values)
@@ -210,7 +210,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
           "sum"
         },
         align = "center",
-        minWidth = 50,
+        minWidth = 45,
         footer = if (n_seasons > 1) {
           function(values) {
             games = sum(values)

@@ -15,7 +15,7 @@ app_ui <- function(request) {
         fg = "#385580",
         bg = "white",
         primary = "#385580",
-        "enable-rounded" = TRUE
+        "enable-rounded" = FALSE
       ),
       title = htmltools::HTML("
       <div style='display:flex; flex-direction:row; width:fit-content'>

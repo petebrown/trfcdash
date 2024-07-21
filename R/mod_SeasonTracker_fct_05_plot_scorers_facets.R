@@ -158,7 +158,7 @@ plot_top_scorers <- function(selected_seasons, inc_cup_games, n_scorers) {
     ) +
     ggplot2::scale_x_discrete(
       labels = setNames(df$surname, df$ssn_name),
-      expand = c(0.2, 0.3)
+      expand = c(0.0, 0.3)
     ) +
     ggplot2::scale_y_continuous(
       expand = ggplot2::expansion(
@@ -218,7 +218,7 @@ plot_top_scorers <- function(selected_seasons, inc_cup_games, n_scorers) {
   if (n_scorers == 1) {
     height_px = 160
   } else {
-    height_px = 240
+    height_px = 350
   }
 
   shiny::renderPlot(
