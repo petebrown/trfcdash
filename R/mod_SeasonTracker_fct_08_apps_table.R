@@ -45,13 +45,13 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       sub_apps = sum(role == "sub"),
       apps = dplyr::n(),
       goals = sum(goals_scored),
-      yellows = sum(yellow_cards),
-      reds = sum(red_cards),
       mins_played = sum(mins_played),
       mins_per_goal = ifelse(mins_played > 0, mins_played / goals, NA),
       games_per_goal = mins_per_goal / 90,
       winning_starts = sum(role == "starter" & outcome == "W"),
       win_pc = winning_starts / sum(role == "starter"),
+      yellows = sum(yellow_cards),
+      reds = sum(red_cards),
       .groups = "drop"
     ) %>%
     dplyr::select(
@@ -98,6 +98,7 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
         )
       }
     },
+    ,
     columnGroups = list(
       reactable::colGroup("Appearances & Goals", columns = c("apps", "starts", "sub_apps", "goals")),
       reactable::colGroup("Performance", columns = c("mins_played", "mins_per_goal", "games_per_goal", "win_pc")),
@@ -192,20 +193,6 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
       ),
       goals = reactable::colDef(
         name = "️Goals",
-        align = "center",
-        aggregate = if (inc_cup_games == "Yes") {
-          "sum"
-        }
-      ),
-      yellows = reactable::colDef(
-        name = "🟨",
-        align = "center",
-        aggregate = if (inc_cup_games == "Yes") {
-          "sum"
-        }
-      ),
-      reds = reactable::colDef(
-        name = "🟥",
         align = "center",
         aggregate = if (inc_cup_games == "Yes") {
           "sum"
@@ -338,6 +325,20 @@ output_app_table <- function(selected_season, inc_cup_games, pens_as_draw, min_s
           } else {
             return ('-')
           }
+        }
+      ),
+      yellows = reactable::colDef(
+        name = "🟨",
+        align = "center",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
+        }
+      ),
+      reds = reactable::colDef(
+        name = "🟥",
+        align = "center",
+        aggregate = if (inc_cup_games == "Yes") {
+          "sum"
         }
       )
     )

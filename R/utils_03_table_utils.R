@@ -618,12 +618,12 @@ wins_popover_options <- function(input_ids, min_goals=4) {
   )
 }
 
-defeats_popover_options <- function(input_id, min_goals=4) {
+defeats_popover_options <- function(input_ids, min_goals=4) {
   bslib::popover(
     title = "Display Options",
     bsicons::bs_icon("gear"),
     sliderInput(
-      inputId = input_id,
+      inputId = input_ids[1],
       label = tags$b("Minimum defeat size:"),
       min = 1,
       max = 10,
@@ -631,6 +631,14 @@ defeats_popover_options <- function(input_id, min_goals=4) {
       sep = "",
       ticks = FALSE,
       step = 1
+    ),
+    hr(),
+    radioButtons(
+      inputId = input_ids[2],
+      label = tags$b("Show line-ups and league tables:"),
+      choices = c("Yes", "No"),
+      selected = "No",
+      inline = TRUE
     )
   )
 }

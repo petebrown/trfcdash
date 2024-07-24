@@ -73,14 +73,20 @@ plot_h2h_by_venue <- function(df) {
   ) +
     ggplot2::geom_col(
       color = "black",
-      linewidth = 0.2) +
+      linewidth = 0.2
+    ) +
+    ggplot2::geom_hline(
+      yintercept = 0,
+      linetype = "solid",
+      color = "black",
+      linewidth = 0.3
+    ) +
     ggplot2::theme_minimal() +
     ggplot2::labs(
       x = NULL,
       y = NULL
     ) +
     ggplot2::coord_flip() +
-    # remove legend
     ggplot2::guides(
       fill = "none"
     ) +
@@ -88,8 +94,7 @@ plot_h2h_by_venue <- function(df) {
       ~factor(
         venue,
         levels = c("Home", "Away", "Neutral")
-      ),
-      scales = "free_y"
+      )
     ) +
     ggplot2::theme(
       text = ggtext::element_markdown(
@@ -120,10 +125,16 @@ plot_h2h_by_venue <- function(df) {
         family = "Helvetica Neue",
         size = 14,
         face = "bold"
-      )
+      ),
+      axis.ticks.y = ggplot2::element_line(
+        size = 0.5
+      ),
     ) +
-    # Remove y-axis labels
+    ggplot2::scale_x_discrete(
+      expand = c(0, 0.1)
+    ) +
     ggplot2::scale_y_continuous(
+      expand = ggplot2::expansion(mult = c(0, 0.1)),
       breaks = NULL,
       labels = NULL
     ) +

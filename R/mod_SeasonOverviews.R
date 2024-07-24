@@ -75,7 +75,10 @@ mod_SeasonOverviews_ui <- function(id){
       bslib::card_header(
         class = "bg-dark d-flex justify-content-between",
         "Biggest Defeats",
-        defeats_popover_options(ns("defeats_react_min_diff"))
+        defeats_popover_options(c(
+          ns("defeats_react_min_diff"),
+          ns("defeats_react_show_details")
+        ))
       ),
       bslib::card_body(
         reactable::reactableOutput(ns("biggest_defeats"), height = "auto"),
@@ -172,7 +175,6 @@ mod_SeasonOverviews_server <- function(id, year_range, league_tiers, includePlay
       reactable::renderReactable({
         results_with_subtable(
           df = biggest_wins_df(),
-          inc_cup_games = 'No',
           drop_cols = c('outcome'),
           show_details = wins_show_details()
         )
@@ -181,6 +183,9 @@ mod_SeasonOverviews_server <- function(id, year_range, league_tiers, includePlay
 
     min_defeat_diff <- reactive({
       input$defeats_react_min_diff
+    })
+    defeats_show_details <- reactive({
+      input$defeats_react_show_details
     })
 
     biggest_defeats_df <- reactive({
@@ -192,8 +197,9 @@ mod_SeasonOverviews_server <- function(id, year_range, league_tiers, includePlay
     output$biggest_defeats <- {
       reactable::renderReactable({
         results_with_subtable(
-          biggest_defeats_df(),
-          drop_cols = c('outcome')
+          df = biggest_defeats_df(),
+          drop_cols = c('outcome'),
+          show_details = defeats_show_details()
         )
       })
     }

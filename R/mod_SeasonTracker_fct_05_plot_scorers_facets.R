@@ -163,7 +163,7 @@ plot_top_scorers <- function(selected_seasons, inc_cup_games, n_scorers) {
     ggplot2::scale_y_continuous(
       expand = ggplot2::expansion(
         mult = c(0.01, 0),
-        add = c(0, 0)
+        add = c(0, 0.6)
       ),
       breaks = seq(
         from = 0,
