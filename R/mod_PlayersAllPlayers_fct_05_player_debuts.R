@@ -24,7 +24,10 @@ get_player_debuts <- function(df=results_dataset) {
       by = "menu_name"
     ) %>%
     dplyr::mutate(
-      Rank = dplyr::row_number()
+      Rank = dplyr::row_number(),
+      rank_by_name = dplyr::min_rank(menu_name),
+      rank_by_game_age = dplyr::min_rank(plr_game_age),
+      rank_by_debut_date = dplyr::min_rank(debut_date)
     ) %>%
     dplyr::select(
       Rank,
@@ -62,7 +65,10 @@ get_player_debuts <- function(df=results_dataset) {
         width = 30,
         align = "right",
         cell = reactable::JS("function(cellInfo, state) {
-          return cellInfo.viewIndex + 1;
+          let page_size = state.pageSize;
+          let page_no = state.page;
+          let row_no = cellInfo.viewIndex + 1;
+          return (page_no * page_size) + row_no;
         }"),
       ),
       menu_name = reactable::colDef(
