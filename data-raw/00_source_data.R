@@ -665,6 +665,31 @@ usethis::use_data(
 # LGE_TABLES #
 ##############
 
+non_league_tabs <- vroom::vroom(
+  file = "https://raw.githubusercontent.com/petebrown/scrape-national-league-results-and-tables/main/national_league_tabs.csv",
+  show_col_types = FALSE
+) %>%
+  dplyr::left_join(
+    results_dataset %>% dplyr::select(game_date, season, ssn_comp_game_no) %>% dplyr::distinct(),
+    by = "game_date"
+  ) %>%
+  dplyr::select(
+    season,
+    game_no = ssn_comp_game_no,
+    game_date,
+    pos,
+    Team,
+    Pld,
+    W,
+    D,
+    L,
+    GF,
+    GA,
+    GD,
+    Pts
+  )
+
+
 lge_tables <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/scrape-latest-table/main/data/lge_tables.csv",
   show_col_types = FALSE,
@@ -676,6 +701,9 @@ lge_tables <- vroom::vroom(
   dplyr::relocate(
     GD,
     .after = GA
+  ) %>%
+  dplyr::bind_rows(
+    non_league_tabs
   ) %>%
   dplyr::arrange(
     season,

@@ -7,6 +7,7 @@ clubs_crests <- data.frame(
 ) %>%
   dplyr::mutate(
     img = stringr::str_to_lower(club) %>%
+      stringr::str_replace_all("\\.", "") %>%
       stringr::str_replace_all(" ", "-") %>%
       stringr::str_replace_all("'", "") %>%
       stringr::str_replace_all("-u21", "") %>%
