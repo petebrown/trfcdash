@@ -128,7 +128,11 @@ pl_win_pc <- function(pl_name) {
       apps = dplyr::n(),
       wins = sum(outcome == "W"),
       win_pc = round((wins / apps) * 100, 1),
-      win_pc = stringr::str_glue("{win_pc}%")
+      win_pc = ifelse(
+        apps > 0,
+        stringr::str_glue("{win_pc}%"),
+        '-'
+      )
     )
 }
 
@@ -137,7 +141,7 @@ pl_win_pc_desc <- function(pl_name) {
   app = pl_win_pc(pl_name)$apps
   plural = ifelse(wins == 1, "win", "wins")
 
-  stringr::str_glue("{wins} {plural} in {app} apps")
+  stringr::str_glue("{wins} {plural} in {app} starts")
 }
 
 

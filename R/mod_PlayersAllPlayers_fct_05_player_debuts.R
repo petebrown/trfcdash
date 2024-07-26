@@ -40,8 +40,22 @@ get_player_debuts <- function(df=results_dataset) {
       position
     )
 
+  debut_ages <- df %>%
+    dplyr::filter(!is.na(plr_game_age)) %>%
+    dplyr::pull(plr_game_age)
+
+  debut_dates <- df %>%
+    dplyr::filter(!is.na(debut_date)) %>%
+    dplyr::pull(debut_date)
+
+
+
   reactable::reactable(
     df,
+    meta = list(
+      debut_ages = debut_ages,
+      debut_dates = debut_dates
+    ),
     class = "apps-reactable",
     style = list(
       fontSize = "0.9rem",
@@ -62,13 +76,60 @@ get_player_debuts <- function(df=results_dataset) {
     columns = list(
       Rank = reactable::colDef(
         name = "",
-        width = 30,
+        width = 40,
         align = "right",
         cell = reactable::JS("function(cellInfo, state) {
-          let page_size = state.pageSize;
-          let page_no = state.page;
-          let row_no = cellInfo.viewIndex + 1;
-          return (page_no * page_size) + row_no;
+          let debut_ages = state.meta.debut_ages;
+          let debut_dates = state.meta.debut_dates;
+
+          let sort_col = state.sorted[0]['id'];
+          console.log(sort_col);
+
+          if (sort_col === 'plr_game_age') {
+            console.log('sorting by game age');
+          } else if (sort_col === 'debut_date') {
+            console.log('sorting by debut date');
+          }
+
+          let data = [];
+
+          if (sort_col === 'plr_game_age') {
+            data = state.meta.debut_ages;
+          } else if (sort_col === 'debut_date') {
+            data = state.meta.debut_dates;
+          }
+          console.log(data.length)
+
+          let all_values = [];
+          for (let i = 0; i < data.length; i++) {
+            val = data[i];
+            if (val !== null) {
+              all_values.push(val);
+            }
+          }
+
+          const sortedValues = [...all_values].sort((a, b) => a - b);
+
+          const rankMap = new Map();
+          let rank = 1;
+
+          sortedValues.forEach((value, index) => {
+            if (!rankMap.has(value)) {
+              rankMap.set(value, rank);
+              rank++;
+            }
+          });
+
+          const rankedValues = all_values.map(value => rankMap.get(value));
+
+          function getRank(value) {
+            return rankMap.get(value);
+          }
+
+          const valueToFind = cellInfo.row[sort_col];
+          const rankOfValue = getRank(valueToFind);
+
+          return rankOfValue;
         }"),
       ),
       menu_name = reactable::colDef(

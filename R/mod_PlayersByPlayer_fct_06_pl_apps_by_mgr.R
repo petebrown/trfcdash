@@ -27,7 +27,8 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
       W = sum(outcome == "W"),
       D = sum(outcome == "D"),
       L = sum(outcome == "L"),
-      Goals = sum(goals_scored)
+      Goals = sum(goals_scored),
+      win_pc = sum(role == "starter" & outcome == "W") / sum(role == "starter")
     ) %>%
     dplyr::mutate(
       mins_per_gl = dplyr::case_when(
@@ -35,8 +36,7 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
         TRUE ~ NA
       ),
       games_per_gl = round(mins_per_gl / 90, 2),
-      mins_per_gl = round(mins_per_gl, 2),
-      win_pc = round((W / starts) * 100, 1)
+      mins_per_gl = round(mins_per_gl, 2)
     ) %>%
     dplyr::arrange(
       dplyr::desc(apps)
@@ -124,7 +124,11 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
         name = "Sub Apps"
       ),
       win_pc = reactable::colDef(
-        name = "Win %"
+        name = "Win %",
+        format = reactable::colFormat(
+          percent = TRUE,
+          digits = 1
+        )
       ),
       mins_played = reactable::colDef(
         name = "Mins",
