@@ -70,6 +70,7 @@ output_mgr_records <- function(selected_manager, record_type, inc_cup_games, pen
     ),
     rowClass = "results-row",
     defaultSortOrder = "desc",
+    defaultSorted = ifelse(record_type == 'season', c("Season"), "P"),
     defaultColDef = reactable::colDef(
       vAlign = "center",
       headerClass = "bar-sort-header"
@@ -107,7 +108,7 @@ output_mgr_records <- function(selected_manager, record_type, inc_cup_games, pen
         list(
           Generic_comp = reactable::colDef(
             name = "Competition",
-            minWidth = 175,
+            minWidth = 210,
             cell = function(value) {
               generic_comp_logo(value, from_generic=TRUE)
             }
@@ -117,7 +118,8 @@ output_mgr_records <- function(selected_manager, record_type, inc_cup_games, pen
         list(
           Season = reactable::colDef(
             name = "Season",
-            minWidth = 175
+            minWidth = 175,
+            defaultSortOrder = 'asc'
           )
         )
       }

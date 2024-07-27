@@ -169,6 +169,7 @@ get_otd_results <- function(otd_date, inc_year = "No", as_reactable = "Yes") {
               if (scorer === 'OG') {
                 return 'O.G.';
               } else {
+                scorer = scorer.replace(' (OG)', ', O.G.');
                 scorer = scorer.split(' ');
                 scorer.shift()
                 return scorer.join(' ');

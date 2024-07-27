@@ -109,10 +109,7 @@ output_pl_summary_by_opp <- function(inp_player_name) {
         name = "Starts"
       ),
       sub_apps = reactable::colDef(
-        name = "Sub apps",
-        format = reactable::colFormat(
-          prefix = '+'
-        )
+        name = "Sub Apps"
       ),
       win_pc = reactable::colDef(
         name = "Win %",

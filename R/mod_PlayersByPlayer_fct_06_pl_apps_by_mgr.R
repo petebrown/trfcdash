@@ -128,7 +128,17 @@ output_pl_summary_by_mgr <- function(inp_player_name) {
         format = reactable::colFormat(
           percent = TRUE,
           digits = 1
-        )
+        ),
+        cell = reactable::JS("function(cellInfo) {
+          let value = cellInfo.value;
+          console.log(value);
+
+          if (value === undefined) {
+            return '-';
+          } else {
+            return value;
+          }
+        }"),
       ),
       mins_played = reactable::colDef(
         name = "Mins",

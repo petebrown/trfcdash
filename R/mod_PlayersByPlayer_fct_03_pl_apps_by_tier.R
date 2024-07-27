@@ -124,7 +124,7 @@ output_pl_summary_by_tier <- function(inp_player_name) {
         }
       ),
       sub_apps = reactable::colDef(
-        name = "Sub apps",
+        name = "Sub Apps",
         format = reactable::colFormat(
           prefix = "(",
           suffix = ")"
@@ -245,7 +245,7 @@ output_pl_summary_by_tier <- function(inp_player_name) {
         }")
       ),
       Goals = reactable::colDef(
-        name = "⚽️",
+        name = "️Goals",
         footer = function(values) {
           sum(values)
         }

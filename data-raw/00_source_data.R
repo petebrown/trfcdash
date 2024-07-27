@@ -444,7 +444,7 @@ yc_pre_23 <- vroom::vroom(
 
 yellow_cards <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/data-updater/main/data/yellow_cards.csv",
-  # col_select = -"min_yc",
+  col_select = -"min_yc",
   show_col_types = FALSE
 ) %>%
   dplyr::group_by_all() %>%
@@ -505,7 +505,7 @@ player_positions <- player_info %>% dplyr::select(pl_index, player_name, player_
     position = dplyr::case_when(
       !is.na(comp_rec_pos) ~ comp_rec_pos,
       !is.na(tm_pos_1) ~ tm_pos_1,
-      !is.na(soccerbase_pos) ~ tm_pos_2,
+      !is.na(soccerbase_pos) ~ soccerbase_pos,
       TRUE ~ "Unknown"
     )
   )

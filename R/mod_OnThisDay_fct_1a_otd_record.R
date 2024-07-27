@@ -15,6 +15,12 @@ get_otd_record <- function(otd_date, otd_inc_year) {
 
   reactable::reactable(
     data = df,
+    class = "apps-reactable",
+    style = list(
+      fontSize = "0.8rem",
+      fontWeight = 300
+    ),
+    rowClass = "results-row",
     defaultColDef = reactable::colDef(
       align = "center"
     ),
