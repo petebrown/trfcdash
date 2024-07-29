@@ -110,6 +110,15 @@ mod_PlayersByPlayer_ui <- function(id){
         full_screen = TRUE,
         bslib::card_header(
           class = "bg-dark",
+          "Teammates"
+        ),
+        reactable::reactableOutput(ns("teammates"))
+      ),
+
+      bslib::card(
+        full_screen = TRUE,
+        bslib::card_header(
+          class = "bg-dark",
           "Appearances"
         ),
         reactable::reactableOutput(ns("player_apps"))
@@ -211,6 +220,12 @@ mod_PlayersByPlayer_server <- function(id, player_name){
     output$pl_summary_by_oppo <- {
       reactable::renderReactable(
         output_pl_summary_by_opp(player_name())
+      )
+    }
+
+    output$teammates <- {
+      reactable::renderReactable(
+        get_player_teammates(player_name())
       )
     }
 
