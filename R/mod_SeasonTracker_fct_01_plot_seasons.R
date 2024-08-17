@@ -44,7 +44,7 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
 
 
   # Set X-axis based on chart type
-  if (isTRUE(selected_seasons == "2023/24" & max(df$game_no < 10))) {
+  if (isTRUE(selected_seasons == "2024/25" & max(df$game_no < 10))) {
     x_scale_var = ggplot2::scale_x_continuous(
       limits = c(1, 46)
     )
