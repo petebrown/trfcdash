@@ -8,13 +8,19 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
         inc_cup_games == "No" ~ game_type == "League",
         TRUE ~ TRUE
       )
-    ) %>%
+    )
+
+  if (nrow(df) > 0) {
+    df <- df %>%
     dplyr::mutate(
       outcome = dplyr::case_when(
         pens_as_draw == "No" & decider == "pens" & is.na(cup_leg) ~ cup_outcome,
         .default = outcome
       )
-    ) %>%
+    )
+  }
+
+  df <- df %>%
     dplyr::group_by(
       season,
       competition

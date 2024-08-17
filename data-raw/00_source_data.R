@@ -3,7 +3,7 @@
 ############
 
 managers <- vroom::vroom(
-  file = "https://raw.githubusercontent.com/petebrown/complete-record/main/output/managers.csv",
+  file = "https://raw.githubusercontent.com/petebrown/pre-2023-data-prep/main/data/managers.csv",
   show_col_types = FALSE
 ) %>%
   dplyr::rename(

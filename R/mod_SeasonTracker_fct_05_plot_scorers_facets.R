@@ -76,30 +76,51 @@ plot_top_scorers <- function(selected_seasons, inc_cup_games, n_scorers) {
       surname = stringr::str_split_i(player_name, " ", 2),
       display_name = stringr::str_replace(player_name, "\\s", "\n"),
       ssn_name = paste0(season, " ", display_name)
-    ) %>%
-    dplyr::arrange(
-      season,
-      Total,
-      League,
-      desc(surname)
     )
+
+  if ("League" %in% names(ssn_top)) {
+    ssn_top <- ssn_top %>%
+      dplyr::arrange(
+        season,
+        Total,
+        League,
+        desc(surname)
+      )
+  } else {
+    ssn_top <- ssn_top %>%
+      dplyr::arrange(
+        season,
+        Total,
+        desc(surname)
+      )
+  }
 
   df <- goals_long %>%
     dplyr::inner_join(
       ssn_top,
       by = c("season", "player_name")
     ) %>%
-    dplyr::arrange(
-      season,
-      Total,
-      League,
-      player_name
-    ) %>%
     dplyr::mutate(
       surname = stringr::str_split_i(player_name, " ", 2),
       # display_name = stringr::str_replace(player_name, "\\s", "\n"),
       ssn_name = paste0(season, " ", display_name)
     )
+
+  if ("League" %in% names(df)) {
+    df <- df %>% dplyr::arrange(
+      season,
+      Total,
+      League,
+      player_name
+    )
+  } else {
+    df <- df %>%
+      dplyr::arrange(
+      season,
+      Total,
+      player_name
+    )
+  }
 
   df$generic_comp <- factor(
     df$generic_comp,

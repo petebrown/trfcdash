@@ -33,7 +33,6 @@ meta_data <- list(
 usethis::use_data(
   meta_plr_positions,
   meta_plr_headshots,
-  meta_plr_positions,
   meta_data,
 
   overwrite = TRUE
