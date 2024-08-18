@@ -1,7 +1,19 @@
 heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_draw = "Yes", min_starts = 0, summary_stats, selected_stat = "mins_played", player_roles) {
 
-  res <- filter_ssn_results(selected_season) %>%
+  res <- filter_ssn_results(selected_season)
+
+  if (selected_season == '2024/25') {
+    res <- res %>%
+      dplyr::bind_rows(
+        unplayed_fixtures
+      )
+  }
+
+  res <- res %>%
     filter_inc_cup_games(., inc_cup_games) %>%
+    dplyr::arrange(
+      game_date
+    ) %>%
     dplyr::mutate(
       game_no = dplyr::row_number()
     )
@@ -28,7 +40,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         TRUE ~ ""
       )
     ) %>%
-    dplyr::left_join(
+    dplyr::full_join(
       game_nos,
       by = c(
         "game_date"
@@ -58,7 +70,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
   df <- pivot_df(df, selected_stat)
 
   stats <- player_apps %>%
-    dplyr::inner_join(
+    dplyr::full_join(
       res,
       by = c(
         "season",

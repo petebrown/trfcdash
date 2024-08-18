@@ -449,14 +449,18 @@ matchday_tooltip <- function(game_df) {
     "<b>", format(lubridate::ymd(date), "%e %b %Y"), "</b><br>",
     competition, "<br>",
     opposition, " (", venue, ")<br>",
-    score, ifelse(!is.na(outcome_desc), paste0(" (", outcome_desc, ")"), ""), "<br>",
+    if (!is.na(score)) {
+      paste(score, ifelse(!is.na(outcome_desc), paste0(" (", outcome_desc, ")"), ""), "<br>")
+    },
     if (!is.na(scorers)) {
       scorers
     },
     if (!is.na(attendance)) {
       paste0(format(attendance, big.mark = ","), "<br>")
     },
-    manager
+    if (!is.na(manager)) {
+      manager
+    }
   )
 
   div(
