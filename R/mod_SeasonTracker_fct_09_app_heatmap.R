@@ -70,7 +70,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
   df <- pivot_df(df, selected_stat)
 
   stats <- player_apps %>%
-    dplyr::full_join(
+    dplyr::inner_join(
       res,
       by = c(
         "season",
@@ -195,7 +195,6 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         ),
         sticky = "right",
         minWidth = 60,
-        align = "right",
         format = reactable::colFormat(
           separators = TRUE
         ),
