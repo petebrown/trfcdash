@@ -2,8 +2,10 @@
 # SOURCE CLUB CREST IMAGES #
 ############################
 
+club_names <- sort(unique(c(results_dataset$opposition, lge_tables$Team)))
+
 clubs_crests <- data.frame(
-  club = sort(unique(results_dataset$opposition))
+  club = club_names
 ) %>%
   dplyr::mutate(
     img = stringr::str_to_lower(club) %>%
