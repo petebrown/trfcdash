@@ -330,6 +330,8 @@ streaks_reactable <- function(df) {
       headerClass = "bar-sort-header"
     ),
     showSortIcon = FALSE,
+    showPageSizeOptions = TRUE,
+    pageSizeOptions = get_page_nos(nrow(df)),
     columns = c(
       format_streak_cols(),
       if ("Season" %in% colnames(df)) {

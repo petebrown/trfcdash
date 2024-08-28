@@ -20,6 +20,22 @@ get_players_used <- function (df) {
     )
 }
 
+get_season_debuts <- function(df) {
+  df %>%
+    dplyr::select(
+      game_date,
+      season
+    ) %>%
+    dplyr::inner_join(
+      player_debuts,
+      by = c("game_date" = "debut_date")
+    ) %>%
+    dplyr::group_by(season) %>%
+    dplyr::summarise(
+      n_debuts = dplyr::n()
+    )
+}
+
 get_season_plr_stats <- function(year_range, league_tiers, includePlayOffs, cup_comps, pens_as_draw, venue_options, game_range) {
 
   min_year <- year_range[1]
@@ -55,6 +71,8 @@ get_season_plr_stats <- function(year_range, league_tiers, includePlayOffs, cup_
     ) %>%
     dplyr::ungroup()
 
+  n_debutants <- get_season_debuts(res)
+
   df <- res %>%
     dplyr::inner_join(
       player_apps %>% dplyr::select(!game_no),
@@ -65,6 +83,10 @@ get_season_plr_stats <- function(year_range, league_tiers, includePlayOffs, cup_
       dplyr::desc(n_players),
       dplyr::desc(starters),
       dplyr::desc(season)
+    ) %>%
+    dplyr::left_join(
+      n_debutants,
+      by = "season"
     )
 
   reactable::reactable(
@@ -98,6 +120,9 @@ get_season_plr_stats <- function(year_range, league_tiers, includePlayOffs, cup_
       ),
       sub_only = reactable::colDef(
         name = "Subs Only"
+      ),
+      n_debuts = reactable::colDef(
+        name = "Debutants"
       )
     )
   )
