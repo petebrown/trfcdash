@@ -91,7 +91,7 @@ mod_SeasonOverviews_ui <- function(id){
         full_screen = TRUE,
         bslib::card_header(
           class = "bg-dark",
-          "Players Used"
+          "Player Counts"
         ),
         bslib::card_body(
           reactable::reactableOutput(ns("player_stats"), height = "auto"),
