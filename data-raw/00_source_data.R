@@ -32,6 +32,23 @@ usethis::use_data(
 
 results_dataset <- vroom::vroom(
   file = "https://raw.githubusercontent.com/petebrown/data-updater/main/data/results.csv",
+  col_types = vroom::cols(
+    aet = vroom::col_character(),
+    pen_outcome = vroom::col_character(),
+    pen_score = vroom::col_character(),
+    pen_gf = vroom::col_character(),
+    pen_ga = vroom::col_character(),
+    agg_outcome = vroom::col_character(),
+    agg_score = vroom::col_character(),
+    agg_gf = vroom::col_character(),
+    agg_ga = vroom::col_character(),
+    away_goal_outcome = vroom::col_character(),
+    gg_outcome = vroom::col_character(),
+    decider = vroom::col_character(),
+    cup_outcome = vroom::col_character(),
+    outcome_desc = vroom::col_character(),
+    .default = vroom::col_guess()
+  ),
   show_col_types = FALSE
 )
 
