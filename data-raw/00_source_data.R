@@ -367,11 +367,15 @@ sub_mins <- vroom::vroom(
     game_date >= first_game_current_season
   )
 
-
 sub_mins <- dplyr::bind_rows(
   sub_mins_pre_23,
   sub_mins
 )
+
+sub_mins <- sub_mins %>%
+  dplyr::filter(
+    !(game_date == "2018-10-20" & player_name == 'Mark Ellis')
+  )
 
 
 sub_plrs_pre_23 <- vroom::vroom(
@@ -438,6 +442,23 @@ subs <- dplyr::full_join(
     -shirt_no
   )
 
+subs <- subs %>%
+  dplyr::filter(
+    !(game_date == '2018-10-20' & player_name == 'Mark Ellis')
+  ) %>%
+  dplyr::mutate(
+    on_for = dplyr::case_when(
+      game_date == '2000-08-22' & player_name == 'Andy Parkinson' ~ 10,
+      game_date == '2000-08-22' & player_name == 'Stuart Barlow' ~ 25,
+      .default = on_for
+    ),
+    off_for = dplyr::case_when(
+      game_date == '2000-08-22' & player_name == 'Scott Taylor' ~ 9,
+      game_date == '2000-08-22' & player_name == 'Paul Rideout' ~ 11,
+      .default = off_for
+    )
+  )
+
 
 usethis::use_data(
   subs,
@@ -468,6 +489,21 @@ yellow_cards <- vroom::vroom(
   dplyr::mutate(
     yellow_cards = dplyr::n()
   )
+
+manual_yellows <- tibble::tibble(
+  game_date = c(as.Date("2017-11-25"), as.Date("2024-02-27")),
+  player_name = c("Eddie Clarke", "James Norris"),
+  yellow_cards = c(1, 1)
+)
+
+yellow_cards <- dplyr::bind_rows(
+  yc_pre_23,
+  yellow_cards,
+  manual_yellows
+) %>%
+  dplyr::distinct() %>%
+  dplyr::arrange(game_date)
+
 
 usethis::use_data(
   yellow_cards,
