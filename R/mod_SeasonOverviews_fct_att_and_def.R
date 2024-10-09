@@ -33,7 +33,9 @@ get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup
     dplyr::filter(
       game_no >= min_game_no,
       game_no <= max_game_no
-    ) %>%
+    )
+
+  team_df <- df %>%
     dplyr::summarise(
       played = dplyr::n(),
       scored = sum(goals_for > 0),
@@ -47,7 +49,7 @@ get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup
   scorers_df <- player_apps %>%
     dplyr::filter(
       goals_scored > 0,
-      game_date %in% filtered_df$game_date
+      game_date %in% df$game_date
     ) %>%
     dplyr::select(
       season,
@@ -60,7 +62,7 @@ get_attack_and_defend <- function(year_range, league_tiers, includePlayOffs, cup
       diff_scorers = dplyr::n_distinct(menu_name),
     )
 
-  df <- df %>%
+  df <- team_df %>%
     dplyr::left_join(
       scorers_df,
       by = c("season")
