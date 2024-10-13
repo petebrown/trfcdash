@@ -27,7 +27,7 @@ ssn_recs_reactable <- function(selected_seasons, selected_venue, inc_cup_games, 
     ) %>%
     generate_record() %>%
     dplyr::arrange(
-      season,
+      dplyr::desc(season),
       dplyr::desc(P)
     )
 

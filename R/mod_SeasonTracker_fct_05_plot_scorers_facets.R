@@ -203,7 +203,7 @@ plot_top_scorers <- function(selected_seasons, inc_cup_games, n_scorers) {
       y = NULL
     ) +
     ggplot2::facet_wrap(
-      ~ season,
+      ~ factor(season, levels = sort(unique(season), decreasing = TRUE)),
       ncol = 2,
       scales = "free_y",
       strip.position = "top"

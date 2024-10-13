@@ -399,7 +399,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
       req(selected_seasons())
       if (!is.null(selected_seasons())) {
         # Sort selected seasons
-        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
+        selected_seasons <- sort(selected_seasons(), decreasing = TRUE)
 
         apps2_inc_cup_games <- reactive({
           input$app_react_inc_cup_games
@@ -451,7 +451,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
       req(selected_seasons())
       if (!is.null(selected_seasons())) {
 
-        selected_seasons <- sort(selected_seasons(), decreasing = FALSE)
+        selected_seasons <- sort(selected_seasons(), decreasing = TRUE)
 
         apps_inc_cup_games <- reactive({
           input$app_tab_inc_cup_games
@@ -516,7 +516,7 @@ mod_SeasonTracker_server <- function(id, selected_seasons){
       req(selected_seasons())
       if (!is.null(selected_seasons())) {
         # Sort selected seasons
-        selected_seasons <- isolate(sort(selected_seasons(), decreasing = FALSE))
+        selected_seasons <- isolate(sort(selected_seasons(), decreasing = TRUE))
 
         inc_cup_games <- input$res_inc_cup_games
 

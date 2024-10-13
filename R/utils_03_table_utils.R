@@ -324,6 +324,11 @@ streaks_reactable <- function(df) {
     ),
     rowClass = "results-row",
     defaultSortOrder = "desc",
+    defaultSorted = if ("Season" %in% colnames(df)) {
+      list(
+        "Season" = "desc"
+      )
+    },
     defaultColDef = reactable::colDef(
       align = "center",
       vAlign = "center",
