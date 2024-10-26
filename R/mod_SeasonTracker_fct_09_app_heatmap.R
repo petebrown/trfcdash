@@ -117,8 +117,6 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
       menu_name %in% df$menu_name
     )
 
-  View(df)
-
   reactable::reactable(
     df,
     class = "apps-reactable",
