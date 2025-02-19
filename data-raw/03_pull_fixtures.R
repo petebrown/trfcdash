@@ -41,7 +41,8 @@ fixtures <- f_json %>%
 
 unplayed_fixtures <- fixtures %>%
   dplyr::filter(
-    !game_date %in% results_dataset$game_date
+    !game_date %in% results_dataset$game_date,
+    game_type == 'League'
   )
 
 usethis::use_data(
