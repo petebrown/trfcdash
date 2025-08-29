@@ -2,7 +2,7 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
 
   res <- filter_ssn_results(selected_season)
 
-  if (selected_season == '2024/25') {
+  if (selected_season == '2025/26') {
     res <- res %>%
       dplyr::bind_rows(
         unplayed_fixtures
@@ -46,6 +46,8 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
         "game_date"
       )
     )
+
+  print(game_nos)
 
   pivot_df <- function(df, selected_stat) {
     df %>%

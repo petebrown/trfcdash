@@ -23,7 +23,7 @@ fixtures <- f_json %>%
     competition = competition.name,
   ) %>%
   dplyr::mutate(
-    season = '2024/25',
+    season = '2025/26',
     game_date = as.Date(date, format = "%Y-%m-%d"),
     venue = ifelse(home_team == 'Tranmere Rovers', 'H', 'A'),
     opposition = ifelse(home_team == 'Tranmere Rovers', away_team, home_team),
