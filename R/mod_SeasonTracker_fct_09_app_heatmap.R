@@ -47,8 +47,6 @@ heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_d
       )
     )
 
-  print(game_nos)
-
   pivot_df <- function(df, selected_stat) {
     df %>%
       dplyr::select(
