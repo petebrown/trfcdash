@@ -42,6 +42,7 @@
 unplayed_fixtures <- fixtures %>%
   dplyr::filter(
     !game_date %in% results_dataset$game_date,
+    game_date != '2025-10-28',
     game_type == 'League'
   )
 
