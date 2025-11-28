@@ -1,6 +1,7 @@
 heatmap_reactable <- function (selected_season, inc_cup_games = "Yes", pens_as_draw = "Yes", min_starts = 0, summary_stats, selected_stat = "mins_played", player_roles) {
 
-  res <- filter_ssn_results(selected_season)
+  res <- filter_ssn_results(selected_season) %>%
+    dplyr::arrange(game_date)
 
   if (selected_season == '2025/26') {
     res <- res %>%

@@ -1,6 +1,9 @@
 output_seasons_plot <- function(selected_seasons, chosen_plot) {
 
   df <- filter_ssn_results(selected_seasons) %>%
+    dplyr::arrange(
+      game_date
+    ) %>%
     dplyr::filter(
       game_type == "League"
     ) %>%
@@ -31,7 +34,6 @@ output_seasons_plot <- function(selected_seasons, chosen_plot) {
       game_date = format(game_date, "%e %B %Y"),
       ppg = pts / game_no
     )
-
 
   # Set lowest league position for League Position chart
   if (max(df$season) %in% selected_seasons) {
