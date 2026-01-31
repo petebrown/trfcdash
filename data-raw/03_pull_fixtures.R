@@ -41,7 +41,7 @@
 
 unplayed_fixtures <- fixtures %>%
   dplyr::mutate(
-    game_date = dplyr::case_when(opposition=='Newport County' & venue=='A' ~ as.Date('2026-05-03'), .default=game_date)
+    game_date = dplyr::case_when(opposition=='Newport County' & venue=='A' ~ as.Date('2026-03-03'), .default=game_date)
   ) %>%
   dplyr::arrange(game_date) %>%
   dplyr::filter(
